@@ -35,6 +35,7 @@ class App extends React.Component {
                     (<Investments/>)}/>
               <Route exact path='/community' render={() => 
                     (<Community/>)}/>
+              <Button>Hello World!</Button>
 
             </Switch>
           </div>
