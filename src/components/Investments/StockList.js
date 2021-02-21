@@ -13,10 +13,8 @@ import Button from '@material-ui/core/Button';
 
 class StockList extends React.Component{
 
-  
-
     render(){
-        const {stockList}= this.props
+        const {stockList, deleteStock}= this.props
         return(
             <TableContainer component={Paper}>
             <Table>
@@ -37,16 +35,15 @@ class StockList extends React.Component{
                 {stockList.map((stock) => {
                     return(
                     <TableRow>
-                    <TableCell>{stock.name}</TableCell>
-                    <TableCell>{stock.quantity}</TableCell>
-                    <TableCell>{stock.price}</TableCell>
-                    <TableCell>{stock.avgCost}</TableCell>
-                    <TableCell>{stock.mktVal}</TableCell>
-                    <TableCell>{stock.bookCost}</TableCell>
-                    <TableCell>{stock.gainLoss}</TableCell>                    
-                    <TableCell>{stock.percentage}</TableCell>
-                    {/* <Button variant="contained" onClick = {this.editButtonClicked}>Edit</Button>
-                    <Button variant="contained" onClick = {this.deleteButtonClicked}>Delete</Button> */}
+                    <Button>{stock.name}</Button>
+                    <Button>{stock.quantity}</Button>
+                    <Button>{stock.price}</Button>
+                    <Button>{stock.avgCost}</Button>
+                    <Button>{stock.mktValue}</Button>
+                    <Button>{stock.bookCost}</Button>
+                    <Button>{stock.gainLoss}</Button>                    
+                    <Button>{stock.percentageOfPortfolio}</Button>
+                    <Button variant="contained" onClick = {()=>deleteStock(stock)}>Delete</Button>
                     </TableRow>
                     )
                 })}                

@@ -2,10 +2,6 @@ import React from 'react';
 import Input from './Input'
 import StockList from './StockList'
 
-const log = console.log;
-
-
-
 class Investments extends React.Component {
 
   state = {
@@ -17,22 +13,21 @@ class Investments extends React.Component {
     bookCost: 0,
     gainLoss: 0,
     percentageOfPortfolio:0,
-    stockList: [{name: "", quantity: 1, price: 1.0, avgCost: 1.0, mktVal: 1, bookCost: 2, gainLoss:0, percentage:100 }],
+    stockList: [{name: "abc", quantity: 1, price: 1.0, avgCost: 1.0, mktValue: 1, bookCost: 2, gainLoss:0, percentageOfPortfolio:100 }],
   }
 
 
   handleInputStock = () => {
     console.log("Handling input stock");
     const stock = {
-        name:this.state.name,//no query selector..
-        quantity: this.state.quantity,
-        price: this.state.price,
-        avgCost: this.state.avgCost,
-        mktValue: this.state.mktValue,
-        bookCost: this.state.bookCost,
-        gainLoss: this.state.gainLoss,
-        percentageOfPortfolio:this.state.percentageOfPortfolio
-
+      name:this.state.name,//no query selector..
+      quantity: this.state.quantity,
+      price: this.state.price,
+      avgCost: this.state.avgCost,
+      mktValue: this.state.mktValue,
+      bookCost: this.state.bookCost,
+      gainLoss: this.state.gainLoss,
+      percentageOfPortfolio:this.state.percentageOfPortfolio
     }
     const currList = this.state.stockList
     console.log(currList)
@@ -59,25 +54,29 @@ class Investments extends React.Component {
     console.log(value);
   }
 
-  render() {
 
-  
+    //student is the object to reference
+  deleteStock = (stock) => {
+    //make var because not mutating this 
+    console.log("Delete")
+    const filteredStock = this.state.stockList.filter((s) => {
+      return s !== stock  //the one's we don't want to remove
+    })
+
+    this.setState({
+      stockList: filteredStock
+    })
+  }
+
+  render() {
     return (
 
       <div>
       <Input stockList={this.state.stockList} 
       handleInputStock = {this.handleInputStock} 
       handleInputChange = {this.handleInputChange}
-      // name = {this.name}
-      // quantity = {this.quantity}
-      // price = {this.price}
-      // avgCost = {this.avgCost}
-      // mktValue = {this.mktValue}
-      // bookCost = {this.bookCost}
-      // gainLoss = {this.gainLoss}
-      // percentageOfPortfolio = {this.percentageOfPortfolio}
       />
-      <StockList stockList={this.state.stockList}/>
+      <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock}/>
       </div>
 
     )
