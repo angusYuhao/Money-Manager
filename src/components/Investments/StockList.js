@@ -7,9 +7,14 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+
 
 
 class StockList extends React.Component{
+
+  
+
     render(){
         const {stockList}= this.props
         return(
@@ -18,13 +23,13 @@ class StockList extends React.Component{
             <TableHead>
                 <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell >Quantity</TableCell>
-                <TableCell >Price</TableCell>
-                <TableCell >Average Cost</TableCell>
-                <TableCell >Market Value</TableCell>
-                <TableCell >Book Cost</TableCell>
-                <TableCell >Gain Loss</TableCell>
-                <TableCell >Percentage of portfolio</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Average Cost</TableCell>
+                <TableCell>Market Value</TableCell>
+                <TableCell>Book Cost</TableCell>
+                <TableCell>Gain Loss</TableCell>
+                <TableCell>Percentage of portfolio</TableCell>
                 </TableRow>
             </TableHead>
 
@@ -34,12 +39,14 @@ class StockList extends React.Component{
                     <TableRow>
                     <TableCell>{stock.name}</TableCell>
                     <TableCell>{stock.quantity}</TableCell>
-                    <TableCell >{stock.price}</TableCell>
-                    <TableCell >{stock.avgCost}</TableCell>
-                    <TableCell >{stock.mktVal}</TableCell>
+                    <TableCell>{stock.price}</TableCell>
+                    <TableCell>{stock.avgCost}</TableCell>
+                    <TableCell>{stock.mktVal}</TableCell>
                     <TableCell>{stock.bookCost}</TableCell>
                     <TableCell>{stock.gainLoss}</TableCell>                    
                     <TableCell>{stock.percentage}</TableCell>
+                    {/* <Button variant="contained" onClick = {this.editButtonClicked}>Edit</Button>
+                    <Button variant="contained" onClick = {this.deleteButtonClicked}>Delete</Button> */}
                     </TableRow>
                     )
                 })}                
