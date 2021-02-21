@@ -1,10 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
-
-
+import StockList from './StockList';
 
 
 
@@ -30,8 +28,10 @@ class Input extends React.Component {
         this.setState({
           //this is bound to App class 
           [name]: value //now the name of the input
+          
           //entire state is updated
         })
+        console.log(value);
       }
 
     handleInputStock = () => {
@@ -52,23 +52,22 @@ class Input extends React.Component {
         this.setState({
           stockList:currList
         })
-        console.log(this.state.stockList)
       }
 
 
     render() {
-
         return (
         <form className="Input" noValidate autoComplete="off">
-        <TextField id="ticker" label="ticker" variant="outlined" onChange={this.handleInputChange}/>
-        <TextField id="quantity" label="quantity" variant="outlined" />
-        <TextField id="price" label="price" variant="outlined" />
-        <TextField id="avgCost" label="avg cost" variant="outlined" />
-        <TextField id="mktValue" label="market value" variant="outlined" />
-        <TextField id="bookCost" label="book cost" variant="outlined" />
-        <TextField id="gainLoss" label="gain/loss" variant="outlined" />
-        <TextField id="percentageOfPortfolio" label="percentage of portfolio" variant="outlined" />
+        <TextField id="ticker" name = "name" label="ticker" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="quantity" name = "quantity" label="quantity" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="price" name="price" label="price" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="avgCost" name="avgCost" label="avg cost" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="mktValue" name="mktValue" label="market value" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="bookCost" name="bookCost" label="book cost" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="gainLoss" name ="gainLoss" label="gain/loss" variant="outlined" onChange={this.handleInputChange}/>
+        <TextField id="percentageOfPortfolio" name="percentageOfPortfolio" label="percentage of portfolio" variant="outlined" />
         <Button variant="contained" onClick={this.handleInputStock}>Submit</Button>
+        <StockList stockList={this.state.stockList}/>
         </form>
         )
     }

@@ -1,8 +1,8 @@
 import React from 'react';
-import Entry from './EntryList';
+import Entry from './StockList';
 import StockEntryTextBoxes from './Input';
 import SubmitButton from './Button';
-
+import Input from './Input'
 
 const log = console.log;
 
@@ -15,7 +15,7 @@ class Investments extends React.Component {
     investmentAccounts: [],
     totalProfit: 0,
     totalCost: 0,
-    investments: [{name: "", quantity: 1, price: 1.0, avgCost: 1.0, mktVal: 1, bookCost: 2, gainLoss:0, percentage:100 }],
+    //investments: [{name: "", quantity: 1, price: 1.0, avgCost: 1.0, mktVal: 1, bookCost: 2, gainLoss:0, percentage:100 }],
   }
 
   addEntry = (event) => {
@@ -66,10 +66,10 @@ class Investments extends React.Component {
       <input type = "text" onChange = {this.handleInputChange} placeholder="market value"></input>
       <input type = "text" onChange = {this.handleInputChange} placeholder="ticker name"></input>
       <input type = "submit" onClick = {this.addEntry} value="Adding stock entry"></input> */}
-      <StockEntryTextBoxes/>
+      {/* <StockEntryTextBoxes/> */}
       {/* <SubmitButton/> */}
-      <Entry />
-
+      {/* <Entry /> */}
+      <Input/>
       </div>
 
     )
