@@ -68,6 +68,15 @@ class Investments extends React.Component {
     })
   }
 
+  editStock = (stock, valueToEdit) => {
+    
+    console.log("Editing stock")
+    console.log(stock)
+    console.log("Value")
+    console.log(valueToEdit)
+    
+  }
+
   render() {
     return (
 
@@ -76,7 +85,7 @@ class Investments extends React.Component {
       handleInputStock = {this.handleInputStock} 
       handleInputChange = {this.handleInputChange}
       />
-      <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock}/>
+      <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/>
       </div>
 
     )
