@@ -9,6 +9,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+
 import "./table.css"
 
 class TableComp extends React.Component {
@@ -17,22 +20,43 @@ class TableComp extends React.Component {
     super(props);
 
     this.state = {
-
+      // true -> displays the new row to be added to table, false -> hides the new row to be added to table 
+      add: false,
+      // the default values for the new row to be added to table 
+      newRow: []
     }
 
   }
 
+  // handles action for the 'plus' button to add a new row to table 
+  addRowHandler() {
+
+    // the new rows will contain the headings for the table (can be changed if needed)
+    const newData = []
+    this.props.headings.map(value => {
+      newData.push(value)
+    })
+
+    this.setState({ newRow: newData })
+    this.toggleAdd()
+
+  }
+
+  toggleAdd() {
+    this.setState({ add: !this.state.add })
+  }
+
   render() {
 
-    const { headings, data, removeRow } = this.props;
+    const { headings, data, addRow, editRow, removeRow } = this.props;
 
     return (
 
       <div>
 
-        <Paper >
+        <Paper>
 
-          <TableContainer className="TableContainer" >
+          <TableContainer className="TableContainer">
 
             <Table stickyHeader aria-label="sticky table">
 
@@ -40,13 +64,18 @@ class TableComp extends React.Component {
 
                 <TableRow>
 
+                  {/* displays the headings for each column */}
                   {headings.map(heading =>
                     <TableCell>
                       {heading}
                     </TableCell>
                   )}
 
-                  <TableCell width="100vw">
+                  <TableCell width="100vw" align="right">
+
+                    <IconButton aria-label="add">
+                      <AddIcon onClick={() => this.addRowHandler()} />
+                    </IconButton>
 
                   </TableCell>
 
@@ -56,10 +85,30 @@ class TableComp extends React.Component {
 
               <TableBody>
 
+                {this.state.add ?
+
+                  <TableRowComp
+                    headings={headings}
+                    row={this.state.newRow}
+                    addRow={addRow}
+                    editRow={editRow}
+                    removeRow={removeRow}
+                    rowForAdd={true}
+                    toggleAdd={this.toggleAdd.bind(this)}
+                  />
+
+                  : null
+                }
+
                 {data.map(row =>
                   <TableRowComp
+                    headings={headings}
                     row={row}
+                    addRow={addRow}
+                    editRow={editRow}
                     removeRow={removeRow}
+                    rowForAdd={false}
+                    toggleAdd={this.toggleAdd.bind(this)}
                   />
                 )}
 
