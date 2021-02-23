@@ -7,6 +7,7 @@ import Spendings from './components/Spendings'
 import Investments from './components/Investments'
 import Community from './components/Community'
 import NavBar from './components/NavBar'
+import Home from './components/Home'
 
 class App extends React.Component {
 
@@ -15,6 +16,11 @@ class App extends React.Component {
     return (
 
       <div>
+        <BrowserRouter>
+          <Home/>
+        </BrowserRouter>
+      </div>
+      /*<div>
 
         <BrowserRouter>
 
@@ -35,14 +41,13 @@ class App extends React.Component {
                     (<Investments/>)}/>
               <Route exact path='/community' render={() => 
                     (<Community/>)}/>
-              <Button>Hello World!</Button>
 
             </Switch>
           </div>
 
         </BrowserRouter>
 
-      </div>
+      </div>*/
 
     )
 
