@@ -80,17 +80,11 @@ const theme = createMuiTheme({
   },
 });
 
-const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
-                    ? <Link to={to}></Link>
-                    : <>{children}</>
-
 class Login extends React.Component {
 
   state = {
     userName: "",
     password: "",
-    link: "",
-    credentials: false,
   };
 
   handleInputChange = (event) => {
@@ -110,38 +104,10 @@ class Login extends React.Component {
     })
   }
 
-  handleLogin = (event) => {
-    console.log("loggin in...");
-    const username = this.state.userName;
-    const password = this.state.password;
-
-    if(username == 'user' && password == 'user') {
-      this.state.credentials = true;
-      this.state.link = '/spendings';
-      console.log("correct credentials!")
-    } else if(username == 'admin' && password == 'admin') {
-      this.state.link = '/spendings';
-      this.state.credentials = true;
-      console.log("correct credentials!")
-    } else {
-      this.state.credentials = false;
-      this.state.link = '/login';
-      this.state.userName = "";
-      this.state.password = "";
-      console.log("wrong credentials!")
-      alert('Wrong credentials! Please re-enter!');
-    }
-
-    this.setState({
-      link: this.state.link,
-      credentials: this.state.credentials
-    })
-
-    console.log(this.state.link);
-  }
-
   render() {
-    const { classes } = this.props;
+    
+    const { classes, loginHandler } = this.props;
+
     return (
 
       <ThemeProvider theme={theme}>
@@ -191,15 +157,15 @@ class Login extends React.Component {
                                    variant="outlined" 
                                    className={classes.text}/>
                         
-                          <ConditionalLink to='/spendings' condition={this.state.credentials}>
-                            <Button onClick={ this.handleLogin }
+                          <Link to={"/spendings"}>
+                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
                                     variant="contained" 
                                     color="primary" 
                                     type="submit" 
                                     className={classes.logInButton}>
                               Log in
                             </Button>
-                          </ConditionalLink>
+                          </Link>
                           
                         
                       </Grid>

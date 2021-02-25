@@ -13,27 +13,56 @@ import SignUp from './components/Signup/signup.js';
 
 class App extends React.Component {
 
+  state = {
+    loggedIn: false
+  }
+
+  loginHandler = (username, password) => {
+
+    if (username == 'user' && password == 'user') this.state.loggedIn = true;
+    else if (username == 'admin' && password == 'admin') this.state.loggedIn = true;
+    else this.state.loggedIn = false;
+
+    this.setState({ loggedIn: this.state.loggedIn })
+
+  }
+
   render() {
-    
+
     return (
 
       <div>
+
         <BrowserRouter>
+
           <Switch>
-            <Route exact path='/' 
-                render={() => (<Home />)} />
-            <Route exact path='/login' 
-                render={() => (<Login />)} />
-            <Route exact path='/signup' 
-                render={() => (<SignUp />)} />
-            <Route exact path='/spendings' 
-                render={() => (<Spendings/>)}/>
-            <Route exact path='/investments' 
-                render={() => (<Investments/>)}/>
-            <Route exact path='/community' 
-                render={() => (<Community/>)}/>
+
+            <Route exact path='/'
+              render={() => (<Home />)} />
+
+            <Route exact path='/login'
+              render={() => (<Login
+                loginHandler={this.loginHandler}
+              />)} />
+
+            <Route exact path='/signup'
+              render={() => (<SignUp />)} />
+
+            <Route exact path='/spendings'
+              render={() => (<Spendings
+                loggedIn={this.state.loggedIn}
+              />)} />
+
+            <Route exact path='/investments'
+              render={() => (<Investments />)} />
+
+            <Route exact path='/community'
+              render={() => (<Community />)} />
+
           </Switch>
+
         </BrowserRouter>
+        
       </div>
       /*<div>
 
