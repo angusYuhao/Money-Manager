@@ -8,16 +8,31 @@ import Investments from './components/Investments'
 import Community from './components/Community'
 import NavBar from './components/NavBar'
 import Home from './components/Home'
+import Login from './components/Login/login';
+import SignUp from './components/Signup/signup.js';
 
 class App extends React.Component {
 
   render() {
-  
+    
     return (
 
       <div>
         <BrowserRouter>
-          <Home/>
+          <Switch>
+            <Route exact path='/' 
+                render={() => (<Home />)} />
+            <Route exact path='/login' 
+                render={() => (<Login />)} />
+            <Route exact path='/signup' 
+                render={() => (<SignUp />)} />
+            <Route exact path='/spendings' 
+                render={() => (<Spendings/>)}/>
+            <Route exact path='/investments' 
+                render={() => (<Investments/>)}/>
+            <Route exact path='/community' 
+                render={() => (<Community/>)}/>
+          </Switch>
         </BrowserRouter>
       </div>
       /*<div>

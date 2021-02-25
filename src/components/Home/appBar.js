@@ -7,6 +7,8 @@ import { makeStyles,
          createMuiTheme,
          ThemeProvider} from '@material-ui/core';
 import { deepPurple, green } from '@material-ui/core/colors';
+import { Link } from 'react-router-dom';
+import Login from '../Login/login.js';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,20 +28,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const theme = createMuiTheme({
-palette: {
-    primary: {
-        main: deepPurple[800],
+    palette: {
+        primary: {
+            main: deepPurple[800],
+        },
+        secondary: {
+            main: deepPurple[100],
+        }
     },
-    secondary: {
-        main: deepPurple[100],
-    }
-},
-typography: {
-    fontFamily: [
-        'Poppins',
-        'sans-serif',
-    ].join(','),
-},
+    typography: {
+        fontFamily: [
+            'Poppins',
+            'sans-serif',
+        ].join(','),
+    },
 });
 
 export default function HomeAppBar() {
@@ -56,12 +58,17 @@ export default function HomeAppBar() {
                             Money Manager
                         </Typography>
 
-                        <Button href="#login" className={classes.logInButton}>
-                            Login
-                        </Button>
-                        <Button href="#signin" color="primary" variant="contained" className={classes.signInButton}>
-                            Get Started
-                        </Button>
+                        <Link to={'/login'}>
+                            <Button className={classes.logInButton}>
+                                Login
+                            </Button>
+                        </Link>
+                        
+                        <Link to={'/signup'}>
+                            <Button href="#signin" color="primary" variant="contained" className={classes.signInButton}>
+                                Get Started
+                            </Button>
+                        </Link>
                         
                     </Toolbar>
                     

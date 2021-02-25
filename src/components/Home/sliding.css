@@ -11,6 +11,14 @@
     height: auto;
 }
 
+.second {
+    position: relative;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: auto;
+}
+
 .caption {
     position: absolute;
     font-size: 3vw;
@@ -19,4 +27,12 @@
     top: 30%;
     left: 65%;
     font-family: 'Poppins', 'sans-serif';
+}
+
+.dot {
+    cursor: pointer;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #4527a0;
+    bottom: 0%;
 }
