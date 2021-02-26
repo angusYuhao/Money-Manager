@@ -35,6 +35,6 @@ body {
     justify-content: center;
 }
 
-.postFilter {
-    min-width: 20ch;
+.postCommentHeader {
+    color: maroon;
 }
