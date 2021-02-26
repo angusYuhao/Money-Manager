@@ -13,7 +13,7 @@ import { makeStyles,
   Paper,
   ThemeProvider} from '@material-ui/core';
 import { deepPurple, grey } from '@material-ui/core/colors';
-import  PersonIcon  from '@material-ui/icons/Person';
+
 
 const useStyles = theme => ({
   root: {
@@ -157,15 +157,15 @@ class Login extends React.Component {
                                    variant="outlined" 
                                    className={classes.text}/>
                         
-                          <Link to={"/spendings"}>
-                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
-                                    variant="contained" 
-                                    color="primary" 
-                                    type="submit" 
-                                    className={classes.logInButton}>
-                              Log in
-                            </Button>
-                          </Link>
+                        <Link to={"/spendings"}>
+                          <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
+                                  variant="contained" 
+                                  color="primary" 
+                                  type="submit" 
+                                  className={classes.logInButton}>
+                            Log in
+                          </Button>
+                        </Link>
                           
                         
                       </Grid>
