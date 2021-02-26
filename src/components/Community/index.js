@@ -18,6 +18,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+
 import './index.css';
 
 // const useStyles = makeStyles((theme) => ({
@@ -52,6 +59,7 @@ class ForumList extends React.Component {
     authorAvatar: "",
     content: "",
     category: "",
+    postFilter: "",
     posts: [
       {author: 'Angus Wang', 
        title: 'welcome to communtiy', 
@@ -88,8 +96,15 @@ class ForumList extends React.Component {
     })
   }
 
+  handleFilterInputChange = (event) => {
+    const value = event.target.value
+
+    this.setState({
+      postFilter: value
+    })
+  }
+
   addPost = () => {
-    // adding new post
     const postList = this.state.posts
 
     const newPost = {
@@ -105,7 +120,6 @@ class ForumList extends React.Component {
     this.setState({
       posts: postList,
 
-      // clean up
       author: "",
       title: "",
       authorAvatar: "",
@@ -125,20 +139,66 @@ class ForumList extends React.Component {
   render() {
     return (
       <div>
+        <Container maxWidth="xl">
+          <List className="forumList">
+            
+            <Grid container justify="space-evenly">
+              <FormControl className="postFilter">
+                <InputLabel>Filter Posts</InputLabel>
+                <Select
+                  // labelId="demo-controlled-open-select-label"
+                  // id="demo-controlled-open-select"
+                  // open={}
+                  // onClose={}
+                  // onOpen={}
+                  // value={}
+                  onChange={ this.handleFilterInputChange }
+                >
+                  <MenuItem value="">None</MenuItem>
+                  <MenuItem value="Announcement">Announcement</MenuItem>
+                  <MenuItem value="Question">Question</MenuItem>
+                  <MenuItem value="Opinion">Opinion</MenuItem>
+                </Select>
+              </FormControl>
+              <Button className="newPostButton" color="primary" variant="contained" onClick={ this.handleClickOpen }>
+                New Post
+              </Button>
+            </Grid>
+            
+          </List>
 
-        <List className="forumList">
-          <TextField
-            className="searchBar"
-            variant="outlined"
-            margin="dense"
-            name="searchPost"
-            label="Search Posts..."
-            fullWidth
-          />
-          <Button color="primary" variant="contained" onClick={ this.handleClickOpen }>
-            New Post
-          </Button>
-        </List>
+          <br></br>
+
+          <List className="forumList">
+            {this.state.posts.map((thread) => {
+              if (this.state.postFilter === "") {
+                return (
+                  <div>
+                    <ForumListItem postTitle={ thread.title }
+                                  postAuthor={ thread.author }
+                                  postTextContent={ thread.content }
+                                  avatar={ thread.authorAvatar }
+                                  category={ thread.category }/>
+                    <Divider variant="inset" component="li" />
+                  </div>
+                )
+              }
+              else if (this.state.postFilter === thread.category) {
+                return (
+                  <div>
+                    <ForumListItem postTitle={ thread.title }
+                                  postAuthor={ thread.author }
+                                  postTextContent={ thread.content }
+                                  avatar={ thread.authorAvatar }
+                                  category={ thread.category }/>
+                    <Divider variant="inset" component="li" />
+                  </div>
+                )
+              }
+            })}
+          </List>
+        </Container>
+        
 
         <Dialog open={ this.state.openNewPost } onClose={ this.handleClose } aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">New Post:</DialogTitle>
@@ -197,24 +257,6 @@ class ForumList extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-
-        <br></br>
-
-        <List className="forumList">
-          { this.state.posts.map((thread) => {
-            return (
-              <div>
-                <ForumListItem postTitle={ thread.title }
-                               postAuthor={ thread.author }
-                               postTextContent={ thread.content }
-                               avatar={ thread.authorAvatar }
-                               category={ thread.category }/>
-                <Divider variant="inset" component="li" />
-              </div>
-            )
-          })}
-        </List>
-
       </div>
     )
   }

@@ -30,3 +30,11 @@ body {
 .postTopBar {
     color: cornflowerblue;
 }
+
+.newPostButton {
+    justify-content: center;
+}
+
+.postFilter {
+    min-width: 20ch;
+}
