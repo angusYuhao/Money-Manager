@@ -30,19 +30,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 import './index.css';
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     width: '100%',
-//     maxWidth: '36ch',
-//     backgroundColor: theme.palette.background.paper,
-//   },
-//   inline: {
-//     display: 'inline',
-//   },
-// }));
 
 class Community extends React.Component {
-  // {const classes = useStyles}
 
   render() {
     return (
