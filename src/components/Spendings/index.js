@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router';
 import TableComp from '../Table'
 
 import './spendings.css'
@@ -57,9 +58,13 @@ class Spendings extends React.Component {
 
   render() {
 
+    const { loggedIn } = this.props
+
     return (
 
-      <div>
+      loggedIn ?
+
+              <div>
 
         This is the Spendings page :D
 
@@ -78,6 +83,7 @@ class Spendings extends React.Component {
         </div>
 
       </div>
+        : <Redirect to="/login" /> 
 
     )
 
