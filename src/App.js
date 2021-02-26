@@ -32,8 +32,15 @@ class App extends React.Component {
     return (
 
       <div>
-
         <BrowserRouter>
+          {this.state.loggedIn ? 
+            <div>
+              <NavBar />
+              <br></br>
+              <br></br>
+              <br></br>
+            </div> : null}
+          
 
           <Switch>
 
@@ -60,8 +67,10 @@ class App extends React.Component {
               render={() => (<Community />)} />
 
           </Switch>
+          
 
         </BrowserRouter>
+        
         
       </div>
       /*<div>
