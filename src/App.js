@@ -18,7 +18,7 @@ class App extends React.Component {
 
         <BrowserRouter>
 
-          <div class="NavBar">
+          <div className="NavBar">
             <NavBar/>
           </div>
 
@@ -26,7 +26,7 @@ class App extends React.Component {
           <br></br>
           <br></br>
           
-          <div class="PageContent">
+          <div className="PageContent">
             <Switch>
 
               <Route exact path='/spendings' render={() => 
