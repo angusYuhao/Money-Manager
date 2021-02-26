@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -34,7 +33,7 @@ class StockList extends React.Component{
                 {stockList.map((stock) => {
                     return(
                     <TableRow>
-                    <Button onClick = {() => editStock(stock, stock.name)}>{stock.name}</Button>
+                    {/* <Button onClick = {() => editStock(stock, stock.name)}>{stock.name}</Button>
                     <Button onClick = {() => editStock(stock, stock.quantity)}>{stock.quantity}</Button>
                     <Button onClick = {() => editStock(stock, stock.price)}>{stock.price}</Button>
                     <Button onClick = {() => editStock(stock, stock.avgCost)}>{stock.avgCost}</Button>
@@ -42,6 +41,15 @@ class StockList extends React.Component{
                     <Button onClick = {() => editStock(stock, stock.bookCost)}>{stock.bookCost}</Button>
                     <Button onClick = {() => editStock(stock, stock.gainLoss)}>{stock.gainLoss}</Button>                    
                     <Button onClick = {() => editStock(stock, stock.percentageOfPortfolio)}>{stock.percentageOfPortfolio}</Button>
+                    <Button variant="contained" onClick = {()=>deleteStock(stock)}>Delete</Button> */}
+                    <TableCell>{stock.name}</TableCell>
+                    <TableCell>{stock.quantity}</TableCell>
+                    <TableCell>{stock.price}</TableCell>
+                    <TableCell>{stock.avgCost}</TableCell>
+                    <TableCell>{stock.mktValue}</TableCell>
+                    <TableCell>{stock.bookCost}</TableCell>
+                    <TableCell>{stock.gainLoss}</TableCell>                    
+                    <TableCell>{stock.percentageOfPortfolio}</TableCell>
                     <Button variant="contained" onClick = {()=>deleteStock(stock)}>Delete</Button>
                     </TableRow>
                     )
