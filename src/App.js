@@ -14,7 +14,8 @@ import SignUp from './components/Signup/signup.js';
 class App extends React.Component {
 
   state = {
-    loggedIn: false
+    // setting to true when developing, don't forget to set this to false when deploying
+    loggedIn: true
   }
 
   loginHandler = (username, password) => {

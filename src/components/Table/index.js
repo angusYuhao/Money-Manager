@@ -32,9 +32,10 @@ class TableComp extends React.Component {
   addRowHandler() {
 
     // the new rows will contain the headings for the table (can be changed if needed)
-    const newData = []
-    this.props.headings.map(value => {
-      newData.push(value)
+    const newData = {}
+    this.props.headings.map((value, index) => {
+      if (this.props.options[index] == "Date") newData[value] = null
+      else newData[value] = value
     })
 
     this.setState({ newRow: newData })
@@ -48,7 +49,7 @@ class TableComp extends React.Component {
 
   render() {
 
-    const { headings, data, addRow, editRow, removeRow } = this.props;
+    const { headings, data, options, categories, addRow, editRow, removeRow } = this.props;
 
     return (
 
@@ -90,6 +91,8 @@ class TableComp extends React.Component {
                   <TableRowComp
                     headings={headings}
                     row={this.state.newRow}
+                    options={options}
+                    categories={categories}
                     addRow={addRow}
                     editRow={editRow}
                     removeRow={removeRow}
@@ -104,6 +107,8 @@ class TableComp extends React.Component {
                   <TableRowComp
                     headings={headings}
                     row={row}
+                    options={options}
+                    categories={categories}
                     addRow={addRow}
                     editRow={editRow}
                     removeRow={removeRow}
