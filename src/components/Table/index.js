@@ -34,8 +34,9 @@ class TableComp extends React.Component {
     // the new rows will contain the headings for the table (can be changed if needed)
     const newData = {}
     this.props.headings.map((value, index) => {
-      if (this.props.options[index] == "Date") newData[value] = null
-      else newData[value] = value
+      newData[value] = null
+      // if (this.props.options[index] == "Date") newData[value] = null
+      // else newData[value] = value
     })
 
     this.setState({ newRow: newData })

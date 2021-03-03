@@ -1,3 +1,13 @@
 .TableContainer {
     max-height: 40vh;
 }
+
+.Table {
+    max-width: 55vw;
+    margin-left: 43vw;
+    /* float: left; */
+}
+
+/* .Chart {
+
+} */

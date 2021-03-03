@@ -13,7 +13,7 @@ class Spendings extends React.Component {
       // the headings to appear in the header bar 
       transactions_headings: ["Date", "Amount", "Description", "Category"],
       // the options for each transaction for the table to know which kind of cell to display
-      transactions_options: ["Date", "Number", "String", "Select"],
+      transactions_options: ["Date", "Number", "Any", "Select"],
       // a list of the categories that the transaction falls under 
       transactions_categories: ["Food", "Personal", "Transportation", "Home"],
       // the data to appear in each rows of the table 
@@ -82,7 +82,16 @@ class Spendings extends React.Component {
 
           This is the Spendings page :D
 
-        <div>
+          <br></br>
+          <br></br>
+          <br></br>
+          
+          <div className="Chart">
+
+
+          </div>
+
+          <div className="Table">
 
             <TableComp
               // use the TableContainer class to style the table itself 
