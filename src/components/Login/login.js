@@ -21,6 +21,8 @@ const useStyles = theme => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer',
+    marginRight: '70vw',
   },
   new: {
     float: 'right',
@@ -114,9 +116,11 @@ class Login extends React.Component {
             <div className={classes.root}>
                 <AppBar position="sticky" color="secondary">
                     <Toolbar>
+                      <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
                         <Typography variant="h6" className={classes.title}>
                           Money Manager
                         </Typography>
+                      </Link>
                         <Typography variant="subtitle1" className={classes.new}>
                           New User?
                         </Typography>

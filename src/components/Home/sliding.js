@@ -1,22 +1,15 @@
-import { makeStyles, 
-    AppBar, 
-    Toolbar, 
-    Typography,
+import { withStyles,
     Button,
+    Box,
+    Typography,
     createMuiTheme,
     ThemeProvider,
     IconButton} from '@material-ui/core';
-import { deepPurple} from '@material-ui/core/colors';
-import { NavigateNext, NavigateBefore, LinearScale, ScatterPlot, DonutSmall } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
-
+import { deepPurple } from '@material-ui/core/colors';
+import { NavigateNext, NavigateBefore } from '@material-ui/icons';
+import {Link} from 'react-router-dom';
 import React from 'react';
-import { useState } from 'react';
 import "./sliding.css";
-
-import Background from './leaves.jpg';
-import test from './test_leaves.jpg';
-import help from './help.jpg';
 
 const theme = createMuiTheme({
     palette: {
@@ -35,80 +28,136 @@ const theme = createMuiTheme({
     },
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = theme => ({
 
     signInButton: {
         position: 'absolute',
         top: '60%',
-        left: '85%',
+        left: '70%',
+    },
+    box: {
+        position: 'absolute',
+        top: '40%',
+        left: '70%',
+        borderRadius: 10,
+        width: 180,
+    },
+    text: {
+        color: 'white',
+    },
+    title: {
+        position: 'absolute',
+        top: '50%',
+        left: 100,
     },
     beforeButton: {
         position: 'absolute',
         top: '50%',
-        left: '1%',
+        left: 32,
+        fontSize: '3em',
+        cursor: 'pointer',
     },
     nextButton: {
         position: 'absolute',
         top: '50%',
-        left: '95%',
+        right: 32,
+        fontSize: '3em',
+        cursor: 'pointer',
     },
     beforeIcon: {
-        fontSize: '2em',
-        cursor: 'pointer',
+        fontSize: '1em',
     },
     nextIcon: {
-        fontSize: '2em',
-        cursor: 'pointer',
+        fontSize: '1em',
     }
-}))
 
-export default function Sliding() {
-    const classes = useStyles();
+});
 
-    return (
+const slides = [
+    {
+        image: 'https://images.unsplash.com/photo-1614858335969-b05a35df2ab1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'
+    },
+    {
+        image: 'https://images.unsplash.com/photo-1614862053138-10ca7a58866e?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'
+    },
+    {
+        image: 'https://images.unsplash.com/photo-1614867517189-34c259f98b17?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'
+    }
+]
 
-        <ThemeProvider theme={theme}>
-            <div className="sliding">
-                
-                <div className="image_container">
-                    <img className="first" src={test} alt="leaves"/>
-                    <div className="caption">
-                        We help investors make their dreams come true!
-                    </div>
-                    
-                    <Link to={'/signup'}>
-                        <Button href="#signin" size="large" color="primary" variant="contained" className={classes.signInButton}>
-                            Get Started
-                        </Button>
-                    </Link>
-                </div>
+const length = slides.length;
+let value = 0;
 
-                
-                <div className="image_conatainer">
-                    <img className="second" src={help} alt="help" />
-                    <div className="caption">
-                        We help you calculate your spendings.
-                    </div>
-                    <Link to={'/signup'}>
-                        <Button href="#signin" size="large" color="primary" variant="contained" className={classes.signInButton}>
-                            Get Started
-                        </Button>
-                    </Link>
-                </div>
+class Sliding extends React.Component {
+    state = {
+        currentSlide: 0,
+    };
 
-                <IconButton color="secondary" aria-label="before" className={classes.beforeButton}>
-                    <NavigateBefore className={classes.beforeIcon} />
-                </IconButton>
+    nextSlide = (event) => {
+        console.log(length);
 
-                <IconButton color="primary" aria-label="next" className={classes.nextButton}>
-                    <NavigateNext className={classes.nextIcon} />
-                </IconButton>
+        if(value === length - 1) {
+            value = 0;
+        } else {
+            value = value + 1;
+        }
 
-            </div>
+        this.setState({
+            currentSlide: value
+        })
+    }
 
-        </ThemeProvider>
+    prevSlide = (event) => {
+        
+        if(value === 0) {
+            value = length - 1;
+        } else {
+            value = value - 1;
+        }
 
-    );
+        this.setState({
+            currentSlide: value
+        })
+    }
+
+    render() {
+        const { classes } = this.props;
+
+        return (
+            <ThemeProvider theme={theme}>
+                <section className="slider">
+                    <IconButton value={this.state.currentSlide} name="currentSlide" color="primary" size="large" aria-label="before" name="currentSlide" className={classes.beforeButton} onClick={this.prevSlide}>
+                        <NavigateBefore className={classes.beforeIcon} />
+                    </IconButton>
+
+                    <IconButton value={this.state.currentSlide} name="currentSlide" color="primary" size="large" aria-label="next" className={classes.nextButton} onClick={this.nextSlide}>
+                        <NavigateNext className={classes.nextIcon} />
+                    </IconButton>
+
+                    {slides.map((slide, index) => {
+                        return (
+                            <div>
+                                <div className={index === this.state.currentSlide ? 'slide active' : 'slide'} key={index}>
+                                    {index === this.state.currentSlide && (<img src={slide.image} alt="travel" className="image"/>)}
+                                </div>
+                                <Box className={classes.box}>
+                                    <Typography variant="h5" className={classes.text}>
+                                        We can help investor's dream come true!
+                                    </Typography>
+                                </Box>
+                                <Link to={'/signup'}>
+                                    <Button href="#signin" size="large" color="primary" variant="contained" className={classes.signInButton}>
+                                        Get Started
+                                    </Button>
+                                </Link>
+                            </div>
+                        )
+                    })}
+                </section>
+            </ThemeProvider>
+        )
+    }
+
 }
 
-
+export default withStyles(useStyles)(Sliding);
