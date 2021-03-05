@@ -10,7 +10,7 @@ const Canvas = props => {
         canvas.width = 800;
         canvas.height = 600;
         context.lineWidth = 2;
-        context.strokeStyle = '#ff0000';     
+        context.strokeStyle = '#000000';     
         context.fillStyle = '#ffffff';
         context.globalCompositeOperation = "destination-over";
     
