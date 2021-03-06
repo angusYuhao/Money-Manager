@@ -3,60 +3,55 @@
 //https://stackoverflow.com/questions/27736288/how-to-fill-the-whole-canvas-with-specific-color
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
 //https://gist.github.com/prof3ssorSt3v3/7f16fe9397c013d364f2d4484cad3ca8
+//https://stackoverflow.com/questions/30790010/html-canvas-hover-text
+//https://stackoverflow.com/questions/6270785/how-to-determine-whether-a-point-x-y-is-contained-within-an-arc-section-of-a-c
+
+
 
 import React, { useRef, useEffect } from 'react'
+// $("#canvas").mousemove(function(e){handleMouseMove(e);});
 
-class Canvas extends React.Component {
+
+class PieChart extends React.Component {
     
+    state = {
+        left: 0,
+        top: 0 
+    }
+
     constructor(props) {
         super(props);
-        // this.state = {
-        //     height: 500,
-        //     width: 500
-        // }
         this.width = 0;
         this.height = 0;
         this.pieChartRef = React.createRef();
-
     }
     
-    componentDidMount() {
-        console.log(`${this.pieChartRef.width}, ${this.pieChartRef.height}`);
-        // const height = this.divElement.clientHeight;
-        // this.setState({ height });
-        // const width = this.divElement.clientWidth;
-        // this.setState({ width });
+    
 
-        const {stockList}= this.props
-        console.log(stockList)
+    componentDidMount() {
         this.context = this.pieChartRef.current.getContext('2d');
-    //     test example:
-    //    this.context.fillStyle = '#000000'
-    //    this.context.beginPath()
-    //    this.context.arc(50, 100, 20, 0, 2*Math.PI)
-    //    this.context.fill()
+        let slices = [];
+        
+
+        
+        const {stockList} = this.props
+        console.log(stockList)
+        
         let total = stockList.reduce( (ttl, stock) => {
             return ttl + (stock.avgCost * stock.quantity)
         }, 0);
         console.log("total")
         console.log(total)
         let startAngle = 0; 
-        let radius = 100;
-        let cx = 200;
-        let cy = 200;
+        let radius = 120;
+        let cx = 300;
+        let cy = 300;
         const randomHexColorCode = () => {
             return "#" + Math.random().toString(16).slice(2, 8)
         };
 
         stockList.forEach(element => {
             console.log("Drawing slice")
-        
-            // this.context.fillStyle = '#000000';
-            // this.context.beginPath();
-            // this.context.arc(50, 100, 20, 0, 2*Math.PI)
-            // this.context.fill();
-
-
             this.context.lineWidth = 1;
             this.context.strokeStyle = '#fafafa';
             this.context.fillStyle = randomHexColorCode();
@@ -71,31 +66,90 @@ class Canvas extends React.Component {
             this.context.stroke();
             this.context.closePath();
             
-            // // add the labels
+            // add the labels
             this.context.beginPath();
             this.context.font = '20px Helvetica, Calibri';
             this.context.textAlign = 'center';
             this.context.fillStyle = 'rebeccapurple';
-            // midpoint between the two angles
             // 1.5 * radius is the length of the Hypotenuse
             let theta = (startAngle + endAngle) / 2;
             let deltaY = Math.sin(theta) * 1.5 * radius;
             let deltaX = Math.cos(theta) * 1.5 * radius;
             this.context.fillText(element.name, deltaX+cx, deltaY+cy);
+            let percentage = Math.round(+((element.avgCost*element.quantity*100)/total));
+            this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             startAngle = endAngle;
+
+            //store the slice information
+            slices.push({ 
+                    "name" : element.name,
+                    "cx" : cx,
+                    "cy" : cy,
+                    "colour" : this.context.fillStyle,
+                    "radius" : radius,
+                    "startAngle" : startAngle,
+                    "endAngle": endAngle,
+            });
+
+
+
         });
 
+        document.addEventListener('mousemove', (e) => {
+            this.setState({left: e.pageX, top: e.pageY});
+            let mouseX=parseInt(e.clientX);
+            let mouseY=parseInt(e.clientY);
+            
+                    
+            for(let i=0;i<slices.length;i++){
+                let s=slices[i];
+            
+                // define the shape path we want to test against the mouse position
+                // defineShape(s.points);
+                
+                //check the angle
+                let angleOk = false;
+                let angle = Math.atan(mouseY - cy,mouseX - cx);
+                console.log(angle)
+                console.log(s.startAngle)
+                console.log(s.endAngle)
+                if(s.startAngle < s.endAngle && s.startAngle < angle && angle < s.endAngle){
+                    console.log("Angle ok")
+                    angleOk = true;
+                }else if(s.startAngle > s.endAngle){
+                    if(angle > s.startAngle || angle < s.endAngle){
+                        console.log("Angle ok")
+                        angleOk = true;
+                    }
+                }
+                
+                //check the radius
+                let distanceOk = false;
+                let distance = Math.sqrt(   ((mouseX - cx) * (mouseX - cx)) +  ((mouseY - cy) * (mouseY - cy)) );
+                if(distance < radius) distanceOk = true;
+
+                //all the slices 
+                if(angleOk && distanceOk){
+                  // if yes, fill the shape in red
+                  console.log("hovering over slice")
+                  s.drawcolor='red';
+                }else{
+                  // if no, fill the shape with blue
+                  s.drawcolor=s.colour;
+                }
+            
+              }
+        });
+        
         
     }
     
     render() {
-        
-
         return (
           <canvas ref={this.pieChartRef} width = {600} height = {600}/>
        )
     }
 }
 
-export default Canvas
+export default PieChart

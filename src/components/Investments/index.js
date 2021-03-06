@@ -2,7 +2,7 @@ import React from 'react';
 import Input from './Input'
 import StockList from './StockList'
 // import Canvas from './canvasExample'
-import Canvas from './PieChart'
+import PieChart from './PieChart'
 
 
 class Investments extends React.Component {
@@ -131,7 +131,7 @@ class Investments extends React.Component {
       <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/>
       
    
-      <Canvas stockList = {this.state.stockList}/>
+      <PieChart stockList = {this.state.stockList}/>
       </div>
       
 
