@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Button, withStyles, createMuiTheme, Grid, Paper, FormControl, InputLabel, Select, MenuItem, ThemeProvider, TextField } from '@material-ui/core';
 import HomeAppBar from './../Home/appBar.js';
 import Footer from './../Footer/footer.js';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { deepPurple, grey } from '@material-ui/core/colors';
 
 const useStyles = theme => ({
@@ -96,6 +96,15 @@ class Contact extends React.Component {
         })
     };
 
+    submitValidation = (event) => {
+        event.preventDefault();
+        console.log("inside validation!")
+        
+        this.props.history.push('/sent');
+        return;
+        
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -120,7 +129,7 @@ class Contact extends React.Component {
                                 Please fill out the rest of the information
                             </Typography>
 
-                            <form className={classes.form}>
+                            <form onSubmit={ this.submitValidation } className={classes.form}>
 
                                 <Grid container direction="column" spacing={1}>
                                     <Typography variant="subtitle2" className={classes.question}>
@@ -160,9 +169,10 @@ class Contact extends React.Component {
                                     <Typography variant="subtitle2" className={classes.question}>
                                         What is your email address? *
                                     </Typography>
+                                
                                     <FormControl variant="outlined" className={classes.formControl}>
-                                        <TextField required 
-                                                    value={ this.state.email } 
+                                        <TextField  value={ this.state.email } 
+                                                    required 
                                                     onChange={ this.handleInputChange }
                                                     id="outlined-required" 
                                                     label="Email@example.com" 
@@ -170,11 +180,12 @@ class Contact extends React.Component {
                                                     variant="outlined" 
                                                     />
                                     </FormControl>
+                                          
                                     <Typography variant="subtitle2" className={classes.question}>
                                        Any other things you want to tell us?
                                     </Typography>
                                     <FormControl variant="outlined" className={classes.formControl}>
-                                        <TextField required 
+                                        <TextField 
                                                     value={ this.state.additional } 
                                                     onChange={ this.handleInputChange }
                                                     id="outlined-multiline" 
@@ -186,16 +197,14 @@ class Contact extends React.Component {
                                                     />
                                     </FormControl>
                                 </Grid>
-                                <Link to={"/sent"} >
-                                    <Button 
-                                            onClick={ this.handleInputChange }
-                                            variant="contained" 
-                                            color="primary" 
-                                            type="submit" 
-                                            className={classes.sentButton}>
-                                        Send
-                                    </Button>
-                                </Link>
+                                
+                                <Button variant="contained" 
+                                        color="primary" 
+                                        type="submit" 
+                                        className={classes.sentButton}>
+                                    Send
+                                </Button>
+                                
                             </form>
                         </Paper>
                     </Grid>
@@ -207,4 +216,4 @@ class Contact extends React.Component {
     }
 }
 
-export default withStyles(useStyles)(Contact);
+export default withRouter((withStyles(useStyles)(Contact)));

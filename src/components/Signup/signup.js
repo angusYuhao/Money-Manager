@@ -20,6 +20,7 @@ import {
   Paper,
   ThemeProvider} from '@material-ui/core';
 import { deepPurple, grey } from '@material-ui/core/colors';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = theme => ({
   root: {
@@ -65,15 +66,8 @@ const useStyles = theme => ({
     margin: theme.spacing(1),
     minWidth: 250,
   },
-  text: {
-    margin: theme.spacing(1),
-  },
-  fullWidthTextfield: {
-    marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
   signInButton: {
+    float: 'right',
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(1),
   },
@@ -84,11 +78,6 @@ const useStyles = theme => ({
   radio: {
     marginRight: theme.spacing(3),
   },
-  admin: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  }
 });
 
 const theme = createMuiTheme({
@@ -124,12 +113,7 @@ class SignUp extends React.Component {
     confirmPassword: "",
     passwordLengthError: false,
     passwordConfirmError: false, 
-    signedUp: false,
   };
-
-  signedUpHandler = (event) => {
-    this.state.signedUp = true;
-  }
 
   handleInputChange = (event) => {
     console.log(event)
@@ -189,6 +173,15 @@ class SignUp extends React.Component {
     }
   }
 
+  submitValidation = (event) => {
+    event.preventDefault();
+    console.log("inside validation!")
+    
+    this.props.history.push('/spendings');
+    return;
+    
+  }
+
   render() {
     
     const { classes } = this.props;
@@ -221,7 +214,7 @@ class SignUp extends React.Component {
                 Please fill out the rest of the information
               </Typography>
 
-              <form className={classes.form}>
+              <form onSubmit={ this.submitValidation } className={classes.form}>
 
                 <Grid container direction="row" spacing={1}>
                   <FormControl variant="outlined" className={classes.formControl}>
@@ -241,47 +234,55 @@ class SignUp extends React.Component {
 
                 { this.state.userLevel === "Regular User" ? 
                 <div>
+
                   <Grid container direction="row" spacing={1}>
-                    <TextField required 
-                              value={ this.state.firstName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="First Name" 
-                              name="firstName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    <TextField required
-                              value={ this.state.lastName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Last Name" 
-                              name="lastName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                value={ this.state.firstName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="First Name" 
+                                name="firstName"
+                                variant="outlined" 
+                                />
+                    </FormControl>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required
+                                value={ this.state.lastName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Last Name" 
+                                name="lastName"
+                                variant="outlined" 
+                                />
+                    </FormControl>
                   </Grid>
+
                   <Grid container direction="row" spacing={1}>
-                    <TextField required
-                              value={ this.state.userName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="User Name" 
-                              name="userName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    <TextField 
-                              value={ this.state.birthday } 
-                              onChange={ this.handleInputChange }
-                              id="date" 
-                              label="Birthday" 
-                              type="date"
-                              name="birthday"
-                              variant="outlined" 
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              className={classes.text}/>
-                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required
+                                value={ this.state.userName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="User Name" 
+                                name="userName"
+                                variant="outlined" 
+                                />
+                    </FormControl>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField 
+                                value={ this.state.birthday } 
+                                onChange={ this.handleInputChange }
+                                id="date" 
+                                label="Birthday" 
+                                type="date"
+                                name="birthday"
+                                variant="outlined" 
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                                />
+                    </FormControl>
                   </Grid>
                   
                   <RadioGroup aria-label="gender" value={ this.state.gender } onChange={ this.handleInputChange } name="gender" row >
@@ -291,134 +292,152 @@ class SignUp extends React.Component {
                   </RadioGroup>
                   
                   <Grid container direction="row" spacing={1}>
-                    <TextField required 
-                              value={ this.state.occupation } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Occupation" 
-                              name="occupation"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    <TextField value={ this.state.salary } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Monthly salary ($)" 
-                              name="salary"
-                              variant="outlined" 
-                              InputProps={{
-                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                              }}
-                              className={classes.text}/>
-                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                value={ this.state.occupation } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Occupation" 
+                                name="occupation"
+                                variant="outlined" 
+                                />
+                      </FormControl>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField value={ this.state.salary } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Monthly salary ($)" 
+                                name="salary"
+                                variant="outlined" 
+                                InputProps={{
+                                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                                />
+                      </FormControl>
                   </Grid>
 
                   <Grid container direction="column" spacing={1}>
-                    <TextField required 
-                              fullWidth
-                              value={ this.state.email } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Email@example.com" 
-                              name="email"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                value={ this.state.email } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Email@example.com" 
+                                name="email"
+                                variant="outlined" 
+                                />
+                    </FormControl>
                     
                     { this.state.passwordLengthError ? 
-                      <TextField
-                                fullWidth
-                                error
-                                helperText="The minimum number of characters is 8!"
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField
+                                  fullWidth
+                                  error
+                                  helperText="The minimum number of characters is 8!"
+                                  value={ this.state.createdPassword } 
+                                  onChange={ this.checkLength }
+                                  id="outlined-error" 
+                                  label="Error" 
+                                  type="password"
+                                  name="createdPassword"
+                                  variant="outlined" 
+                                  />
+                      </FormControl>
+                      :
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField required 
                                 value={ this.state.createdPassword } 
                                 onChange={ this.checkLength }
-                                id="outlined-error" 
-                                label="Error" 
+                                id="outlined-required" 
+                                label="Create password" 
                                 type="password"
                                 name="createdPassword"
                                 variant="outlined" 
-                                className={classes.fullWidthTextfield}/>
-                      :
-                      <TextField required 
-                              fullWidth
-                              value={ this.state.createdPassword } 
-                              onChange={ this.checkLength }
-                              id="outlined-required" 
-                              label="Create password" 
-                              type="password"
-                              name="createdPassword"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
+                                />
+                      </FormControl>
                     }
                     { this.state.passwordConfirmError ? 
-                      <TextField error
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField error
+                                  fullWidth
+                                  helperText="The password does not match!"
+                                  value={ this.state.confirmPassword } 
+                                  onChange={ this.handleConfirmPassword }
+                                  id="outlined-error" 
+                                  label="Error" 
+                                  type="password"
+                                  name="confirmPassword"
+                                  variant="outlined" 
+                                  />
+                      </FormControl>
+                      :
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField required 
                                 fullWidth
-                                helperText="The password does not match!"
                                 value={ this.state.confirmPassword } 
                                 onChange={ this.handleConfirmPassword }
-                                id="outlined-error" 
-                                label="Error" 
+                                id="outlined-required" 
+                                label="Confirm password" 
                                 type="password"
                                 name="confirmPassword"
                                 variant="outlined" 
-                                className={classes.fullWidthTextfield}/>
-                      :
-                      <TextField required 
-                              fullWidth
-                              value={ this.state.confirmPassword } 
-                              onChange={ this.handleConfirmPassword }
-                              id="outlined-required" 
-                              label="Confirm password" 
-                              type="password"
-                              name="confirmPassword"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
-
+                              />
+                      </FormControl>
                     }
                   </Grid>
+
                 </div>
                 :
                 <div>
+
                   <Grid container direction="row" spacing={1}>
-                    <TextField required 
-                              value={ this.state.firstName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="First Name" 
-                              name="firstName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    <TextField required
-                              value={ this.state.lastName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Last Name" 
-                              name="lastName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                value={ this.state.firstName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="First Name" 
+                                name="firstName"
+                                variant="outlined" 
+                                />
+                      </FormControl>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required
+                                value={ this.state.lastName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Last Name" 
+                                name="lastName"
+                                variant="outlined" 
+                                />
+                      </FormControl>
                   </Grid>
+                  
                   <Grid container direction="row" spacing={1}>
-                    <TextField required
-                              value={ this.state.userName } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="User Name" 
-                              name="userName"
-                              variant="outlined" 
-                              className={classes.text}/>
-                    
-                    <TextField 
-                              value={ this.state.birthday } 
-                              onChange={ this.handleInputChange }
-                              id="date" 
-                              label="Birthday" 
-                              type="date"
-                              name="date"
-                              variant="outlined" 
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              className={classes.text}/>
-                    
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required
+                                value={ this.state.userName } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="User Name" 
+                                name="userName"
+                                variant="outlined" 
+                                />
+                    </FormControl>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField 
+                                value={ this.state.birthday } 
+                                onChange={ this.handleInputChange }
+                                id="date" 
+                                label="Birthday" 
+                                type="date"
+                                name="date"
+                                variant="outlined" 
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                                />
+                    </FormControl>
                   </Grid>
                   
                   <RadioGroup aria-label="gender" value={ this.state.gender } onChange={ this.handleInputChange } name="gender" row >
@@ -428,89 +447,94 @@ class SignUp extends React.Component {
                   </RadioGroup>
 
                   <Grid container direction="column" spacing={1}>
-                    <TextField required 
-                              fullWidth
-                              value={ this.state.email } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Email@example.com" 
-                              name="email"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                fullWidth
+                                value={ this.state.email } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Email@example.com" 
+                                name="email"
+                                variant="outlined" 
+                                />
+                      </FormControl>
                     
                     { this.state.passwordLengthError ? 
-                      <TextField
-                                fullWidth
-                                error
-                                helperText="The minimum number of characters is 8!"
-                                value={ this.state.createdPassword } 
-                                onChange={ this.checkLength }
-                                id="outlined-error" 
-                                label="Error" 
-                                type="password"
-                                name="createdPassword"
-                                variant="outlined" 
-                                className={classes.fullWidthTextfield}/>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField error
+                                  helperText="The minimum number of characters is 8!"
+                                  value={ this.state.createdPassword } 
+                                  onChange={ this.checkLength }
+                                  id="outlined-error" 
+                                  label="Error" 
+                                  type="password"
+                                  name="createdPassword"
+                                  variant="outlined" 
+                                />
+                      </FormControl>
                       :
-                      <TextField required 
-                              fullWidth
-                              value={ this.state.createdPassword } 
-                              onChange={ this.checkLength }
-                              id="outlined-required" 
-                              label="Create password" 
-                              type="password"
-                              name="createdPassword"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField required 
+                                  value={ this.state.createdPassword } 
+                                  onChange={ this.checkLength }
+                                  id="outlined-required" 
+                                  label="Create password" 
+                                  type="password"
+                                  name="createdPassword"
+                                  variant="outlined" 
+                                />
+                      </FormControl>
                     }
                     { this.state.passwordConfirmError ? 
-                      <TextField error
-                                fullWidth
-                                helperText="The password does not match!"
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField error
+                                  helperText="The password does not match!"
+                                  value={ this.state.confirmPassword } 
+                                  onChange={ this.handleConfirmPassword }
+                                  id="outlined-error" 
+                                  label="Error" 
+                                  type="password"
+                                  name="confirmPassword"
+                                  variant="outlined" 
+                                  />
+                      </FormControl>
+                      :
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <TextField required 
                                 value={ this.state.confirmPassword } 
                                 onChange={ this.handleConfirmPassword }
-                                id="outlined-error" 
-                                label="Error" 
+                                id="outlined-required" 
+                                label="Confirm password" 
                                 type="password"
                                 name="confirmPassword"
                                 variant="outlined" 
-                                className={classes.fullWidthTextfield}/>
-                      :
-                      <TextField required 
-                              fullWidth
-                              value={ this.state.confirmPassword } 
-                              onChange={ this.handleConfirmPassword }
-                              id="outlined-required" 
-                              label="Confirm password" 
-                              type="password"
-                              name="confirmPassword"
-                              variant="outlined" 
-                              className={classes.fullWidthTextfield}/>
-
+                                />
+                      </FormControl>
                     }
                   </Grid>
+
                   <Grid container direction="row" spacing={1}>
-                    <TextField required 
-                              value={ this.state.adminPasscode } 
-                              onChange={ this.handleInputChange }
-                              id="outlined-required" 
-                              label="Admin Passcode" 
-                              name="adminPasscode"
-                              variant="outlined" 
-                              className={classes.admin}/> 
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField required 
+                                value={ this.state.adminPasscode } 
+                                onChange={ this.handleInputChange }
+                                id="outlined-required" 
+                                label="Admin Passcode" 
+                                name="adminPasscode"
+                                variant="outlined" 
+                                /> 
+                    </FormControl>
                   </Grid>
                 </div>
                 }
-                <Link to={"/spendings"}>
-                  <Button signedUp={ this.state.signedUp }
-                          onClick={ this.signedUpHandler }
-                          variant="contained" 
-                          color="primary" 
-                          type="submit" 
-                          className={classes.signInButton}>
-                    Sign up
-                  </Button>
-                </Link>
+                
+                <Button variant="contained" 
+                        color="primary" 
+                        type="submit" 
+                        className={classes.signInButton}>
+                  Sign up
+                </Button>
+                
 
               </form>
             </Paper>
@@ -524,4 +548,4 @@ class SignUp extends React.Component {
 
 }
 
-export default withStyles(useStyles)(SignUp);
+export default withRouter((withStyles(useStyles)(SignUp)));
