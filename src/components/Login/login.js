@@ -108,7 +108,7 @@ class Login extends React.Component {
 
   render() {
     
-    const { classes, loginHandler } = this.props;
+    const { classes, loginHandler, signedUp } = this.props;
 
     return (
 
@@ -134,9 +134,16 @@ class Login extends React.Component {
 
                 <Grid container className={classes.grid} >
                   <Paper elevation={3} className={classes.paper}>
-                    <Typography variant="h5" className={classes.text1}>
-                      Welcome back!
-                    </Typography>
+                    { signedUp ? 
+                      <Typography variant="h5" className={classes.text1}>
+                        You have successfully signed up!
+                      </Typography>
+                      :
+                      <Typography variant="h5" className={classes.text1}>
+                        Welcome back!
+                      </Typography>
+                    }
+            
                     <Typography variant="subtitle2" className={classes.subtitle}>
                       Login to continue
                     </Typography>

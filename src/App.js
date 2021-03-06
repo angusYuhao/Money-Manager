@@ -10,11 +10,14 @@ import NavBar from './components/NavBar'
 import Home from './components/Home'
 import Login from './components/Login/login';
 import SignUp from './components/Signup/signup.js';
+import Contact from './components/ContactUs/contact.js';
+import Sent from './components/ContactUs/sent.js';
+import About from './components/AboutUs/about.js';
 
 class App extends React.Component {
 
   state = {
-    loggedIn: false
+    loggedIn: false,
   }
 
   loginHandler = (username, password) => {
@@ -35,7 +38,7 @@ class App extends React.Component {
         <BrowserRouter>
           {this.state.loggedIn ? 
             <div>
-              <NavBar />
+              <NavBar/>
               <br></br>
               <br></br>
               <br></br>
@@ -65,6 +68,15 @@ class App extends React.Component {
 
             <Route exact path='/community'
               render={() => (<Community />)} />
+
+            <Route exact path='/contact'
+              render={() => (<Contact />)} />
+
+            <Route exact path='/sent'
+              render={() => (<Sent />)} />
+
+            <Route exact path='/about'
+              render={() => (<About />)} />
 
           </Switch>
           

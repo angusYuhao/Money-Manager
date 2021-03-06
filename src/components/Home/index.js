@@ -12,6 +12,7 @@ import { AppBar,
 import "./home.css";
 import HomeAppBar from './appBar.js';
 import Sliding from './sliding.js';
+import Footer from './../Footer/footer.js';
 
 class Home extends React.Component {
     
@@ -24,6 +25,7 @@ class Home extends React.Component {
             <HomeAppBar className="appBar" />
             
             <Sliding/>
+            <Footer/>
             
         </Grid>
         
