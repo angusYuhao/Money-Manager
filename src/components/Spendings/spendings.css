@@ -1,13 +1,21 @@
 .TableContainer {
-    max-height: 40vh;
+    max-height: 65vh;
 }
 
 .Table {
-    max-width: 55vw;
-    margin-left: 43vw;
-    /* float: left; */
+    max-width: 50%;
+    width: 45%;
+    display: inline-block;
+    margin-right: 5%;
 }
 
-/* .Chart {
+.Chart {
+    max-width: 50%;
+    width: 50%;
+    display: inline-block;
+}
 
-} */
+.AccountBalance {
+    margin-top: 5%;
+    text-align: center;
+}

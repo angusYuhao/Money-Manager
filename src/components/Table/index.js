@@ -200,7 +200,7 @@ class TableComp extends React.Component {
                               this.state.newCategory = ""
                               this.setState({ newCategory: this.state.newCategory })
                             }} />
-                            
+
                         </MenuItem>
 
                       </Menu>
@@ -210,8 +210,10 @@ class TableComp extends React.Component {
 
                   <TableCell width="100vw" align="right">
 
-                    <IconButton aria-label="add">
-                      <AddIcon onClick={() => this.addRowHandler()} />
+                    <IconButton
+                      aria-label="add"
+                      onClick={() => this.addRowHandler()}>
+                      <AddIcon />
                     </IconButton>
 
                   </TableCell>

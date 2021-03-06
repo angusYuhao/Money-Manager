@@ -198,6 +198,33 @@ class TableRowComp extends React.Component {
 
     }
 
+    doneIconOnClick() {
+
+        if (this.props.rowForAdd) {
+            const newRow = this.getUpdatedRow(this.props.headings, this.props.row)
+            if (newRow === null) {
+                this.props.addSnacks("addError")
+                return
+            }
+            this.props.addRow(newRow)
+            this.props.addSnacks("addSuccess")
+            this.toggleEdit()
+            this.props.toggleAdd()
+        }
+
+        else {
+            const newRow = this.getUpdatedRow(this.props.headings, this.props.row)
+            if (newRow === null) {
+                this.props.addSnacks("editError")
+                return
+            }
+            this.props.editRow(this.props.row, newRow)
+            this.props.addSnacks("editSuccess")
+            this.toggleEdit()
+        }
+
+    }
+
     render() {
 
         const { headings, row, options, categories, addRow, editRow, removeRow, rowForAdd, addSnacks, toggleAdd } = this.props;
@@ -234,47 +261,25 @@ class TableRowComp extends React.Component {
 
                             {this.state.edit ?
 
-                                <IconButton aria-label="done">
-
-                                    {rowForAdd ?
-
-                                        <DoneIcon onClick={() => {
-                                            const newRow = this.getUpdatedRow(headings, row)
-                                            if (newRow === null) {
-                                                addSnacks("addError")
-                                                return
-                                            }
-                                            addRow(newRow)
-                                            addSnacks("addSuccess")
-                                            this.toggleEdit()
-                                            toggleAdd()
-                                        }} />
-                                        :
-                                        <DoneIcon onClick={() => {
-                                            const newRow = this.getUpdatedRow(headings, row)
-                                            if (newRow === null) {
-                                                addSnacks("editError")
-                                                return
-                                            }
-                                            editRow(row, newRow)
-                                            addSnacks("editSuccess")
-                                            this.toggleEdit()
-                                        }} />
-
-                                    }
-
+                                <IconButton
+                                    aria-label="done"
+                                    onClick={() => this.doneIconOnClick()}
+                                >
+                                    <DoneIcon />
                                 </IconButton>
                                 :
-                                <IconButton aria-label="edit">
-
-                                    <EditIcon onClick={() => this.toggleEdit()} />
-
+                                <IconButton
+                                    aria-label="edit"
+                                    onClick={() => this.toggleEdit()}
+                                >
+                                    <EditIcon />
                                 </IconButton>
 
                             }
 
-                            <IconButton aria-label="delete">
-                                <DeleteIcon onClick={() => {
+                            <IconButton
+                                aria-label="delete"
+                                onClick={() => {
                                     if (rowForAdd) toggleAdd()
                                     else {
                                         removeRow(row)
@@ -282,7 +287,8 @@ class TableRowComp extends React.Component {
                                         this.clearState()
                                     }
                                     if (this.state.edit) this.toggleEdit()
-                                }} />
+                                }} >
+                                <DeleteIcon />
                             </IconButton>
 
                         </div>

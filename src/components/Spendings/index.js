@@ -3,6 +3,7 @@ import { Redirect } from 'react-router';
 import TableComp from '../Table'
 
 import './spendings.css'
+import pieChart from './pieChart.png'
 
 class Spendings extends React.Component {
 
@@ -26,8 +27,12 @@ class Spendings extends React.Component {
         { "Date": "02/12/2021", "Amount": "83.16", "Description": "Internet + Utilities", "Category": "Home" },
         { "Date": "02/15/2021", "Amount": "267.33", "Description": "Gift for Joe", "Category": "Personal" },
         { "Date": "02/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food" },
-      ]
+      ],
+      // the net balance on the account 
+      accountBalance: 0
     }
+
+    this.sumAccountBalance()
 
   }
 
@@ -50,6 +55,20 @@ class Spendings extends React.Component {
   // {"Date": "02/12/2021", "Amount": "83.16", "Description": "Internet + Utilities", "Category": "Home"},
   // {"Date": "02/15/2021", "Amount": "267.33", "Description": "Gift for Joe", "Category": "Personal"},
   // {"Date": "02/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food"},
+
+  componentDidUpdate(undefined, prevState) {
+    // only update the account balance if any transaction has been modified
+    if (prevState.transactions_data != this.state.transactions_data) this.sumAccountBalance()
+  }
+
+  sumAccountBalance = () => {
+    this.state.accountBalance = this.state.transactions_data.reduce((total, current) => {
+      let sum = parseFloat(total) + parseFloat(current["Amount"])
+      sum = sum.toFixed(2)
+      return sum
+    }, 0)
+    this.setState({ accountBalance: this.state.accountBalance })
+  }
 
   // add newTransaction to the beginning of the transactions_data array 
   addTransaction = (newTransaction) => {
@@ -93,14 +112,17 @@ class Spendings extends React.Component {
 
         <div>
 
-          This is the Spendings page :D
-
           <br></br>
           <br></br>
           <br></br>
 
           <div className="Chart">
 
+            <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
+
+            <div className="AccountBalance">
+              Total Amount: {this.state.accountBalance}
+            </div>
 
           </div>
 
