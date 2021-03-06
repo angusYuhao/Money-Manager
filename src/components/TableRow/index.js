@@ -16,9 +16,6 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
-import Snackbar from '@material-ui/core/Snackbar';
-import { Alert } from '@material-ui/lab';
-
 class TableRowComp extends React.Component {
 
     constructor(props) {
@@ -36,11 +33,18 @@ class TableRowComp extends React.Component {
             // holds an array (same length as headings) that will show if there is an error or not 
             // if cell is empty (for adding) => null, if error => true, if no error => false 
             error: this.props.rowForAdd ? Array.from({ length: this.props.headings.length }, () => null) :
-                Array.from({ length: this.props.headings.length }, () => false),
-            // the helper message that will be displayed at the bottom of the page for editing and adding
-            helperMsg: "none"
+                Array.from({ length: this.props.headings.length }, () => false)
         }
 
+    }
+
+    clearState() {
+        this.setState({ update: {} })
+        this.setState({ date: "" })
+        this.setState({
+            error: this.props.rowForAdd ? Array.from({ length: this.props.headings.length }, () => null) :
+                Array.from({ length: this.props.headings.length }, () => false)
+        })
     }
 
     displayIcons() {
@@ -57,9 +61,11 @@ class TableRowComp extends React.Component {
 
     // updates the state as the value in the inputs are being changed 
     textFieldOnChangeHandler(e, headings, index) {
+
         this.state.update[headings[index]] = e.target.value
         this.setState({ update: this.state.update })
 
+        // if nothing is in the cell, put null error 
         if (e.target.value == "" || e.target.value === null) this.state.error[index] = null
 
         else {
@@ -192,29 +198,9 @@ class TableRowComp extends React.Component {
 
     }
 
-    // the onClose function for the snackBar used to display helper messages 
-    snackBarOnClose() {
-        this.setState({ helperMsg: "none" })
-    }
-
-    renderHelperMsg() {
-        switch (this.state.helperMsg) {
-            case "addError":
-                return "Could not add, please check the fields."
-            case "editError":
-                return "Could not edit, please check the fields."
-            case "addSuccess":
-                return "Added successfully!"
-            case "editSuccess":
-                return "Edited successfully!"
-            default:
-                return ""
-        }
-    }
-
     render() {
 
-        const { headings, row, options, categories, addRow, editRow, removeRow, rowForAdd, toggleAdd } = this.props;
+        const { headings, row, options, categories, addRow, editRow, removeRow, rowForAdd, addSnacks, toggleAdd } = this.props;
 
         return (
             <TableRow hover
@@ -229,9 +215,7 @@ class TableRowComp extends React.Component {
                         {this.state.edit ?
 
                             <div>
-
                                 {this.renderEditCell(options[index], heading, index)}
-
                             </div>
 
                             : row[heading]
@@ -257,12 +241,11 @@ class TableRowComp extends React.Component {
                                         <DoneIcon onClick={() => {
                                             const newRow = this.getUpdatedRow(headings, row)
                                             if (newRow === null) {
-                                                console.log("Cannot add")
-                                                this.setState({ helperMsg: "addError" })
+                                                addSnacks("addError")
                                                 return
                                             }
                                             addRow(newRow)
-                                            this.setState({ helperMsg: "addSuccess" })
+                                            addSnacks("addSuccess")
                                             this.toggleEdit()
                                             toggleAdd()
                                         }} />
@@ -270,11 +253,11 @@ class TableRowComp extends React.Component {
                                         <DoneIcon onClick={() => {
                                             const newRow = this.getUpdatedRow(headings, row)
                                             if (newRow === null) {
-                                                this.setState({ helperMsg: "editError" })
+                                                addSnacks("editError")
                                                 return
                                             }
                                             editRow(row, newRow)
-                                            this.setState({ helperMsg: "editSuccess" })
+                                            addSnacks("editSuccess")
                                             this.toggleEdit()
                                         }} />
 
@@ -293,7 +276,11 @@ class TableRowComp extends React.Component {
                             <IconButton aria-label="delete">
                                 <DeleteIcon onClick={() => {
                                     if (rowForAdd) toggleAdd()
-                                    else removeRow(row)
+                                    else {
+                                        removeRow(row)
+                                        addSnacks("deleteSuccess")
+                                        this.clearState()
+                                    }
                                     if (this.state.edit) this.toggleEdit()
                                 }} />
                             </IconButton>
@@ -304,22 +291,6 @@ class TableRowComp extends React.Component {
                     }
 
                 </TableCell>
-
-                <Snackbar
-                    open={this.state.helperMsg != "none"}
-                    autoHideDuration={2000}
-                    onClose={() => this.snackBarOnClose()}
-                >
-                    {this.state.helperMsg != "none" ?
-                        <Alert
-                            severity={this.state.helperMsg.includes("Success") ? "success" : "error"}
-                            variant="filled">
-                            {this.renderHelperMsg()}
-                        </Alert>
-                        : null
-                    }
-
-                </Snackbar >
 
             </TableRow >
 

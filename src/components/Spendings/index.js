@@ -70,6 +70,19 @@ class Spendings extends React.Component {
     this.setState({ transactions_data: keepTransactions })
   }
 
+  // adds a user defined category 
+  addCategory = (newCategory) => {
+    if (!this.state.transactions_categories.includes(newCategory))
+      this.state.transactions_categories.push(newCategory)
+    this.setState({ transactions_categories: this.state.transactions_categories })
+  }
+
+  // deletes a user defined category (the default cannot be deleted)
+  deleteCategory = (category) => {
+    const keepCategories = this.state.transactions_categories.filter(c => c !== category)
+    this.setState({ transactions_categories: keepCategories })
+  }
+
   render() {
 
     const { loggedIn } = this.props
@@ -85,7 +98,7 @@ class Spendings extends React.Component {
           <br></br>
           <br></br>
           <br></br>
-          
+
           <div className="Chart">
 
 
@@ -103,6 +116,8 @@ class Spendings extends React.Component {
               addRow={this.addTransaction}
               editRow={this.editTransaction}
               removeRow={this.deleteTransaction}
+              addCategory={this.addCategory}
+              removeCategory={this.deleteCategory}
             />
 
           </div>

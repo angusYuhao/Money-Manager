@@ -11,6 +11,15 @@ import TableRow from '@material-ui/core/TableRow';
 
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+import Snackbar from '@material-ui/core/Snackbar';
+import { Alert } from '@material-ui/lab';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import RemoveIcon from '@material-ui/icons/Remove';
+import TextField from '@material-ui/core/TextField';
 
 import "./table.css"
 
@@ -23,7 +32,34 @@ class TableComp extends React.Component {
       // true -> displays the new row to be added to table, false -> hides the new row to be added to table 
       add: false,
       // the default values for the new row to be added to table 
-      newRow: []
+      newRow: [],
+      // array that holds all the snacks (notifications) that remains to be shown 
+      snacks: [],
+      // the message that the snack should currently display
+      currentSnackMsg: undefined,
+      // true -> displays the snack, false -> hides the snack
+      displaySnack: false,
+      // the categories menu position on the screen
+      menuPosition: null,
+      // the category name that the user can input to add customized category
+      newCategory: ""
+    }
+
+  }
+
+  // this function is called whenever there's a change in the DOM 
+  componentDidUpdate() {
+
+    // if there is a snack message to be shown but we currently don't have the snack opened 
+    if (this.state.snacks.length && !this.state.currentSnackMsg) {
+      this.setState({ currentSnackMsg: this.state.snacks[0] })
+      this.setState({ snacks: this.state.snacks.slice(1) })
+      this.setState({ displaySnack: true })
+    }
+
+    // if there is a snack message to be shown and we are already displaying a snack, close the active one 
+    else if (this.state.snacks.length && this.state.currentSnackMsg && this.state.displaySnack) {
+      this.setState({ displaySnack: false })
     }
 
   }
@@ -48,9 +84,56 @@ class TableComp extends React.Component {
     this.setState({ add: !this.state.add })
   }
 
+  // displays categories menu
+  displayCategories(e) {
+    this.setState({ menuPosition: e.currentTarget })
+  }
+
+  hideCategories() {
+    this.setState({ menuPosition: null })
+  }
+
+  // updates the category string as user is inputting 
+  updateCategory(e) {
+    this.state.newCategory = e.target.value
+    this.setState({ newCategory: this.state.newCategory })
+  }
+
+  // adds a message to the snack array 
+  addSnack(message) {
+    this.state.snacks.push(message)
+    this.setState({ snacks: this.state.snacks })
+  }
+
+  snackBarOnClose() {
+    this.setState({ displaySnack: false })
+  }
+
+  snackBarOnExited() {
+    this.setState({ currentSnackMsg: undefined })
+  }
+
+  // renders different helper messages depending on the error or success 
+  renderHelperMsg() {
+    switch (this.state.currentSnackMsg) {
+      case "addError":
+        return "Could not add, please check the fields."
+      case "editError":
+        return "Could not edit, please check the fields."
+      case "addSuccess":
+        return "Added successfully!"
+      case "editSuccess":
+        return "Edited successfully!"
+      case "deleteSuccess":
+        return "Deleted successfully!"
+      default:
+        return ""
+    }
+  }
+
   render() {
 
-    const { headings, data, options, categories, addRow, editRow, removeRow } = this.props;
+    const { headings, data, options, categories, addRow, editRow, removeRow, addCategory, removeCategory } = this.props;
 
     return (
 
@@ -67,9 +150,61 @@ class TableComp extends React.Component {
                 <TableRow>
 
                   {/* displays the headings for each column */}
-                  {headings.map(heading =>
+                  {headings.map((heading, index) =>
                     <TableCell>
+
                       {heading}
+
+                      {/* used for the vertical three dots icon, only display for "select" options */}
+                      {options[index] == "Select" ?
+                        <IconButton aria-label="add" onClick={(e) => this.displayCategories(e)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                        : null
+                      }
+
+                      <Menu
+                        id="long-menu"
+                        anchorEl={this.state.menuPosition}
+                        open={Boolean(this.state.menuPosition)}
+                        onClose={() => this.hideCategories()}
+                      >
+
+                        {/* user can't delete predetermined categories */}
+                        {categories.map((category, index) => (
+                          <MenuItem
+                            key={category}
+                            onClick={() => {
+                              if (index > 3) removeCategory(category)
+                            }}
+                          >
+                            {category}
+                            {index > 3 ? <RemoveIcon /> : null}
+
+                          </MenuItem>
+                        ))}
+
+                        <MenuItem onKeyDown={e => e.stopPropagation()}>
+
+                          <TextField
+                            id="standard-basic"
+                            label="New Category"
+                            onChange={(e) => this.updateCategory(e)}
+                            value={this.state.newCategory}
+                          />
+
+                          <AddIcon
+                            onClick={() => {
+                              console.log("Went")
+                              addCategory(this.state.newCategory)
+                              this.state.newCategory = ""
+                              this.setState({ newCategory: this.state.newCategory })
+                            }} />
+                            
+                        </MenuItem>
+
+                      </Menu>
+
                     </TableCell>
                   )}
 
@@ -98,6 +233,7 @@ class TableComp extends React.Component {
                     editRow={editRow}
                     removeRow={removeRow}
                     rowForAdd={true}
+                    addSnacks={this.addSnack.bind(this)}
                     toggleAdd={this.toggleAdd.bind(this)}
                   />
 
@@ -114,9 +250,25 @@ class TableComp extends React.Component {
                     editRow={editRow}
                     removeRow={removeRow}
                     rowForAdd={false}
+                    addSnacks={this.addSnack.bind(this)}
                     toggleAdd={this.toggleAdd.bind(this)}
                   />
                 )}
+
+                <Snackbar
+                  open={this.state.displaySnack}
+                  autoHideDuration={2000}
+                  onClose={() => this.snackBarOnClose()}
+                  onExited={() => this.snackBarOnExited()}
+                >
+
+                  <Alert
+                    severity={this.state.currentSnackMsg ? (this.state.currentSnackMsg.includes("Success") ? "success" : "error") : undefined}
+                    variant="filled">
+                    {this.renderHelperMsg()}
+                  </Alert>
+
+                </Snackbar>
 
               </TableBody>
 
@@ -124,9 +276,9 @@ class TableComp extends React.Component {
 
           </TableContainer>
 
-        </Paper>
+        </Paper >
 
-      </div>
+      </div >
 
     )
 
