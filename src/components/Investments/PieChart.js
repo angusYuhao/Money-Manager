@@ -47,8 +47,9 @@ class PieChart extends React.Component {
         }, 0);
 
         stockList.forEach(element => {
+            //here the slices are draw backwards...(clockwise)!!!!
             console.log("Drawing slice")
-            
+            console.log(element.name)
             this.context.lineWidth = 1;
             this.context.strokeStyle = '#fafafa';
             this.context.fillStyle = this.randomHexColorCode();
@@ -81,15 +82,14 @@ class PieChart extends React.Component {
             //store the slice information
             this.state.slices.push({ 
                     "name" : element.name,
-                    "cx" : cx,
-                    "cy" : cy,
                     "colour" : this.context.fillStyle,
-                    "startAngle" : startAngle,
-                    "endAngle": endAngle,
+                    "startAngle" : (2*Math.PI) - endAngle,    //since arc draws the slice backwards
+                    "endAngle": (2*Math.PI) - startAngle,
             });
             startAngle = endAngle;
         });
-     
+    
+        
         console.log(this.state.slices)
         
     }
@@ -120,6 +120,11 @@ class PieChart extends React.Component {
 
 
         document.addEventListener('mousemove', (e) => {
+            //mouse is relative to the window, rect is relative to the window
+            //cx and cy are fixed
+            //get cx and cy relative to the window and we good :)
+
+
             let mouseX=parseInt(e.clientX);
             let mouseY=parseInt(e.clientY);
             // console.log(e.pageX)
@@ -134,26 +139,31 @@ class PieChart extends React.Component {
             let relativeX = 0;
             let relativeY = 0;
             let angle = 0;
-            // console.log(mouseY)
+            //console.log(mouseY)
             // console.log(rect.y)
             // console.log(cy)
             //quadrant I & II:
-            console.log(window.scrollY)
+            //console.log(window.scrollY)
             if(mouseY > rect.y && mouseY < (rect.y + cy)){
                 relativeY = (cy + rect.y ) - mouseY;
                 //quadrant I:
                 if(mouseX > (rect.x + cx) && mouseX < rect.x + (2*cx)){
                     relativeX = mouseX - (cx + rect.x);
-                    angle = Math.atan(relativeY,relativeX);
-                    console.log("quad I")
-                    console.log(angle)
+                    angle = Math.atan(relativeY/relativeX);
+                    // console.log(relativeX)
+                    // console.log(relativeY)
+                    
+                    // console.log("quad I")
+                    // console.log(angle)
                 //quadrant II:
                 }else if(mouseX > rect.x && mouseX < (rect.x + cx)){
                     relativeX = (cx + rect.x) - mouseX;
-                    angle = (Math.PI) - Math.atan(relativeY,relativeX);
-                    console.log("quad II")
-                    console.log(Math.atan(relativeY,relativeX))
-                    console.log(angle)
+                    angle = Math.PI - Math.atan(relativeY/relativeX);
+                    // console.log(relativeX)
+                    // console.log(relativeY)
+                    // console.log("quad II")
+                   
+                    //console.log(angle)
                 }
             //quadrant III & IV:
             }else if (mouseY > cy + rect.y && mouseY < rect.y + (2*cy)){
@@ -161,24 +171,27 @@ class PieChart extends React.Component {
                 //quadrant IV:
                 if(mouseX > (rect.x + cx) && mouseX < rect.x + (2*cx)){
                     relativeX = mouseX - (cx + rect.x);
-                    angle = (Math.PI) + Math.atan(relativeY,relativeX);
-                    console.log("quad IV")
-                    console.log(angle)
+                    angle = (2*Math.PI) - Math.atan(relativeY/relativeX);
+                    // console.log(relativeX)
+                    // console.log(relativeY)
+                    //console.log("quad IV")
+                    //console.log(angle)
                 //quadrant III:
                 }else if(mouseX > rect.x && mouseX < (rect.x + cx)){
                     relativeX = (cx + rect.x) - mouseX;
-                    
-                    angle = (2*Math.PI) - Math.atan(relativeY,relativeX);
-                    console.log("quad III")
-                    console.log(Math.atan(relativeY,relativeX))
-                    console.log(angle)
+                    angle = Math.PI + Math.atan(relativeY/relativeX);
+                    // console.log(relativeX)
+                    // console.log(relativeY)
+                    //console.log("quad III")
+                    //console.log(angle)
                 }
             }
 
             //console.log(angle)
             let distanceOk = false;
 
-            let distance = Math.sqrt( ((relativeX - cx) * (relativeX - cx)) +  ((relativeY - cy) * (relativeY - cy)) );
+            let distance = Math.sqrt( (relativeX * relativeX ) +  ( relativeY * relativeY));
+
 
             if(distance < this.state.radius){
                 distanceOk = true;
@@ -188,60 +201,19 @@ class PieChart extends React.Component {
 
             for(let i=0;i<this.state.slices.length;i++){
                 let s=this.state.slices[i];
-                
-                //check the angle
+                //check if the mouse angle matches with this slice
                 let angleOk = false;
-                
-        
-                // console.log(angle)
-                // console.log(s.startAngle)
-                // console.log(s.endAngle)
-         
                 if(s.startAngle < angle && angle < s.endAngle){
-                    // console.log("Angle ok")
-                    console.log(s.name)
+                    //console.log("Angle ok")
+                    //console.log(s.name)
                     angleOk = true;
 
-                }
-                // }else if(s.startAngle > s.endAngle){
-                //     if(angle > s.startAngle || angle < s.endAngle){
-                //         console.log("Angle ok")
-                        
-                //         angleOk = true;
-
-
-
-                //     }
-                // }
-                
-                //check the radius
-                
-                //this distance is wrong:
-                // if(mouseX > (this.state.canvasWidth + rect.x)){
-                //     //this means that the mouse is outside the canvas
-                //     distanceOk = false;
-                //     console.log("too far right")
-                // }
-
-                //get coordinates relative to the canvas
-                
-                // console.log(relativeX)
-                // console.log(relativeY)
-                
-                
-                //console.log(distance)
-                // console.log(mouseX)
-                // console.log(mouseY)
-                // console.log(cx)
-                // console.log(cy)
-
-
-                
-
+                }else continue;
+             
                 //all the slices 
                 if(angleOk && distanceOk){
                   // if yes, fill the shape in red
-                  console.log("hovering over slice")
+                  //console.log("hovering over slice")
                   console.log(s.name)
 
                 //   s.drawcolor='red';
