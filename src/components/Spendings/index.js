@@ -2,6 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import TableComp from '../Table'
 
+import Button from '@material-ui/core/Button';
+
 import './spendings.css'
 import pieChart from './pieChart.png'
 
@@ -29,7 +31,8 @@ class Spendings extends React.Component {
         { "Date": "02/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food" },
       ],
       // the net balance on the account 
-      accountBalance: 0
+      accountBalance: 0,
+      sortBy: "Date"
     }
 
     this.sumAccountBalance()
@@ -102,6 +105,11 @@ class Spendings extends React.Component {
     this.setState({ transactions_categories: keepCategories })
   }
 
+  changeSort(sortBy) {
+    this.state.sortBy = sortBy
+    this.setState({ sortBy: this.state.sortBy })
+  }
+
   render() {
 
     const { loggedIn } = this.props
@@ -141,6 +149,27 @@ class Spendings extends React.Component {
               addCategory={this.addCategory}
               removeCategory={this.deleteCategory}
             />
+
+
+            <div className="SortButtons">
+
+              <Button
+                variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                onClick={() => this.changeSort("Date")}>
+                Sort By Date
+              </Button>
+              <Button
+                variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                onClick={() => this.changeSort("Amount")}>
+                Sort By Amount
+              </ Button>
+              <Button
+                variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                onClick={() => this.changeSort("Category")}>
+                Sort By Category
+              </Button>
+
+            </div>
 
           </div>
 
