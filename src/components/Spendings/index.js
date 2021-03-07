@@ -3,6 +3,8 @@ import { Redirect } from 'react-router';
 import TableComp from '../Table'
 
 import Button from '@material-ui/core/Button';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 import './spendings.css'
 import pieChart from './pieChart.png'
@@ -32,7 +34,14 @@ class Spendings extends React.Component {
       ],
       // the net balance on the account 
       accountBalance: 0,
-      sortBy: "Date"
+      // current sorting by string, default is sort by date
+      sortBy: "Date",
+      // sorting in an ascending/descending order
+      sortDes: {
+        "Date": false,
+        "Amount": false,
+        "Category": false
+      }
     }
 
     this.sumAccountBalance()
@@ -73,6 +82,53 @@ class Spendings extends React.Component {
     this.setState({ accountBalance: this.state.accountBalance })
   }
 
+  sortObj = (a, b) => {
+
+    switch (this.state.sortBy) {
+
+      case "Date":
+        if (!this.state.sortDes["Date"]) {
+          if (a["Date"] < b["Date"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Date"] > b["Date"]) return -1
+          else return 1
+        }
+
+      case "Amount":
+        if (!this.state.sortDes["Amount"]) {
+          if (parseFloat(a["Amount"]) < parseFloat(b["Amount"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Amount"]) > parseFloat(b["Amount"])) return -1
+          else return 1
+        }
+
+      case "Category":
+        if (!this.state.sortDes["Category"]) {
+          if (a["Category"] < b["Category"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Category"] > b["Category"]) return -1
+          else return 1
+        }
+
+      case "Default":
+        return
+
+    }
+
+  }
+
+  // sorting the transactions based on the currently selected element 
+  sortTransactions = () => {
+    this.state.transactions_data.sort(this.sortObj)
+    this.setState({ transactions_data: this.state.transactions_data })
+  }
+
   // add newTransaction to the beginning of the transactions_data array 
   addTransaction = (newTransaction) => {
     this.state.transactions_data.unshift(newTransaction)
@@ -108,6 +164,9 @@ class Spendings extends React.Component {
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
+    this.state.sortDes[sortBy] = !this.state.sortDes[sortBy]
+    this.setState({ sortDes: this.state.sortDes })
+    this.sortTransactions()
   }
 
   render() {
@@ -156,17 +215,22 @@ class Spendings extends React.Component {
               <Button
                 variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
                 onClick={() => this.changeSort("Date")}>
-                Sort By Date
+                Sort By Date &nbsp;
+                {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
               </Button>
+
               <Button
                 variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
                 onClick={() => this.changeSort("Amount")}>
-                Sort By Amount
+                Sort By Amount &nbsp;
+                {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
               </ Button>
+
               <Button
                 variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
                 onClick={() => this.changeSort("Category")}>
-                Sort By Category
+                Sort By Category &nbsp;
+                {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
               </Button>
 
             </div>
