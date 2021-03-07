@@ -7,7 +7,7 @@
 //https://stackoverflow.com/questions/6270785/how-to-determine-whether-a-point-x-y-is-contained-within-an-arc-section-of-a-c
 //https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
 //https://stackoverflow.com/questions/25630035/javascript-getboundingclientrect-changes-while-scrolling
-
+//https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
 
 
 import React, { useRef, useEffect, useReducer } from 'react'
@@ -25,18 +25,34 @@ class PieChart extends React.Component {
       
         this.pieChartRef = React.createRef();
     }
-    
-    // let elem = document.querySelector('canvas');
-    // let rect = elem.getBoundingClientRect();
-    // console.log(rect);
 
-    randomHexColorCode = () => {
-        return "#" + Math.random().toString(16).slice(2, 8)
+    lightenColour = (colour) =>{
+        let R = parseInt(colour.substring(1,3),16);
+        let G = parseInt(colour.substring(3,5),16);
+        let B = parseInt(colour.substring(5,7),16);
+    
+        R = parseInt(R * (100 + 20) / 100);
+        G = parseInt(G * (100 + 20) / 100);
+        B = parseInt(B * (100 + 20) / 100);
+    
+        R = (R<255)?R:255;  
+        G = (G<255)?G:255;  
+        B = (B<255)?B:255;  
+    
+        let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+    
+        return "#"+RR+GG+BB;
+    }
+
+    randomPastelColourCode = () => {
+        return "hsl(" + 360 * Math.random() + ',' +
+             (25 + 70 * Math.random()) + '%,' + 
+             (75 + 10 * Math.random()) + '%)'
     }
 
     drawSlices = () => {
-        let slicesList = this.state.slices;
-        
         const {stockList} = this.props
         let startAngle = 0; 
         let radius = this.state.radius;
@@ -50,9 +66,9 @@ class PieChart extends React.Component {
             //here the slices are draw backwards...(clockwise)!!!!
             console.log("Drawing slice")
             console.log(element.name)
-            this.context.lineWidth = 1;
+            this.context.lineWidth = 3;
             this.context.strokeStyle = '#fafafa';
-            this.context.fillStyle = this.randomHexColorCode();
+            this.context.fillStyle = this.randomPastelColourCode();
             this.context.beginPath();
             
             // draw the pie wedges
@@ -122,8 +138,6 @@ class PieChart extends React.Component {
         document.addEventListener('mousemove', (e) => {
             //mouse is relative to the window, rect is relative to the window
             //cx and cy are fixed
-            //get cx and cy relative to the window and we good :)
-
 
             let mouseX=parseInt(e.clientX);
             let mouseY=parseInt(e.clientY);
@@ -139,11 +153,8 @@ class PieChart extends React.Component {
             let relativeX = 0;
             let relativeY = 0;
             let angle = 0;
-            //console.log(mouseY)
-            // console.log(rect.y)
-            // console.log(cy)
-            //quadrant I & II:
-            //console.log(window.scrollY)
+      
+            // quadrant I & II:
             if(mouseY > rect.y && mouseY < (rect.y + cy)){
                 relativeY = (cy + rect.y ) - mouseY;
                 //quadrant I:
@@ -152,7 +163,6 @@ class PieChart extends React.Component {
                     angle = Math.atan(relativeY/relativeX);
                     // console.log(relativeX)
                     // console.log(relativeY)
-                    
                     // console.log("quad I")
                     // console.log(angle)
                 //quadrant II:
@@ -162,8 +172,7 @@ class PieChart extends React.Component {
                     // console.log(relativeX)
                     // console.log(relativeY)
                     // console.log("quad II")
-                   
-                    //console.log(angle)
+                    // console.log(angle)
                 }
             //quadrant III & IV:
             }else if (mouseY > cy + rect.y && mouseY < rect.y + (2*cy)){
@@ -174,25 +183,22 @@ class PieChart extends React.Component {
                     angle = (2*Math.PI) - Math.atan(relativeY/relativeX);
                     // console.log(relativeX)
                     // console.log(relativeY)
-                    //console.log("quad IV")
-                    //console.log(angle)
+                    // console.log("quad IV")
+                    // console.log(angle)
                 //quadrant III:
                 }else if(mouseX > rect.x && mouseX < (rect.x + cx)){
                     relativeX = (cx + rect.x) - mouseX;
                     angle = Math.PI + Math.atan(relativeY/relativeX);
                     // console.log(relativeX)
                     // console.log(relativeY)
-                    //console.log("quad III")
-                    //console.log(angle)
+                    // console.log("quad III")
+                    // console.log(angle)
                 }
             }
 
             //console.log(angle)
             let distanceOk = false;
-
             let distance = Math.sqrt( (relativeX * relativeX ) +  ( relativeY * relativeY));
-
-
             if(distance < this.state.radius){
                 distanceOk = true;
                 // console.log(distance)
