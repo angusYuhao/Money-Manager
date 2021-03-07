@@ -41,7 +41,6 @@ class App extends React.Component {
       username: this.state.username,
       password: this.state.password
      })
-
   }
 
   render() {
@@ -85,7 +84,8 @@ class App extends React.Component {
               render={() => (<Investments />)} />
 
             <Route exact path='/community'
-              render={() => (<Community />)} />
+              render={() => (<Community 
+                username={this.state.username}/>)} />
 
             <Route exact path='/contact'
               render={() => (<Contact />)} />
