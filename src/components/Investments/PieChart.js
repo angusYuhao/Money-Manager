@@ -7,7 +7,7 @@
 //https://stackoverflow.com/questions/6270785/how-to-determine-whether-a-point-x-y-is-contained-within-an-arc-section-of-a-c
 //https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
 //https://stackoverflow.com/questions/25630035/javascript-getboundingclientrect-changes-while-scrolling
-//https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+//https://stackoverflow.com/questions/43193341/how-to-generate-random-pastel-or-brighter-color-in-javascript
 
 
 import React, { useRef, useEffect, useReducer } from 'react'
@@ -26,26 +26,6 @@ class PieChart extends React.Component {
         this.pieChartRef = React.createRef();
     }
 
-    lightenColour = (colour) =>{
-        let R = parseInt(colour.substring(1,3),16);
-        let G = parseInt(colour.substring(3,5),16);
-        let B = parseInt(colour.substring(5,7),16);
-    
-        R = parseInt(R * (100 + 20) / 100);
-        G = parseInt(G * (100 + 20) / 100);
-        B = parseInt(B * (100 + 20) / 100);
-    
-        R = (R<255)?R:255;  
-        G = (G<255)?G:255;  
-        B = (B<255)?B:255;  
-    
-        let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-    
-        return "#"+RR+GG+BB;
-    }
-
     randomPastelColourCode = () => {
         return "hsl(" + 360 * Math.random() + ',' +
              (25 + 70 * Math.random()) + '%,' + 
@@ -53,17 +33,18 @@ class PieChart extends React.Component {
     }
 
     drawSlices = () => {
-        const {stockList} = this.props
+        //!!!Ian: bookCost is the total amount spend on that stock/in that category
+        const {listToDisplay} = this.props
         let startAngle = 0; 
         let radius = this.state.radius;
         let cx = this.state.canvasWidth/2;
         let cy = this.state.canvasHeight/2;
-        let total = stockList.reduce( (ttl, stock) => {
-            return ttl + (stock.avgCost * stock.quantity)
+        let total = listToDisplay.reduce( (ttl, stock) => {
+            return ttl + (stock.bookCost)
         }, 0);
 
-        stockList.forEach(element => {
-            //here the slices are draw backwards...(clockwise)!!!!
+        listToDisplay.forEach(element => {
+            //here the slices are draw backwards...(clockwise) so makesure to push into the list properly
             console.log("Drawing slice")
             console.log(element.name)
             this.context.lineWidth = 3;
@@ -72,7 +53,7 @@ class PieChart extends React.Component {
             this.context.beginPath();
             
             // draw the pie wedges
-            let endAngle = (((element.avgCost * element.quantity) / total) * Math.PI * 2) + startAngle;
+            let endAngle = ((element.bookCost / total) * Math.PI * 2) + startAngle;
             this.context.moveTo(cx, cy);
             this.context.arc(cx, cy, radius, startAngle, endAngle);
             this.context.lineTo(cx, cy);
@@ -89,8 +70,10 @@ class PieChart extends React.Component {
             let theta = (startAngle + endAngle) / 2;
             let deltaY = Math.sin(theta) * 1.5 * radius;
             let deltaX = Math.cos(theta) * 1.5 * radius;
+
+            //!!!Ian: name is the name of the stock category
             this.context.fillText(element.name, deltaX+cx, deltaY+cy);
-            let percentage = Math.round(+((element.avgCost*element.quantity*100)/total));
+            let percentage = Math.round(+((element.bookCost*100)/total));
             this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
@@ -99,7 +82,7 @@ class PieChart extends React.Component {
             this.state.slices.push({ 
                     "name" : element.name,
                     "colour" : this.context.fillStyle,
-                    "startAngle" : (2*Math.PI) - endAngle,    //since arc draws the slice backwards
+                    "startAngle" : (2*Math.PI) - endAngle,    //since arc draws the slice backwards in clockwise fasion
                     "endAngle": (2*Math.PI) - startAngle,
             });
             startAngle = endAngle;
@@ -112,21 +95,17 @@ class PieChart extends React.Component {
 
 
 
-
-
     componentDidMount() {
         console.log("Did mount!")
         this.context = this.pieChartRef.current.getContext('2d');
-        // let elem = document.querySelector('canvas');
         let elem = document.getElementById('pieChartCanvas');
 
-        const {stockList} = this.props
-        console.log(stockList)
+        const {listToDisplay} = this.props
+        console.log(listToDisplay)
         this.drawSlices();
 
-        //NOTE!!!!!! get bouding client rect gets the positions according to the window not the document!!!
+        //NOTE!!!!!! get bounding client rect gets the positions according to the window not the document!!!
         let rect = elem.getBoundingClientRect();
-        
         
         //add event listeners...I had to add it to a component so I used this one
         document.addEventListener('mousewheel', (e) => {
@@ -134,22 +113,15 @@ class PieChart extends React.Component {
             console.log(rect);
         })
 
-
         document.addEventListener('mousemove', (e) => {
             //mouse is relative to the window, rect is relative to the window
             //cx and cy are fixed
-
             let mouseX=parseInt(e.clientX);
             let mouseY=parseInt(e.clientY);
-            // console.log(e.pageX)
-            // console.log(e.pageY)
-            // console.log(e.clientX)
-            // console.log(e.clientY)
-           
             let cx = this.state.canvasWidth/2;
             let cy = this.state.canvasHeight/2;
 
-            //relativeX and relative Y are the distances(no +ve or -ve signs)
+            //relativeX and relative Y are the distances from the center of the "pie"(no +ve or -ve signs)
             let relativeX = 0;
             let relativeY = 0;
             let angle = 0;
@@ -216,17 +188,9 @@ class PieChart extends React.Component {
 
                 }else continue;
              
-                //all the slices 
                 if(angleOk && distanceOk){
-                  // if yes, fill the shape in red
-                  //console.log("hovering over slice")
-                  console.log(s.name)
-
-                //   s.drawcolor='red';
-                  
-                }else{
-                  // if no, fill the shape with blue
-                //   s.drawcolor=s.colour;
+                    console.log(s.name)
+                    //STILL NEED TO DO SOME KIND OF UPDATE HERE
                 }
                 
               }
@@ -234,16 +198,12 @@ class PieChart extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log("Did update!")
-        let elem  = document.querySelector('canvas');
-        let rect = elem.getBoundingClientRect();
-        console.log(rect);
-        console.log(rect.x)
-        console.log(rect.y)
-        console.log(rect.width)
-        console.log(rect.height)
-
+        console.log("Updated!")
+        
         this.context = this.pieChartRef.current.getContext('2d');
+        let elem = document.getElementById('pieChartCanvas');
+        let rect = elem.getBoundingClientRect();
+        
         const context = this.context;
 
         //clear canvas
@@ -253,16 +213,13 @@ class PieChart extends React.Component {
         //clear slices
         this.state.slices = [];
         
-        const {stockList} = this.props
-        console.log(stockList)
-
-        this.drawSlices();
+        this.drawSlices();//redraw
     }
     
     render() {
         return (
           <canvas id = "pieChartCanvas" ref={this.pieChartRef} width = {this.state.canvasWidth} height = {this.state.canvasHeight} />
-       )
+        )
     }
 }
 
