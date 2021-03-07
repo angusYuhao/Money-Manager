@@ -1,10 +1,11 @@
 import React from 'react';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { withStyles, 
          Toolbar, 
          Typography,
+         Avatar,
          Button,
          createMuiTheme,
          ThemeProvider} from '@material-ui/core';
@@ -28,6 +29,13 @@ const useStyles = theme => ({
   logInButton: {
       float: 'right',
       margin: 10,
+  },
+  username: {
+    marginLeft: theme.spacing(80),
+  },
+  avatar: {
+    marginLeft: theme.spacing(2),
+    backgroundColor: deepPurple[800],
   }
 })
 
@@ -51,17 +59,17 @@ const theme = createMuiTheme({
 class NavBar extends React.Component {
 
   render() {
-    const { classes } = this.props;
+    const { classes, username, password } = this.props;
   
     return (
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
           <AppBar position="sticky" color="secondary">
             <Toolbar>
-            <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
-              <Typography variant="h6" className={classes.title}>
-                Money Manager
-              </Typography>
+              <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
+                <Typography variant="h6" className={classes.title}>
+                  Money Manager
+                </Typography>
               </Link>
 
               <Tabs inkBarStyle={{background: 'black'}} centered>
@@ -79,6 +87,15 @@ class NavBar extends React.Component {
                   </Link>
 
               </Tabs>
+
+              <Typography variant="subtitle1" className={classes.username}>
+                { username }
+              </Typography>
+
+              <Avatar className={classes.avatar}>
+                <AccountCircleIcon/>
+              </Avatar>
+
             </Toolbar>
           </AppBar>
         </div>

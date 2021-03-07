@@ -18,15 +18,29 @@ class App extends React.Component {
 
   state = {
     loggedIn: false,
+    username: "",
+    password: "",
   }
 
   loginHandler = (username, password) => {
 
-    if (username == 'user' && password == 'user') this.state.loggedIn = true;
-    else if (username == 'admin' && password == 'admin') this.state.loggedIn = true;
+    if (username == 'user' && password == 'user') {
+      this.state.loggedIn = true;
+      this.state.username = username;
+      this.state.password = password;
+    }
+    else if (username == 'admin' && password == 'admin') {
+      this.state.loggedIn = true;
+      this.state.username = username;
+      this.state.password = password;
+    }
     else this.state.loggedIn = false;
 
-    this.setState({ loggedIn: this.state.loggedIn })
+    this.setState({ 
+      loggedIn: this.state.loggedIn,
+      username: this.state.username,
+      password: this.state.password
+     })
 
   }
 
@@ -38,7 +52,9 @@ class App extends React.Component {
         <BrowserRouter>
           {this.state.loggedIn ? 
             <div>
-              <NavBar/>
+              <NavBar 
+                username={this.state.username}
+                password={this.state.password}/>
               <br></br>
               <br></br>
               <br></br>
@@ -61,6 +77,8 @@ class App extends React.Component {
             <Route exact path='/spendings'
               render={() => (<Spendings
                 loggedIn={this.state.loggedIn}
+                username={this.state.username}
+                password={this.state.password}
               />)} />
 
             <Route exact path='/investments'
