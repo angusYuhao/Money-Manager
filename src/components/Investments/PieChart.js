@@ -23,11 +23,16 @@ class PieChart extends React.Component {
         this.pieChartRef = React.createRef();
     }
     
+    // let elem = document.querySelector('canvas');
+    // let rect = elem.getBoundingClientRect();
+    // console.log(rect);
+
     componentDidMount() {
+        console.log("Did mount!")
         this.context = this.pieChartRef.current.getContext('2d');
-        let elem = document.querySelector('div');
-        let rect = elem.getBoundingClientRect();
-        console.log(rect);
+        // let elem = document.querySelector('canvas');
+        // let rect = elem.getBoundingClientRect();
+        // console.log(rect);
         let slices = [];
         const {stockList} = this.props
         console.log(stockList)
@@ -131,16 +136,16 @@ class PieChart extends React.Component {
                 
                 
                 
-                // console.log(mouseX)
-                // console.log(mouseY)
+                console.log(mouseX)
+                console.log(mouseY)
                 // console.log(cx)
                 // console.log(cy)
 
 
                 if(distance < s.radius){
                     distanceOk = true;
-                    console.log(distance)
-                    console.log("Distance ok")
+                    // console.log(distance)
+                    // console.log("Distance ok")
                 }
 
                 //all the slices 
@@ -160,10 +165,30 @@ class PieChart extends React.Component {
     }
 
     componentDidUpdate() {
-        this.context = this.pieChartRef.current.getContext('2d');
-        let elem = document.querySelector('div');
+        console.log("Did update!")
+        let elem  = document.querySelector('canvas');
         let rect = elem.getBoundingClientRect();
         console.log(rect);
+        console.log(rect.x)
+        console.log(rect.y)
+        console.log(rect.width)
+        console.log(rect.height)
+        this.context = this.pieChartRef.current.getContext('2d');
+        const context = this.context;
+        context.clearRect(rect.x, rect.y, rect.width, rect.height);
+        context.beginPath();
+        
+
+        
+        //context.save();
+        //context.setTransform(1, 0, 0, 1, 0, 0);
+        //context.beginPath();
+       
+
+        
+        //context.restore();
+        
+        
         let slices = [];
         const {stockList} = this.props
         console.log(stockList)
@@ -181,12 +206,7 @@ class PieChart extends React.Component {
             return "#" + Math.random().toString(16).slice(2, 8)
         };
 
-        const context = this.context;
-        context.save();
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        context.beginPath();
-        context.clearRect(0, 0, this.state.canvasWidth, this.state.height);
-        context.restore();
+        
 
         stockList.forEach(element => {
             console.log("Drawing slice")
@@ -270,19 +290,19 @@ class PieChart extends React.Component {
                 //check the radius
                 let distanceOk = false;
                 //this distance is wrong:
-                let distance = Math.sqrt( ((mouseX - cx) * (mouseX - cx)) +  ((mouseY - cy) * (mouseY - cy)) );
+                let distance = Math.sqrt( ((mouseX - (cx+rect.x)) * (mouseX - (cx+rect.x))) +  ((mouseY - (cy+rect.y)) * (mouseY - (cy+rect.y))) );
                 
                 
                 
-                // console.log(mouseX)
-                // console.log(mouseY)
+                console.log(mouseX)
+                console.log(mouseY)
                 // console.log(cx)
                 // console.log(cy)
 
 
                 if(distance < s.radius){
                     distanceOk = true;
-                    console.log(distance)
+                    // console.log(distance)
                     console.log("Distance ok")
                 }
 
@@ -304,7 +324,7 @@ class PieChart extends React.Component {
     
     render() {
         return (
-          <canvas ref={this.pieChartRef} width = {this.state.canvasWidth} height = {this.state.canvasHeight} style = {this.style}/>
+          <canvas ref={this.pieChartRef} width = {this.state.canvasWidth} height = {this.state.canvasHeight} />
        )
     }
 }
