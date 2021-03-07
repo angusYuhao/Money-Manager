@@ -14,7 +14,8 @@ import SignUp from './components/Signup/signup.js';
 class App extends React.Component {
 
   state = {
-    loggedIn: false
+    loggedIn: false,
+    username: ""
   }
 
   loginHandler = (username, password) => {
@@ -23,8 +24,10 @@ class App extends React.Component {
     else if (username == 'admin' && password == 'admin') this.state.loggedIn = true;
     else this.state.loggedIn = false;
 
-    this.setState({ loggedIn: this.state.loggedIn })
-
+    this.setState({ 
+      loggedIn: this.state.loggedIn,
+      username: username
+     })
   }
 
   render() {
@@ -64,7 +67,8 @@ class App extends React.Component {
               render={() => (<Investments />)} />
 
             <Route exact path='/community'
-              render={() => (<Community />)} />
+              render={() => (<Community 
+                username={this.state.username}/>)} />
 
           </Switch>
           
