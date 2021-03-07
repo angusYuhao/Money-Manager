@@ -15,6 +15,7 @@ class PieChart extends React.Component {
     state = {
         canvasWidth: 600,
         canvasHeight: 600,
+        slices: []
     }
     constructor(props) {
         super(props);
@@ -27,34 +28,28 @@ class PieChart extends React.Component {
     // let rect = elem.getBoundingClientRect();
     // console.log(rect);
 
-    componentDidMount() {
-        console.log("Did mount!")
-        this.context = this.pieChartRef.current.getContext('2d');
-        // let elem = document.querySelector('canvas');
-        // let rect = elem.getBoundingClientRect();
-        // console.log(rect);
-        let slices = [];
-        const {stockList} = this.props
-        console.log(stockList)
+    randomHexColorCode = () => {
+        return "#" + Math.random().toString(16).slice(2, 8)
+    }
+
+    drawSlices = () => {
+        let slicesList = this.state.slices;
         
-        let total = stockList.reduce( (ttl, stock) => {
-            return ttl + (stock.avgCost * stock.quantity)
-        }, 0);
-        console.log("total")
-        console.log(total)
+        const {stockList} = this.props
         let startAngle = 0; 
         let radius = 120;
         let cx = this.state.canvasWidth/2;
         let cy = this.state.canvasHeight/2;
-        const randomHexColorCode = () => {
-            return "#" + Math.random().toString(16).slice(2, 8)
-        };
+        let total = stockList.reduce( (ttl, stock) => {
+            return ttl + (stock.avgCost * stock.quantity)
+        }, 0);
 
         stockList.forEach(element => {
             console.log("Drawing slice")
+            
             this.context.lineWidth = 1;
             this.context.strokeStyle = '#fafafa';
-            this.context.fillStyle = randomHexColorCode();
+            this.context.fillStyle = this.randomHexColorCode();
             this.context.beginPath();
             
             // draw the pie wedges
@@ -82,7 +77,7 @@ class PieChart extends React.Component {
             
 
             //store the slice information
-            slices.push({ 
+            this.state.slices.push({ 
                     "name" : element.name,
                     "cx" : cx,
                     "cy" : cy,
@@ -93,6 +88,26 @@ class PieChart extends React.Component {
             });
             startAngle = endAngle;
         });
+     
+        console.log(this.state.slices)
+        
+    }
+
+
+
+
+
+    componentDidMount() {
+        console.log("Did mount!")
+        this.context = this.pieChartRef.current.getContext('2d');
+        let elem = document.querySelector('canvas');
+        let rect = elem.getBoundingClientRect();
+        console.log(rect);
+        
+        const {stockList} = this.props
+        console.log(stockList)
+        this.drawSlices();
+        
 
         document.addEventListener('mousemove', (e) => {
             let mouseX=parseInt(e.clientX);
@@ -102,9 +117,10 @@ class PieChart extends React.Component {
             // console.log(e.clientX)
             // console.log(e.clientY)
 
-                    
-            for(let i=0;i<slices.length;i++){
-                let s=slices[i];
+            let cx = this.state.canvasWidth/2;
+            let cy = this.state.canvasHeight/2;
+            for(let i=0;i<this.state.slices.length;i++){
+                let s=this.state.slices[i];
             
                 // define the shape path we want to test against the mouse position
                 // defineShape(s.points);
@@ -136,8 +152,8 @@ class PieChart extends React.Component {
                 
                 
                 
-                console.log(mouseX)
-                console.log(mouseY)
+                // console.log(mouseX)
+                // console.log(mouseY)
                 // console.log(cx)
                 // console.log(cy)
 
@@ -173,84 +189,27 @@ class PieChart extends React.Component {
         console.log(rect.y)
         console.log(rect.width)
         console.log(rect.height)
+
         this.context = this.pieChartRef.current.getContext('2d');
         const context = this.context;
-        context.clearRect(rect.x, rect.y, rect.width, rect.height);
-        context.beginPath();
-        
 
+        //clear canvas
+        context.clearRect(0, 0, rect.width, rect.height);
+        context.beginPath();
+
+        //clear slices
+        this.state.slices = [];
         
         //context.save();
         //context.setTransform(1, 0, 0, 1, 0, 0);
         //context.beginPath();
-       
-
-        
-        //context.restore();
+        //
         
         
-        let slices = [];
         const {stockList} = this.props
         console.log(stockList)
-        
-        let total = stockList.reduce( (ttl, stock) => {
-            return ttl + (stock.avgCost * stock.quantity)
-        }, 0);
-        console.log("total")
-        console.log(total)
-        let startAngle = 0; 
-        let radius = 120;
-        let cx = this.state.canvasWidth/2;
-        let cy = this.state.canvasHeight/2;
-        const randomHexColorCode = () => {
-            return "#" + Math.random().toString(16).slice(2, 8)
-        };
 
-        
-
-        stockList.forEach(element => {
-            console.log("Drawing slice")
-            this.context.lineWidth = 1;
-            this.context.strokeStyle = '#fafafa';
-            this.context.fillStyle = randomHexColorCode();
-            this.context.beginPath();
-            
-            // draw the pie wedges
-            let endAngle = (((element.avgCost * element.quantity) / total) * Math.PI * 2) + startAngle;
-            this.context.moveTo(cx, cy);
-            this.context.arc(cx, cy, radius, startAngle, endAngle);
-            this.context.lineTo(cx, cy);
-            this.context.fill();
-            this.context.stroke();
-            this.context.closePath();
-            
-            // add the labels
-            this.context.beginPath();
-            this.context.font = '20px Helvetica, Calibri';
-            this.context.textAlign = 'center';
-            this.context.fillStyle = 'rebeccapurple';
-            // 1.5 * radius is the length of the Hypotenuse
-            let theta = (startAngle + endAngle) / 2;
-            let deltaY = Math.sin(theta) * 1.5 * radius;
-            let deltaX = Math.cos(theta) * 1.5 * radius;
-            this.context.fillText(element.name, deltaX+cx, deltaY+cy);
-            let percentage = Math.round(+((element.avgCost*element.quantity*100)/total));
-            this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
-            this.context.closePath();
-            
-
-            //store the slice information
-            slices.push({ 
-                    "name" : element.name,
-                    "cx" : cx,
-                    "cy" : cy,
-                    "colour" : this.context.fillStyle,
-                    "radius" : radius,
-                    "startAngle" : startAngle,
-                    "endAngle": endAngle,
-            });
-            startAngle = endAngle;
-        });
+        this.drawSlices();
 
         document.addEventListener('mousemove', (e) => {
             let mouseX=parseInt(e.clientX);
@@ -260,9 +219,10 @@ class PieChart extends React.Component {
             // console.log(e.clientX)
             // console.log(e.clientY)
 
-                    
-            for(let i=0;i<slices.length;i++){
-                let s=slices[i];
+            let cx = this.state.canvasWidth/2;
+            let cy = this.state.canvasHeight/2;
+            for(let i=0;i<this.state.slices.length;i++){
+                let s=this.state.slices[i];
             
                 // define the shape path we want to test against the mouse position
                 // defineShape(s.points);
@@ -294,8 +254,8 @@ class PieChart extends React.Component {
                 
                 
                 
-                console.log(mouseX)
-                console.log(mouseY)
+                // console.log(mouseX)
+                // console.log(mouseY)
                 // console.log(cx)
                 // console.log(cy)
 
