@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles, 
   withStyles,
-  Avatar,
   AppBar, 
   Toolbar, 
   Typography,
@@ -21,6 +20,8 @@ const useStyles = theme => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer',
+    marginRight: '70vw',
   },
   new: {
     float: 'right',
@@ -114,9 +115,11 @@ class Login extends React.Component {
             <div className={classes.root}>
                 <AppBar position="sticky" color="secondary">
                     <Toolbar>
+                      <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
                         <Typography variant="h6" className={classes.title}>
                           Money Manager
                         </Typography>
+                      </Link>
                         <Typography variant="subtitle1" className={classes.new}>
                           New User?
                         </Typography>
@@ -130,9 +133,12 @@ class Login extends React.Component {
 
                 <Grid container className={classes.grid} >
                   <Paper elevation={3} className={classes.paper}>
+                    
                     <Typography variant="h5" className={classes.text1}>
                       Welcome back!
                     </Typography>
+                    
+            
                     <Typography variant="subtitle2" className={classes.subtitle}>
                       Login to continue
                     </Typography>
@@ -166,8 +172,6 @@ class Login extends React.Component {
                             Log in
                           </Button>
                         </Link>
-                          
-                        
                       </Grid>
 
                     </form>
