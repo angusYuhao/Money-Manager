@@ -17,12 +17,11 @@ class PieChart extends React.Component {
         canvasWidth: 600,
         canvasHeight: 600,
         slices: [],
-        radius: 120
+        radius: 125,
     }
 
     constructor(props) {
         super(props);
-      
         this.pieChartRef = React.createRef();
     }
 
@@ -46,8 +45,7 @@ class PieChart extends React.Component {
 
         listToDisplay.forEach(element => {
             //here the slices are draw backwards...(clockwise) so makesure to push into the list properly
-            //console.log("Drawing slice")
-            console.log(element.name)
+           
             this.context.lineWidth = 3;
             this.context.strokeStyle = '#fafafa';
             this.context.fillStyle = this.randomPastelColourCode();
@@ -105,16 +103,12 @@ class PieChart extends React.Component {
         let radius = parseFloat(this.state.radius);
         let cx = parseFloat(this.state.canvasWidth/2);
         let cy = parseFloat(this.state.canvasHeight/2);
-       
-        //console.log("Accenting slice")
-        //console.log(slice.name)
-        
         this.context.strokeStyle = '#fafafa';
         this.context.fillStyle = slice.colour;
+        
         this.context.beginPath();
         
         // draw the pie wedges
-        
         this.context.moveTo(cx, cy);
         this.context.arc(cx, cy, radius, slice.drawStartAngle, slice.drawEndAngle);
         this.context.lineTo(cx, cy);
@@ -144,12 +138,15 @@ class PieChart extends React.Component {
             this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
             this.context.closePath();
         }else{
+            this.context.translate(0.05, 0.05);
             this.context.moveTo(parseFloat(cx+deltaX/1.65), parseFloat(cy+deltaY/1.65));
             this.context.lineTo(parseFloat((4.0*deltaX/5)+cx), parseFloat((4.0*deltaY/5)+cy));
             this.context.lineWidth = 3;
             this.context.stroke();
             this.context.closePath();
+            this.context.translate(-0.05, -0.05);
         }
+        
     }
 
     componentDidMount() {
@@ -167,7 +164,6 @@ class PieChart extends React.Component {
         //add event listeners...I had to add it to a component so I used this one
         document.addEventListener('mousewheel', (e) => {
             rect = elem.getBoundingClientRect();
-            //console.log(rect);
         })
 
         document.addEventListener('mousemove', (e) => {
@@ -239,27 +235,17 @@ class PieChart extends React.Component {
                 //check if the mouse angle matches with this slice
                 let angleOk = false;
                 if(s.startAngle < angle && angle < s.endAngle){
-                    //console.log("Angle ok")
-                    //console.log(s.name)
                     angleOk = true;
-
+                    if(distanceOk){
+                        this.drawAccentedSlice(s, 1);
+                        setTimeout(this.drawAccentedSlice, 1000, s, 0);
+                    }
                 }else continue;
-             
-                if(angleOk && distanceOk){
-                    console.log(s.name)
-                    //STILL NEED TO DO SOME KIND OF UPDATE HERE
-                    this.drawAccentedSlice(s, 1);
-                    setTimeout(this.drawAccentedSlice, 1000, s, 0);
-                }else{
-                    //this.drawSlices();
-                }
             }
         }); 
     }
 
-    componentDidUpdate() {
-        console.log("Updated!")
-        
+    componentDidUpdate() {        
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
         let rect = elem.getBoundingClientRect();
@@ -278,7 +264,7 @@ class PieChart extends React.Component {
     
     render() {
         return (
-          <canvas id = "pieChartCanvas" ref={this.pieChartRef} width = {this.state.canvasWidth} height = {this.state.canvasHeight} />
+          <canvas id = "pieChartCanvas" ref={this.pieChartRef} width = "600" height = "600" />
         )
     }
 }
