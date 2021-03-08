@@ -29,7 +29,7 @@ class PieChart extends React.Component {
     randomPastelColourCode = () => {
         return "hsl(" + 360 * Math.random() + ',' +
              (25 + 70 * Math.random()) + '%,' + 
-             (75 + 10 * Math.random()) + '%)'
+             (80 + 10 * Math.random()) + '%)'
     }
 
     drawSlices = () => {
@@ -50,6 +50,7 @@ class PieChart extends React.Component {
             this.context.lineWidth = 3;
             this.context.strokeStyle = '#fafafa';
             this.context.fillStyle = this.randomPastelColourCode();
+            let sliceColour = this.context.fillStyle;
             this.context.beginPath();
             
             // draw the pie wedges
@@ -81,19 +82,61 @@ class PieChart extends React.Component {
             //store the slice information
             this.state.slices.push({ 
                     "name" : element.name,
-                    "colour" : this.context.fillStyle,
+                    "colour" : sliceColour,
                     "startAngle" : (2*Math.PI) - endAngle,    //since arc draws the slice backwards in clockwise fasion
                     "endAngle": (2*Math.PI) - startAngle,
+                    "drawStartAngle": startAngle,
+                    "drawEndAngle": endAngle,
+                    "bookCost": element.bookCost
             });
             startAngle = endAngle;
         });
-    
-        
         console.log(this.state.slices)
-        
     }
 
+    drawAccentedSlice = (slice, width) => {
+        const {listToDisplay} = this.props
+        let radius = this.state.radius;
+        let cx = this.state.canvasWidth/2;
+        let cy = this.state.canvasHeight/2;
+        let total = listToDisplay.reduce( (ttl, stock) => {
+            return ttl + (stock.bookCost)
+        }, 0);
+        console.log("Accenting slice")
+        console.log(slice.name)
+        this.context.lineWidth = width;
+        this.context.strokeStyle = '#fafafa';
+        this.context.fillStyle = slice.colour;
+        this.context.beginPath();
+        
+        // draw the pie wedges
+        
+        this.context.moveTo(cx, cy);
+        this.context.arc(cx, cy, radius, slice.drawStartAngle, slice.drawEndAngle);
+        this.context.lineTo(cx, cy);
+        this.context.fill();
+        this.context.stroke();
+        this.context.closePath();
+        
+        // add the labels
+        if(width > 3){
 
+        
+        this.context.beginPath();
+        this.context.font = '18px Helvetica, Calibri';
+        this.context.textAlign = 'center';
+        this.context.fillStyle = 'rebeccapurple';
+        // 1.5 * radius is the length of the Hypotenuse
+        let theta = (slice.drawStartAngle + slice.drawEndAngle) / 2;
+        let deltaY = Math.sin(theta) * 1.5 * radius;
+        let deltaX = Math.cos(theta) * 1.5 * radius;
+
+        //!!!Ian: name is the name of the stock category
+        this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
+        // let percentage = Math.round(+((slice.bookCost*100)/total));
+        this.context.closePath();
+        }
+    }
 
     componentDidMount() {
         console.log("Did mount!")
@@ -110,17 +153,17 @@ class PieChart extends React.Component {
         //add event listeners...I had to add it to a component so I used this one
         document.addEventListener('mousewheel', (e) => {
             rect = elem.getBoundingClientRect();
-            console.log(rect);
+            //console.log(rect);
         })
 
         document.addEventListener('mousemove', (e) => {
-            //mouse is relative to the window, rect is relative to the window
-            //cx and cy are fixed
+    
             let mouseX=parseInt(e.clientX);
             let mouseY=parseInt(e.clientY);
             let cx = this.state.canvasWidth/2;
             let cy = this.state.canvasHeight/2;
-
+            //mouse is relative to the window, rect is relative to the window
+            //cx and cy are fixed
             //relativeX and relative Y are the distances from the center of the "pie"(no +ve or -ve signs)
             let relativeX = 0;
             let relativeY = 0;
@@ -191,9 +234,10 @@ class PieChart extends React.Component {
                 if(angleOk && distanceOk){
                     console.log(s.name)
                     //STILL NEED TO DO SOME KIND OF UPDATE HERE
+                    this.drawAccentedSlice(s, 8);
+                    setTimeout(this.drawAccentedSlice, 3000, s, 3);
                 }
-                
-              }
+            }
         }); 
     }
 
