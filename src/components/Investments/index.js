@@ -9,6 +9,8 @@ import BarChart from './BarChart'
 class Investments extends React.Component {
 
   state = {
+    pieChartSize: 900,
+    pieChartRadius: 200,
     totalAmountInvested: 100,
     ticker: 0,
     quantity: 0,
@@ -134,7 +136,7 @@ class Investments extends React.Component {
       <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/>
       
    
-      <PieChart listToDisplay = {this.state.stockList}/>
+      <PieChart listToDisplay = {this.state.stockList} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>
       <BarChart listToDisplay = {this.state.stockList}/>
 
       </div>

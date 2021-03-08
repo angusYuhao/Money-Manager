@@ -22,6 +22,10 @@ class PieChart extends React.Component {
 
     constructor(props) {
         super(props);
+        const {pieChartSize, pieChartRadius} = this.props;
+        this.state.canvasHeight = pieChartSize;
+        this.state.canvasWidth = pieChartSize;
+        this.state.radius = pieChartRadius
         this.pieChartRef = React.createRef();
     }
 
@@ -78,9 +82,10 @@ class PieChart extends React.Component {
             this.context.stroke();
 
             //!!!Ian: name is the name of the stock category
-            this.context.fillText(element.name, deltaX+cx, deltaY+cy);
             let percentage = Math.round(+((element.bookCost*100)/total));
-            this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
+            this.context.fillText(element.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
+            
+            //this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
 
@@ -150,6 +155,7 @@ class PieChart extends React.Component {
     }
 
     componentDidMount() {
+
         console.log("Did mount!")
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
@@ -268,7 +274,7 @@ class PieChart extends React.Component {
     
     render() {
         return (
-          <canvas id = "pieChartCanvas" ref={this.pieChartRef} width = "600" height = "600" />
+          <canvas id = "pieChartCanvas" ref={this.pieChartRef} width = {this.state.canvasWidth} height = {this.state.canvasHeight} />
         )
     }
 }
