@@ -175,17 +175,20 @@ class PieChart extends React.Component {
             //mouse is relative to the window, rect is relative to the window
             //cx and cy are fixed
             //relativeX and relative Y are the distances from the center of the "pie"(no +ve or -ve signs)
-            let relativeX = 0;
-            let relativeY = 0;
-            let angle = 0;
+            let relativeX;
+            let relativeY;
+            let angle;
       
             // quadrant I & II:
             if(mouseY > rect.y && mouseY < (rect.y + cy)){
                 relativeY = (cy + rect.y ) - mouseY;
                 //quadrant I:
                 if(mouseX > (rect.x + cx) && mouseX < rect.x + (2*cx)){
+                    // console.log(mouseX);
+                    // console.log(rect.x + cx);
                     relativeX = mouseX - (cx + rect.x);
                     angle = Math.atan(relativeY/relativeX);
+
                     // console.log(relativeX)
                     // console.log(relativeY)
                     // console.log("quad I")
@@ -223,22 +226,23 @@ class PieChart extends React.Component {
 
             //console.log(angle)
             let distanceOk = false;
+        
             let distance = Math.sqrt( (relativeX * relativeX ) +  ( relativeY * relativeY));
             if(distance < this.state.radius){
                 distanceOk = true;
                 // console.log(distance)
-                //console.log("Distance ok")
+                // console.log("Distance ok")
             }
 
             for(let i=0;i<this.state.slices.length;i++){
                 let s=this.state.slices[i];
                 //check if the mouse angle matches with this slice
-                let angleOk = false;
                 if(s.startAngle < angle && angle < s.endAngle){
-                    angleOk = true;
+                    
                     if(distanceOk){
                         this.drawAccentedSlice(s, 1);
                         setTimeout(this.drawAccentedSlice, 1000, s, 0);
+                        distanceOk = false;
                     }
                 }else continue;
             }
