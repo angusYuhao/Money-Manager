@@ -54,9 +54,9 @@ class App extends React.Component {
               <NavBar 
                 username={this.state.username}
                 password={this.state.password}/>
+              {/* <br></br>
               <br></br>
-              <br></br>
-              <br></br>
+              <br></br> */}
             </div> : null}
           
 
