@@ -153,7 +153,8 @@ class ForumList extends React.Component {
 
   addPost = (username) => {
     const postList = this.state.posts
-    const newID = (postList.length === 0) ? 1 : postList[postList.length - 1].postID + 1
+    const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
+    const newID = (postList.length === 0) ? 1 : maxValue + 1
 
     const newPost = {
       author: username,
@@ -181,6 +182,7 @@ class ForumList extends React.Component {
     })
 
     this.handleClose()
+    this.sortPosts(this.state.sortOrder)
   }
 
   changeCategory = (_category) => {
