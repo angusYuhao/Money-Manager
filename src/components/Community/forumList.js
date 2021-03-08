@@ -33,8 +33,15 @@ class ForumList extends React.Component {
     content: "",
     category: "",
     postFilter: "",
+    sortOrder: "",
     commenter: "",
     commentContent: "",
+    userInfo: {
+      username: "",
+      usertype: "",
+      userUpvotedPosts: [],
+      userDownvotedPosts: [],
+    },
     posts: [
       {author: 'Angus Wang', 
         title: 'welcome to communtiy', 
@@ -42,7 +49,8 @@ class ForumList extends React.Component {
         authorAvatar: null,
         category: "Announcement",
         postID: 1,
-        markedForDelete: false,
+        numUpvotes: 5,
+        numDownvotes: 1,
         comments: [
         {commenter: "Angus Wang",
           commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao"},
@@ -56,7 +64,8 @@ class ForumList extends React.Component {
         authorAvatar: null,
         category: "Opinion",
         postID: 2,
-        markedForDelete: false,
+        numUpvotes: 4,
+        numDownvotes: 2,
         comments: [
         {commenter: "Angus Wang3",
           commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao3"},
@@ -67,6 +76,13 @@ class ForumList extends React.Component {
     ]
   }
 
+  componentDidMount() {
+    this.setState({
+      username: this.props.username,
+      // usertype: this.props.usertype,
+      // later include the upvotes and downvotes of the user
+    })
+  }
 
   handleClickOpen = () => {
     this.setState({
@@ -77,6 +93,12 @@ class ForumList extends React.Component {
   handleClickManage = () => {
     this.setState({
       openManagePost: true
+    })
+  }
+
+  handleClickManageDone = () => {
+    this.setState({
+      openManagePost: false
     })
   }
 
@@ -104,6 +126,31 @@ class ForumList extends React.Component {
     })
   }
 
+  handleSortInputChange = (event) => {
+    const value = event.target.value
+    this.setState({ sortOrder: value }, () => this.sortPosts(value))
+  }
+
+  sortPosts = (order) => {
+    const posts = this.state.posts
+
+    switch(order) {
+      case "Oldest":
+        posts.sort((a, b) => a.postID > b.postID ? 1 : -1)
+        break;
+      case "Newest":
+        posts.sort((a, b) => a.postID < b.postID ? 1 : -1)
+        break;
+      case "MostUpvotes":
+        posts.sort((a, b) => a.numUpvotes < b.numUpvotes ? 1 : -1)
+        break;
+      case "BestRated":
+        posts.sort((a, b) => a.numUpvotes-a.numDownvotes < b.numUpvotes-b.numDownvotes ? 1 : -1)
+    }
+
+    this.setState({ posts: posts })
+  }
+
   addPost = (username) => {
     const postList = this.state.posts
     const newID = (postList.length === 0) ? 1 : postList[postList.length - 1].postID + 1
@@ -115,7 +162,8 @@ class ForumList extends React.Component {
       content: this.state.content,
       category: this.state.category,
       postID: newID,
-      markedForDelete: false,
+      numUpvotes: 0,
+      numDownvotes: 0,
       comments: []
     }
 
@@ -143,11 +191,10 @@ class ForumList extends React.Component {
 
   postComment = (target) => {
     const targetPostID = target.postID
+    console.log(targetPostID)
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
     
-    const targetPost = this.state.posts.filter((p) => {
-      return p.postID === targetPostID
-    })
+    const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
     const targetPostComments = targetPost[0].comments
 
     const newComment = {
@@ -158,56 +205,88 @@ class ForumList extends React.Component {
     targetPostComments.push(newComment)
     targetPost[0].comments = targetPostComments
     
-    const otherPosts = this.state.posts.filter((p) => {
-      return p.postID !== targetPostID
-    })
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
 
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
 
-    this.setState({
-      posts: otherPosts
-    })
+    this.setState({ posts: otherPosts })
   }
 
   deletePosts = (target) => {
+    console.log("deleting post")
     const targetPostID = target.postID
-    const otherPosts = this.state.posts.filter((p) => {
-      return p.postID !== targetPostID
-    })
-    this.setState({
-      posts: otherPosts
-    })
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
+    console.log("posts length: ", otherPosts.length)
+    this.setState({ posts: otherPosts })
+
+    const userInfo = this.state.userInfo
+    const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
+    if (index !== -1) {
+      userInfo.userUpvotedPosts.splice(index, 1)
+      this.setState({ userInfo: userInfo })
+    }
   }
 
-  markForDelete = (target) => {
+  addUpvote = (target) => {
+    console.log("adding upvotes")
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
-
-    const targetPost = this.state.posts.filter((p) => {
-      return p.postID === targetPostID
-    })
-    const otherPosts = this.state.posts.filter((p) => {
-      return p.postID !== targetPostID
-    })
-
-    targetPost[0].markedForDelete = target.checkedDelete
-    console.log(targetPost[0].markedForDelete)
+    const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
+    targetPost[0].numUpvotes = targetPost[0].numUpvotes + 1
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
+    this.setState({ posts: otherPosts })
 
-    this.setState({
-      posts: otherPosts
-    })
+    const userInfo = this.state.userInfo
+    userInfo.userUpvotedPosts.push(targetPostID)
+    this.setState({ userInfo: userInfo })
   }
 
-  handleConfirmManage = () => {
-    const goodPosts = this.state.posts.filter((p) => {
-      return p.markedForDelete === false
-    })
+  minusUpvote = (target) => {
+    console.log("subtracting upvotes")
+    const targetPostID = target.postID
+    const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
+    const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
+    targetPost[0].numUpvotes = targetPost[0].numUpvotes - 1
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
+    otherPosts.splice(targetPostIndex, 0, targetPost[0])
+    this.setState({ posts: otherPosts })
 
-    this.setState({
-      posts: goodPosts
-    })
-    // console.log("say sth please===========================")
+    const userInfo = this.state.userInfo
+    const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
+    if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
+    this.setState({ userInfo: userInfo })
+  }
+
+  addDownvote = (target) => {
+    console.log("adding downvotes")
+    const targetPostID = target.postID
+    const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
+    const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
+    targetPost[0].numDownvotes = targetPost[0].numDownvotes + 1
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
+    otherPosts.splice(targetPostIndex, 0, targetPost[0])
+    this.setState({ posts: otherPosts })
+
+    const userInfo = this.state.userInfo
+    userInfo.userDownvotedPosts.push(targetPostID)
+    this.setState({ userInfo: userInfo })
+  }
+
+  minusDownvote = (target) => {
+    console.log("subtracting downvotes")
+    const targetPostID = target.postID
+    const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
+    const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
+    targetPost[0].numDownvotes = targetPost[0].numDownvotes - 1
+    const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
+    otherPosts.splice(targetPostIndex, 0, targetPost[0])
+    this.setState({ posts: otherPosts })
+
+    const userInfo = this.state.userInfo
+    const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
+    if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
+    this.setState({ userInfo: userInfo })
   }
 
   render() {
@@ -221,6 +300,7 @@ class ForumList extends React.Component {
             <List className="forumList">
               
               <Grid container justify="space-evenly">
+
                 <FormControl style={{minWidth: 200}}>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
                   <InputLabel>Filter Posts</InputLabel>
                   <Select onChange={ this.handleFilterInputChange }>
@@ -230,12 +310,33 @@ class ForumList extends React.Component {
                     <MenuItem value="Opinion">Opinion</MenuItem>
                   </Select>
                 </FormControl>
-                <Button className="newPostButton" color="secondary" variant="contained" onClick={ this.handleClickOpen }>
-                  New Post
-                </Button>
-                <Button className="managePostButton" color="secondary" variant="contained" onClick={ this.handleClickManage }>
+
+                <FormControl style={{minWidth: 200}}>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+                  <InputLabel>Sort By</InputLabel>
+                  <Select onChange={ this.handleSortInputChange }>
+                    <MenuItem value="Oldest">Oldest</MenuItem>
+                    <MenuItem value="Newest">Newest</MenuItem>
+                    <MenuItem value="MostUpvotes">Most Upvotes</MenuItem>
+                    <MenuItem value="BestRated">Best Rated</MenuItem>
+                  </Select>
+                </FormControl>
+
+                { this.state.openManagePost ? 
+                  <Button className="newPostButton" color="secondary" variant="contained" onClick={ this.handleClickOpen } disabled>
+                    New Post
+                  </Button>
+                  :
+                  <Button className="newPostButton" color="secondary" variant="contained" onClick={ this.handleClickOpen } >
+                    New Post
+                  </Button> }
+                { this.state.openManagePost ? 
+                  <Button className="managePostButton" color="primary" variant="contained" onClick={ this.handleClickManageDone }>
+                  Done
+                  </Button> : 
+                  <Button className="managePostButton" color="secondary" variant="contained" onClick={ this.handleClickManage }>
                   Manage Posts
-                </Button>
+                  </Button> }
+                
               </Grid>
               
             </List>
@@ -243,44 +344,57 @@ class ForumList extends React.Component {
             <br></br>
 
             <List className="forumList">
-              {this.state.posts.map((thread) => {
-                if (this.state.postFilter === "") {
-                  return (
-                    <div>
-                      <ForumListItem postTitle={ thread.title }
-                                    postAuthor={ thread.author }
-                                    postTextContent={ thread.content }
-                                    avatar={ thread.authorAvatar }
-                                    category={ thread.category }
-                                    comments={ thread.comments }
-                                    postID={ thread.postID }
-                                    openManagePost={ false }
-                                    deletePosts={ this.deletePosts }
-                                    markForDelete={ this.markForDelete }
-                                    postComment={ this.postComment }/>
-                      <Divider variant="inset" component="li" />
-                    </div>
-                  )
-                }
-                else if (this.state.postFilter === thread.category) {
-                  return (
-                    <div>
-                      <ForumListItem postTitle={ thread.title }
-                                    postAuthor={ thread.author }
-                                    postTextContent={ thread.content }
-                                    avatar={ thread.authorAvatar }
-                                    category={ thread.category }
-                                    comments={ thread.comments }
-                                    postID={ thread.postID }
-                                    openManagePost={ false }
-                                    deletePosts={ this.deletePosts }
-                                    markForDelete={ this.markForDelete }
-                                    postComment={ this.postComment }/>
-                      <Divider variant="inset" component="li" />
-                    </div>
-                  )
-                }
-              })}
+              { this.state.posts.map((thread) => {
+                  if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === username : this.state.postFilter === "") {
+                    return (
+                      <div>
+                        <ForumListItem postTitle={ thread.title }
+                                      postAuthor={ thread.author }
+                                      postTextContent={ thread.content }
+                                      avatar={ thread.authorAvatar }
+                                      category={ thread.category }
+                                      comments={ thread.comments }
+                                      postID={ thread.postID }
+                                      openManagePost={ this.state.openManagePost ? true : false }
+                                      numUpvotes={ thread.numUpvotes }
+                                      numDownvotes={ thread.numDownvotes }
+                                      userInfo={ this.state.userInfo }
+                                      addUpvote={ this.addUpvote }
+                                      minusUpvote={ this.minusUpvote }
+                                      addDownvote={ this.addDownvote }
+                                      minusDownvote={ this.minusDownvote }
+                                      deletePosts={ this.deletePosts }
+                                      postComment={ this.postComment }/>
+                        <Divider variant="inset" component="li" />
+                      </div>
+                    )
+                  }
+                  else if (this.state.openManagePost ? this.state.postFilter === thread.category && thread.author === username : this.state.postFilter === thread.category) {
+                    return (
+                      <div>
+                        <ForumListItem postTitle={ thread.title }
+                                      postAuthor={ thread.author }
+                                      postTextContent={ thread.content }
+                                      avatar={ thread.authorAvatar }
+                                      category={ thread.category }
+                                      comments={ thread.comments }
+                                      postID={ thread.postID }
+                                      openManagePost={ this.state.openManagePost ? true : false }
+                                      numUpvotes={ thread.numUpvotes }
+                                      numDownvotes={ thread.numDownvotes }
+                                      userInfo={ this.state.userInfo }
+                                      addUpvote={ this.addUpvote }
+                                      minusUpvote={ this.minusUpvote }
+                                      addDownvote={ this.addDownvote }
+                                      minusDownvote={ this.minusDownvote }
+                                      deletePosts={ this.deletePosts }
+                                      postComment={ this.postComment }/>
+                        <Divider variant="inset" component="li" />
+                      </div>
+                    )
+                  }
+                })
+              }
             </List>
           </Container>
           
@@ -332,7 +446,7 @@ class ForumList extends React.Component {
             </DialogActions>
           </Dialog>
 
-          <Dialog open={ this.state.openManagePost } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
+          {/* <Dialog open={ this.state.openManagePost } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
 
             <DialogTitle id="form-dialog-title">Your Posts:</DialogTitle>
 
@@ -351,7 +465,6 @@ class ForumList extends React.Component {
                                       postID={ thread.postID }
                                       openManagePost={ true }
                                       deletePosts={ this.deletePosts }
-                                      markForDelete={ this.markForDelete }
                                       postComment={ this.postComment }/>
                         <Divider variant="inset" component="li" />
                       </div>
@@ -363,14 +476,11 @@ class ForumList extends React.Component {
 
             <DialogActions>
               <Button onClick={ this.handleClose } color="primary">
-                Cancel
-              </Button>
-              <Button onClick={ this.handleConfirmManage } color="primary">
-                Confirm
+                Done
               </Button>
             </DialogActions>
 
-          </Dialog>
+          </Dialog> */}
 
         </div>
       </ThemeProvider>
