@@ -42,10 +42,11 @@ class PieChart extends React.Component {
         let total = listToDisplay.reduce( (ttl, stock) => {
             return ttl + (stock.bookCost)
         }, 0);
+        
 
         listToDisplay.forEach(element => {
             //here the slices are draw backwards...(clockwise) so makesure to push into the list properly
-            console.log("Drawing slice")
+            //console.log("Drawing slice")
             console.log(element.name)
             this.context.lineWidth = 3;
             this.context.strokeStyle = '#fafafa';
@@ -68,9 +69,15 @@ class PieChart extends React.Component {
             this.context.textAlign = 'center';
             this.context.fillStyle = 'rebeccapurple';
             // 1.5 * radius is the length of the Hypotenuse
-            let theta = (startAngle + endAngle) / 2;
+            let theta = (startAngle + endAngle) / 2.0;
             let deltaY = Math.sin(theta) * 1.5 * radius;
             let deltaX = Math.cos(theta) * 1.5 * radius;
+
+            //point to label
+            this.context.strokeStyle = 'rebeccapurple';
+            this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
+            this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
+            this.context.stroke();
 
             //!!!Ian: name is the name of the stock category
             this.context.fillText(element.name, deltaX+cx, deltaY+cy);
@@ -83,28 +90,25 @@ class PieChart extends React.Component {
             this.state.slices.push({ 
                     "name" : element.name,
                     "colour" : sliceColour,
-                    "startAngle" : (2*Math.PI) - endAngle,    //since arc draws the slice backwards in clockwise fasion
-                    "endAngle": (2*Math.PI) - startAngle,
+                    "startAngle" : (2.0*Math.PI) - endAngle,    //since arc draws the slice backwards in clockwise fasion
+                    "endAngle": (2.0*Math.PI) - startAngle,
                     "drawStartAngle": startAngle,
                     "drawEndAngle": endAngle,
                     "bookCost": element.bookCost
             });
             startAngle = endAngle;
         });
-        console.log(this.state.slices)
+        //console.log(this.state.slices)
     }
 
-    drawAccentedSlice = (slice, width) => {
-        const {listToDisplay} = this.props
-        let radius = this.state.radius;
-        let cx = this.state.canvasWidth/2;
-        let cy = this.state.canvasHeight/2;
-        let total = listToDisplay.reduce( (ttl, stock) => {
-            return ttl + (stock.bookCost)
-        }, 0);
-        console.log("Accenting slice")
-        console.log(slice.name)
-        this.context.lineWidth = width;
+    drawAccentedSlice = (slice, accented) => {
+        let radius = parseFloat(this.state.radius);
+        let cx = parseFloat(this.state.canvasWidth/2);
+        let cy = parseFloat(this.state.canvasHeight/2);
+       
+        //console.log("Accenting slice")
+        //console.log(slice.name)
+        
         this.context.strokeStyle = '#fafafa';
         this.context.fillStyle = slice.colour;
         this.context.beginPath();
@@ -117,24 +121,34 @@ class PieChart extends React.Component {
         this.context.fill();
         this.context.stroke();
         this.context.closePath();
-        
-        // add the labels
-        if(width > 3){
 
-        
-        this.context.beginPath();
-        this.context.font = '18px Helvetica, Calibri';
+        this.context.beginPath();  
+        this.context.font = '20px Helvetica, Calibri';
         this.context.textAlign = 'center';
         this.context.fillStyle = 'rebeccapurple';
-        // 1.5 * radius is the length of the Hypotenuse
-        let theta = (slice.drawStartAngle + slice.drawEndAngle) / 2;
-        let deltaY = Math.sin(theta) * 1.5 * radius;
-        let deltaX = Math.cos(theta) * 1.5 * radius;
+        this.context.strokeStyle = 'rebeccapurple';
 
-        //!!!Ian: name is the name of the stock category
-        this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
-        // let percentage = Math.round(+((slice.bookCost*100)/total));
-        this.context.closePath();
+        let theta = (slice.drawStartAngle + slice.drawEndAngle) / 2.0;
+        let deltaY = parseFloat(Math.sin(theta) * 1.5 * radius);
+        let deltaX = parseFloat(Math.cos(theta) * 1.5 * radius);
+        
+
+        
+        // add the labels
+        if(accented == 1){
+            // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
+            // this.context.lineTo((4.0*deltaX/5)+cx, (4.0*deltaY/5)+cy);
+            // this.context.stroke();
+
+            //!!!Ian: name is the name of the stock category
+            this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
+            this.context.closePath();
+        }else{
+            this.context.moveTo(parseFloat(cx+deltaX/1.65), parseFloat(cy+deltaY/1.65));
+            this.context.lineTo(parseFloat((4.0*deltaX/5)+cx), parseFloat((4.0*deltaY/5)+cy));
+            this.context.lineWidth = 3;
+            this.context.stroke();
+            this.context.closePath();
         }
     }
 
@@ -234,8 +248,10 @@ class PieChart extends React.Component {
                 if(angleOk && distanceOk){
                     console.log(s.name)
                     //STILL NEED TO DO SOME KIND OF UPDATE HERE
-                    this.drawAccentedSlice(s, 8);
-                    setTimeout(this.drawAccentedSlice, 3000, s, 3);
+                    this.drawAccentedSlice(s, 1);
+                    setTimeout(this.drawAccentedSlice, 1000, s, 0);
+                }else{
+                    //this.drawSlices();
                 }
             }
         }); 

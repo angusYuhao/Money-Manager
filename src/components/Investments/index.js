@@ -18,11 +18,13 @@ class Investments extends React.Component {
     gainLoss: 0,
     percentageOfPortfolio:0,
     stockList: [{name: "FB", quantity: 20, price: 1.0, avgCost: 32.5, mktValue: 1, bookCost: 100, gainLoss:0, percentageOfPortfolio:100 },
-    {name: "GOOGL", quantity: 3, price: 1.0, avgCost: 1523, mktValue: 1, bookCost: 23, gainLoss:0, percentageOfPortfolio:100 },
+    {name: "GOOGL", quantity: 3, price: 1.0, avgCost: 1523, mktValue: 1, bookCost: 37, gainLoss:0, percentageOfPortfolio:100 },
     {name: "PDD", quantity: 8, price: 1.0, avgCost: 170, mktValue: 1, bookCost: 34, gainLoss:0, percentageOfPortfolio:100 },
     {name: "GME", quantity: 4, price: 1.0, avgCost: 340, mktValue: 1, bookCost: 78, gainLoss:0, percentageOfPortfolio:100 },
-    {name: "MSFT", quantity: 4, price: 1.0, avgCost: 230, mktValue: 1, bookCost: 18, gainLoss:0, percentageOfPortfolio:100 },
-    {name: "BABA", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 20, gainLoss:0, percentageOfPortfolio:100 }],
+    {name: "MSFT", quantity: 4, price: 1.0, avgCost: 230, mktValue: 1, bookCost: 39, gainLoss:0, percentageOfPortfolio:100 },
+    {name: "BABA", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 46, gainLoss:0, percentageOfPortfolio:100 },
+    {name: "V", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 50, gainLoss:0, percentageOfPortfolio:100 },
+    {name: "SHOP", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 87, gainLoss:0, percentageOfPortfolio:100 }],
   }
 
   // constructor(props) {
