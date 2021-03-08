@@ -1,11 +1,31 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import { withStyles } from '@material-ui/core'
 import TableComp from '../Table'
 
 import Button from '@material-ui/core/Button';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+
+// import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+// import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import './spendings.css'
 import pieChart from './pieChart.png'
+
+const useStyles = () => ({
+  drawer_paper: {
+    position: "relative",
+    height: "100%"
+  }
+})
 
 class Spendings extends React.Component {
 
@@ -32,7 +52,16 @@ class Spendings extends React.Component {
       ],
       // the net balance on the account 
       accountBalance: 0,
-      sortBy: "Date"
+      // current sorting by string, default is sort by date
+      sortBy: "Date",
+      // sorting in an ascending/descending order
+      sortDes: {
+        "Date": false,
+        "Amount": false,
+        "Category": false
+      },
+      // true for displaying the drawer (sidebar for months), false to hide
+      openDrawer: false
     }
 
     this.sumAccountBalance()
@@ -73,6 +102,53 @@ class Spendings extends React.Component {
     this.setState({ accountBalance: this.state.accountBalance })
   }
 
+  sortObj = (a, b) => {
+
+    switch (this.state.sortBy) {
+
+      case "Date":
+        if (!this.state.sortDes["Date"]) {
+          if (a["Date"] < b["Date"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Date"] > b["Date"]) return -1
+          else return 1
+        }
+
+      case "Amount":
+        if (!this.state.sortDes["Amount"]) {
+          if (parseFloat(a["Amount"]) < parseFloat(b["Amount"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Amount"]) > parseFloat(b["Amount"])) return -1
+          else return 1
+        }
+
+      case "Category":
+        if (!this.state.sortDes["Category"]) {
+          if (a["Category"] < b["Category"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Category"] > b["Category"]) return -1
+          else return 1
+        }
+
+      case "Default":
+        return
+
+    }
+
+  }
+
+  // sorting the transactions based on the currently selected element 
+  sortTransactions = () => {
+    this.state.transactions_data.sort(this.sortObj)
+    this.setState({ transactions_data: this.state.transactions_data })
+  }
+
   // add newTransaction to the beginning of the transactions_data array 
   addTransaction = (newTransaction) => {
     this.state.transactions_data.unshift(newTransaction)
@@ -108,11 +184,19 @@ class Spendings extends React.Component {
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
+    this.state.sortDes[sortBy] = !this.state.sortDes[sortBy]
+    this.setState({ sortDes: this.state.sortDes })
+    this.sortTransactions()
+  }
+
+  toggleDrawer = () => {
+    this.state.openDrawer = !this.state.openDrawer
+    this.setState({ openDrawer: this.state.openDrawer })
   }
 
   render() {
 
-    const { loggedIn } = this.props
+    const { loggedIn, classes } = this.props
 
     return (
 
@@ -120,60 +204,114 @@ class Spendings extends React.Component {
 
         <div>
 
-          <br></br>
-          <br></br>
-          <br></br>
+          <div className="DrawerDiv">
 
-          <div className="Chart">
+            {/* <IconButton className="OpenDrawerButton"
+                // color="inherit"
+                aria-label="open drawer"
+                onClick={() => this.toggleDrawer()}
+              // edge="start"
+              // className={clsx(classes.menuButton, {
+              //   [classes.hide]: open,
+              // })}
+              >
+                <MenuIcon />
+              </IconButton> */}
 
-            <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
+            <Drawer classes={{ paper: classes.drawer_paper, paperAnchorDocked: classes.drawer_paper }}
+              variant="permanent"
+            >
 
-            <div className="AccountBalance">
-              Total Amount: {this.state.accountBalance}
-            </div>
+              <List>
+                {["Jan", "Feb", "Mar", "Apr"].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+
+            </Drawer>
 
           </div>
 
-          <div className="Table">
+          <div className="Content">
 
-            <TableComp
-              // use the TableContainer class to style the table itself 
-              classes={{ TableContainer: 'TableContainer' }}
-              headings={this.state.transactions_headings}
-              data={this.state.transactions_data}
-              options={this.state.transactions_options}
-              categories={this.state.transactions_categories}
-              addRow={this.addTransaction}
-              editRow={this.editTransaction}
-              removeRow={this.deleteTransaction}
-              addCategory={this.addCategory}
-              removeCategory={this.deleteCategory}
-            />
+            <div className="Chart">
 
+              <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
 
-            <div className="SortButtons">
-
-              <Button
-                variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
-                onClick={() => this.changeSort("Date")}>
-                Sort By Date
-              </Button>
-              <Button
-                variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
-                onClick={() => this.changeSort("Amount")}>
-                Sort By Amount
-              </ Button>
-              <Button
-                variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
-                onClick={() => this.changeSort("Category")}>
-                Sort By Category
-              </Button>
+              <div className="AccountBalance">
+                Total Amount: {this.state.accountBalance}
+              </div>
 
             </div>
 
+            <div className="Table">
+
+              <TableComp
+                // use the TableContainer class to style the table itself 
+                classes={{ TableContainer: 'TableContainer' }}
+                headings={this.state.transactions_headings}
+                data={this.state.transactions_data}
+                options={this.state.transactions_options}
+                categories={this.state.transactions_categories}
+                addRow={this.addTransaction}
+                editRow={this.editTransaction}
+                removeRow={this.deleteTransaction}
+                addCategory={this.addCategory}
+                removeCategory={this.deleteCategory}
+              />
+
+              <div className="SortButtons">
+
+                <Grid container spacing={3}>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Date")}>
+                        Sort By Date
+                          {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Amount")}>
+                        Sort By Amount
+                          {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </ Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Category")}>
+                        Sort By Category
+                          {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                </Grid>
+
+              </div>
+
+            </div>
+            
           </div>
 
         </div>
+
         : <Redirect to="/login" />
 
     )
@@ -182,4 +320,4 @@ class Spendings extends React.Component {
 
 }
 
-export default Spendings;
+export default withStyles(useStyles)(Spendings);
