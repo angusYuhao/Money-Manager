@@ -9,16 +9,18 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-// import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 // import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 // import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Divider from "@material-ui/core/Divider";
+import AddIcon from '@material-ui/icons/Add';
 
 import './spendings.css'
-import pieChart from './pieChart.png'
+import PieChart from '../Investments/PieChart'
 
 const useStyles = () => ({
   drawer_paper: {
@@ -61,10 +63,13 @@ class Spendings extends React.Component {
         "Category": false
       },
       // true for displaying the drawer (sidebar for months), false to hide
-      openDrawer: false
+      openDrawer: false,
+      // the array used for displaying the pie chart, will contain array of objects, key is the category, value is the total spending of that category
+      sumForCategories: []
     }
 
     this.sumAccountBalance()
+    this.sumCategoriesAmount()
 
   }
 
@@ -90,7 +95,10 @@ class Spendings extends React.Component {
 
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
-    if (prevState.transactions_data != this.state.transactions_data) this.sumAccountBalance()
+    if (prevState.transactions_data != this.state.transactions_data) {
+      this.sumAccountBalance()
+      this.sumCategoriesAmount()
+    }
   }
 
   sumAccountBalance = () => {
@@ -100,6 +108,24 @@ class Spendings extends React.Component {
       return sum
     }, 0)
     this.setState({ accountBalance: this.state.accountBalance })
+  }
+
+  sumCategoriesAmount = () => {
+
+    this.state.sumForCategories = []
+
+    this.state.transactions_data.map(transaction => {
+      const category = transaction["Category"]
+      let index = this.state.sumForCategories.findIndex(x => x.name == category)
+      if (index == -1) {
+        this.state.sumForCategories.push({ name: category, bookCost: 0 })
+        index = this.state.sumForCategories.length - 1
+      }
+      this.state.sumForCategories[index].bookCost += parseFloat(transaction["Amount"])
+    })
+
+    this.setState({ sumForCategories: this.state.sumForCategories })
+
   }
 
   sortObj = (a, b) => {
@@ -153,6 +179,8 @@ class Spendings extends React.Component {
   addTransaction = (newTransaction) => {
     this.state.transactions_data.unshift(newTransaction)
     this.setState({ transactions_data: this.state.transactions_data })
+    this.sumAccountBalance()
+    this.sumCategoriesAmount()
   }
 
   // finds the index of the oldTransaction data and replace it with the newTransaction data
@@ -160,6 +188,8 @@ class Spendings extends React.Component {
     const index = this.state.transactions_data.findIndex(t => t === oldTransaction)
     this.state.transactions_data[index] = newTransaction
     this.setState({ transactions_data: this.state.transactions_data })
+    this.sumAccountBalance()
+    this.sumCategoriesAmount()
   }
 
   // deletes transaction from transactions_data array 
@@ -222,6 +252,11 @@ class Spendings extends React.Component {
               variant="permanent"
             >
 
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+              <Divider />
+
               <List>
                 {["Jan", "Feb", "Mar", "Apr"].map((text, index) => (
                   <ListItem button key={text}>
@@ -238,7 +273,12 @@ class Spendings extends React.Component {
 
             <div className="Chart">
 
-              <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
+              {/* <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
+              <PieChart
+                listToDisplay={this.state.sumForCategories}
+              >
+
+              </PieChart>
 
               <div className="AccountBalance">
                 Total Amount: {this.state.accountBalance}
@@ -307,7 +347,7 @@ class Spendings extends React.Component {
               </div>
 
             </div>
-            
+
           </div>
 
         </div>

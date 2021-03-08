@@ -3,9 +3,9 @@
 }
 
 .Table {
-    width: 45%;
+    width: 50%;
     display: inline-block;
-    margin-right: 5%;
+    /* margin-right: 5%; */
     margin-top: 5%;
 }
 
@@ -13,11 +13,17 @@
     width: 50%;
     display: inline-block;
     align-items: stretch;
+    position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 .AccountBalance {
     margin-top: 5%;
     text-align: center;
+    position: absolute;
+    top: 80%;
+    display: inline-block;
 }
 
 .SortButtons {
