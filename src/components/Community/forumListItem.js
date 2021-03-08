@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -15,6 +14,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import Fab from '@material-ui/core/Fab';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -23,9 +26,39 @@ import { withStyles } from "@material-ui/core/styles";
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Comment from "./comment.js"
 
+const styles =  theme => ({
+  closePostButton: {
+    backgroundColor: deepPurple[500],
+    // borderRadius: 5,
+  },
+  blackText: {
+    color: '#000000',
+  },
+  upvoteText: {
+    color: '#aaaaaa',
+  },
+});
+
+const theme = createMuiTheme({
+  palette: {
+      primary: {
+          main: deepPurple[800],
+      },
+      secondary: {
+          main: deepPurple[100],
+      }
+  },
+  typography: {
+      fontFamily: [
+          'Poppins',
+          'sans-serif',
+      ].join(','),
+  },
+});
 
 class ForumListItem extends React.Component {
 
@@ -35,14 +68,13 @@ class ForumListItem extends React.Component {
       comment: "",
       upvoted: false,
       downvoted: false,
+      spaces: "     ",
     }
 
     componentDidMount() {
       console.log("updating postID")
       console.log(this.props.postID)
-      this.setState({
-        postID: this.props.postID
-      })
+      this.setState({ postID: this.props.postID }, () => this.prepareOpenPost(), () => this.forceUpdate())
     }
 
     componentWillUnmount() {
@@ -50,18 +82,9 @@ class ForumListItem extends React.Component {
     }
 
     componentDidUpdate() {
-      // Typical usage (don't forget to compare props):
-      // console.log("previous: ", prevProps.postID)
-      // console.log("now: ", this.state.postID)
-      // console.log("props postID: ", this.props.postID)
-      // if (this.props.postID !== prevProps.postID) {
-      //   this.setState({
-      //     postID: prevProps.postID
-      //   })
-      // }
       console.log("componentDidUpdate")
       console.log("what is this???", this.props.postID)
-      if (this.state.postID !== this.props.postID) this.setState({ postID: this.props.postID })      
+      if (this.state.postID !== this.props.postID) this.setState({ postID: this.props.postID }, () => this.prepareOpenPost())      
     }
   
     openPost = () => {
@@ -77,9 +100,7 @@ class ForumListItem extends React.Component {
     }
   
     closePost = () => {
-      this.setState({
-        openPost: false
-      })
+      this.setState({ openPost: false })
     }
   
     handleInputChange = (event) => {
@@ -135,7 +156,7 @@ class ForumListItem extends React.Component {
   
     render() {
   
-      const { avatar, postTitle, postAuthor, postTextContent, category, comments, postComment, 
+      const { classes, avatar, postTitle, postAuthor, postTextContent, category, comments, postComment, 
               deletePosts, openManagePost, numUpvotes, numDownvotes } = this.props
   
       return (
@@ -147,7 +168,14 @@ class ForumListItem extends React.Component {
             <ListItemText
               primary={
                 <React.Fragment>
-                  { postTitle } :: { postAuthor }
+                  <span>{ postTitle } :: { postAuthor } </span>
+                  <IconButton size="small" component="span" onClick={ this.toggleUpvote } disabled>
+                    <ThumbUpAltIcon color={ this.state.upvoted ? "primary" : '#dddddd'} fontSize="small" />
+                  </IconButton>
+                  <span className={ classes.upvoteText }>{ numUpvotes } : { numDownvotes }</span>
+                  <IconButton size="small" component="span" onClick={ this.toggleDownvote } disabled>
+                    <ThumbDownAltIcon color={ this.state.downvoted ? "primary" : '#dddddd'} fontSize="small" />
+                  </IconButton>
                 </React.Fragment>
               }
               secondary={
@@ -163,16 +191,18 @@ class ForumListItem extends React.Component {
           </ListItem>
   
           <Dialog open={ this.state.openPost } onClose={ this.closePost } aria-labelledby="form-dialog-title" fullScreen>
-            
-            <DialogActions>
-              <Button onClick={ this.closePost } color="primary" variant="outlined">
-                Close
-              </Button>
+
+            <DialogActions className={ classes.closePostButton }>
+              <Tooltip title="Close">
+                <Fab color="secondary" size="small" onClick={ this.closePost }>
+                  <CloseIcon fontSize="default" />
+                </Fab>
+              </Tooltip>
             </DialogActions>
             
             <DialogTitle id="form-dialog-title">
               <Chip label={ category } size="small"/> :: { postTitle } :: 
-              <span className="categoryTitle"> { postAuthor }</span>
+              <span> { postAuthor }</span>
               <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ this.toggleUpvote }>
                 <ThumbUpAltIcon />
               </IconButton>
@@ -184,12 +214,12 @@ class ForumListItem extends React.Component {
             </DialogTitle>
 
             <DialogContent>
-              <DialogContentText style={{color: 'black'}}>
+              <DialogContentText className={ classes.blackText }>
                 { postTextContent }
               </DialogContentText>
               <Divider variant="fullWidth" />
               <br></br>
-              <DialogContentText style={{color: 'maroon'}}>Post a Comment:</DialogContentText>
+              <DialogContentText className={ classes.blackText }>Post a Comment:</DialogContentText>
               
               <TextField
                 value={ this.state.comment }
@@ -203,15 +233,14 @@ class ForumListItem extends React.Component {
                 fullWidth
               />
               <br></br>
-              <p>{ this.state.postID }</p>
               <Button variant="outlined" color="primary" onClick={ this.handlePostComment }>
-                Post!
+                Post
               </Button>
               <br></br>
               <br></br>
               <Divider variant="fullWidth" />
   
-              <List className="commentList">
+              <List>
                 {comments.map((comment) => {
                     return (
                       <div>
@@ -225,11 +254,11 @@ class ForumListItem extends React.Component {
               </List>
               
             </DialogContent>
-            
+
           </Dialog>
         </div>
       )
     }
   }
 
-  export default ForumListItem;
+  export default withStyles(styles)(ForumListItem);
