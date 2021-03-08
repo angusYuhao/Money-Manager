@@ -1,0 +1,22 @@
+.InvestmentContent {
+    width: 100vw;
+    height: 90vh;
+    /* margin: none; */
+    display: flex;
+}
+
+.Table {
+    width: 95%;
+    display: inline-block;
+    margin-right: 5%;
+    margin-top: 5%;
+}
+
+.PieChart{
+    margin-top: 0.6%;
+}
+
+.BarChart{
+    margin-top: 1%;
+    position:absolute
+}

@@ -1,10 +1,11 @@
 import React from 'react';
-import Input from './Input'
-import StockList from './StockList'
+// import Input from './Input'
+// import StockList from './StockList'
 // import Canvas from './canvasExample'
 import PieChart from './PieChart'
 import BarChart from './BarChart'
 import TableComp from '../Table'
+import './investments.css'
 
 
 
@@ -12,23 +13,23 @@ class Investments extends React.Component {
 
   state = {
     //new values for tables
-    stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book cost", "Gain/Loss", "Percentage of portfolio"],
+    stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss", "Percentage of portfolio"],
     stockList_options: ["Any", "Number", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
     
-    stocklist_data: [{name: "FB", quantity: 20, price: 1.0, avgCost: 32.5, mktValue: 1, bookCost: 100, gainLoss:100, percentageOfPortfolio:100 },
-    {name: "GOOGL", quantity: 3, price: 1.0, avgCost: 1523, mktValue: 1, bookCost: 37, gainLoss:200, percentageOfPortfolio:100 },
-    {name: "PDD", quantity: 8, price: 1.0, avgCost: 170, mktValue: 1, bookCost: 34, gainLoss:20, percentageOfPortfolio:100 },
-    {name: "GME", quantity: 4, price: 1.0, avgCost: 340, mktValue: 1, bookCost: 78, gainLoss:-89, percentageOfPortfolio:100 },
-    {name: "MSFT", quantity: 4, price: 1.0, avgCost: 230, mktValue: 1, bookCost: 45, gainLoss:-201, percentageOfPortfolio:100 },
-    {name: "BABA", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 46, gainLoss:30, percentageOfPortfolio:100 },
-    {name: "V", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 50, gainLoss:67, percentageOfPortfolio:100 },
-    {name: "SHOP", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 87, gainLoss:3, percentageOfPortfolio:100 }],
+    stocklist_data: [{"Name": "FB", "Quantity": 20, "Price": 1.0, "Average Cost": 32.5,  "Market Value": 1, "Book Cost": 100, "Gain/Loss":100, "Percentage of portfolio":100 },
+    {"Name": "GOOGL", "Quantity": 3, "Price": 1.0, "Average Cost": 1523,  "Market Value": 1, "Book Cost": 37, "Gain/Loss":200, "Percentage of portfolio":100 },
+    {"Name": "PDD", "Quantity": 8, "Price": 1.0, "Average Cost": 170,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":20, "Percentage of portfolio":100 },
+    {"Name": "GME", "Quantity": 4, "Price": 1.0, "Average Cost": 340,  "Market Value": 1, "Book Cost": 78, "Gain/Loss":-89, "Percentage of portfolio":100 },
+    {"Name": "MSFT", "Quantity": 4, "Price": 1.0, "Average Cost": 230,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":-201, "Percentage of portfolio":100 },
+    {"Name": "BABA", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 46, "Gain/Loss":30, "Percentage of portfolio":100 },
+    {"Name": "V", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 50, "Gain/Loss":67, "Percentage of portfolio":100 },
+    {"Name": "SHOP", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 87, "Gain/Loss":3, "Percentage of portfolio":100 }],
     
     
     //old values for tables
-    pieChartSize: 900,
-    pieChartRadius: 200,
+    pieChartSize: 600,
+    pieChartRadius: 150,
     totalAmountInvested: 100,
     ticker: 0,
     quantity: 0,
@@ -83,6 +84,7 @@ class Investments extends React.Component {
 
   // finds the index of the oldTransaction data and replace it with the newTransaction data
   editStock = (oldStock, newStock) => {
+    console.log("Edit")
     const index = this.state.stocklist_data.findIndex(t => t === oldStock)
     this.state.stocklist_data[index] = newStock
     this.setState({ stocklist_data: this.state.stocklist_data })
@@ -92,19 +94,6 @@ class Investments extends React.Component {
   deleteStock = (transaction) => {
     const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
     this.setState({ stocklist_data: keepTransactions })
-  }
-
-  // adds a user defined category 
-  addCategory = (newCategory) => {
-    if (!this.state.transactions_categories.includes(newCategory))
-      this.state.transactions_categories.push(newCategory)
-    this.setState({ transactions_categories: this.state.transactions_categories })
-  }
-
-  // deletes a user defined category (the default cannot be deleted)
-  deleteCategory = (category) => {
-    const keepCategories = this.state.transactions_categories.filter(c => c !== category)
-    this.setState({ transactions_categories: keepCategories })
   }
 
 
@@ -173,60 +162,79 @@ class Investments extends React.Component {
   }
 
 
-    //student is the object to reference
-  deleteStock = (stock) => {
-    //make var because not mutating this 
-    console.log("Delete")
-    const filteredStock = this.state.stockList.filter((s) => {
-      return s !== stock  //the one's we don't want to remove
-    })
+  //   //student is the object to reference
+  // deleteStock = (stock) => {
+  //   //make var because not mutating this 
+  //   console.log("Delete")
+  //   const filteredStock = this.state.stockList.filter((s) => {
+  //     return s !== stock  //the one's we don't want to remove
+  //   })
 
-    this.setState({
-      stockList: filteredStock
-    })
-  }
+  //   this.setState({
+  //     stockList: filteredStock
+  //   })
+  // }
 
-  editStock = (stock, valueToEdit) => {
+  // editStock = (stock, valueToEdit) => {
 
-    console.log("Editing stock")
-    console.log(stock)
-    console.log("Value")
-    console.log(valueToEdit)
+  //   console.log("Editing stock")
+  //   console.log(stock)
+  //   console.log("Value")
+  //   console.log(valueToEdit)
     
-  }
+  // }
 
   render() {
     return (
 
-      <div>
-      <div>
-        <Input stockList={this.state.stockList} 
-        handleInputStock = {this.handleInputStock} 
-        handleInputChange = {this.handleInputChange}
-        />
-        <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/>
-        
-    
-        <PieChart listToDisplay = {this.state.stockList} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>
-      {/* <BarChart listToDisplay = {this.state.stockList}/> */}
+      <div className = "InvestmentContent">
+        <div className = "PieChart">
+          {/* <Input stockList={this.state.stockList} 
+          handleInputStock = {this.handleInputStock} 
+          handleInputChange = {this.handleInputChange}
+          />
+          <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/> */}
+          
       
-      </div>
-      <div className="Stocklist Table">
-
-        <TableComp
-          // use the TableContainer class to style the table itself 
-          classes={{ TableContainer: 'TableContainer' }}
-          headings={this.state.stockList_headings}
-          data={this.state.stocklist_data}
-          options={this.state.stockList_options}
-          categories={this.state.stockList_categories}
-          addRow={this.addStock}
-          editRow={this.editStock}
-          removeRow={this.deleteStock}
-          addCategory={this.addCategory}
-          removeCategory={this.deleteCategory}
-        />
+          <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>
+        {/* <BarChart listToDisplay = {this.state.stockList}/> */}
+        
         </div>
+
+        <div style={{ width: "100vw", display: "block" }} >
+          <div className="Stocklist Table" width = "100vw">
+
+            <TableComp 
+              
+              // use the TableContainer class to style the table itself 
+              classes={{ TableContainer: 'TableContainer' }}
+              headings={this.state.stockList_headings}
+              data={this.state.stocklist_data}
+              options={this.state.stockList_options}
+              categories={this.state.stockList_categories}
+              addRow={this.addStock}
+              editRow={this.editStock}
+              removeRow={this.deleteStock}
+            />
+          </div>
+        </div>
+        <div className = "BarChart">
+          {/* <Input stockList={this.state.stockList} 
+          handleInputStock = {this.handleInputStock} 
+          handleInputChange = {this.handleInputChange}
+          />
+          <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/> */}
+          
+      
+          {/* <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/> */}
+          <BarChart listToDisplay = {this.state.stockList}/>
+        
+        </div>
+
+
+
+
+
       </div>
 
 
