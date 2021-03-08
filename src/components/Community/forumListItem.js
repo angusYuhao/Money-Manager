@@ -147,8 +147,7 @@ class ForumListItem extends React.Component {
             <ListItemText
               primary={
                 <React.Fragment>
-                  { postTitle }
-                  <span className="postAuthor"> :: { postAuthor }</span>
+                  { postTitle } :: { postAuthor }
                 </React.Fragment>
               }
               secondary={

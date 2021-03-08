@@ -1,5 +1,6 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
@@ -15,12 +16,61 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 
 import ForumListItem from "./forumListItem.js"
+import { ArrowRight } from '@material-ui/icons';
+
+import IconButton from '@material-ui/core/IconButton';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+
+// define styles
+const styles =  theme => ({
+  forumList: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+  },
+  forumTopBar: {
+    backgroundColor: deepPurple[50],
+    borderRadius: 5,
+    spacing: '100',
+  },
+  filter: {
+    minWidth: 200,
+  },
+  forumBarButton: {
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 0,
+  }
+});
+
+const theme = createMuiTheme({
+  palette: {
+      primary: {
+          main: deepPurple[800],
+      },
+      secondary: {
+          main: deepPurple[100],
+      }
+  },
+  typography: {
+      fontFamily: [
+          'Poppins',
+          'sans-serif',
+      ].join(','),
+  },
+});
 
 class ForumList extends React.Component {
 
@@ -106,6 +156,13 @@ class ForumList extends React.Component {
     this.setState({
       openNewPost: false,
       openManagePost: false,
+
+      author: "",
+      title: "",
+      authorAvatar: "",
+      content: "",
+      category: "",
+      postID: null
     })
   }
 
@@ -294,16 +351,16 @@ class ForumList extends React.Component {
   render() {
 
     const { username } = this.props
+    const { classes } = this.props
 
     return (
-      <ThemeProvider>
         <div>
           <Container maxWidth="xl">
-            <List className="forumList">
+            {/* <List className={ classes.forumTopBar }> */}
               
-              <Grid container justify="space-evenly">
+              {/* <Card className={ classes.forumTopBar }>
 
-                <FormControl style={{minWidth: 200}}>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+                <FormControl style={{minWidth: 200}}> 
                   <InputLabel>Filter Posts</InputLabel>
                   <Select onChange={ this.handleFilterInputChange }>
                     <MenuItem value="">None</MenuItem>
@@ -313,7 +370,7 @@ class ForumList extends React.Component {
                   </Select>
                 </FormControl>
 
-                <FormControl style={{minWidth: 200}}>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+                <FormControl style={{minWidth: 200}}> 
                   <InputLabel>Sort By</InputLabel>
                   <Select onChange={ this.handleSortInputChange }>
                     <MenuItem value="Oldest">Oldest</MenuItem>
@@ -324,28 +381,121 @@ class ForumList extends React.Component {
                 </FormControl>
 
                 { this.state.openManagePost ? 
-                  <Button className="newPostButton" color="secondary" variant="contained" onClick={ this.handleClickOpen } disabled>
+                  <Button color="primary" variant="contained" onClick={ this.handleClickOpen } disabled>
                     New Post
                   </Button>
                   :
-                  <Button className="newPostButton" color="secondary" variant="contained" onClick={ this.handleClickOpen } >
+                  <Button color="primary" variant="contained" onClick={ this.handleClickOpen } >
                     New Post
                   </Button> }
                 { this.state.openManagePost ? 
-                  <Button className="managePostButton" color="primary" variant="contained" onClick={ this.handleClickManageDone }>
+                  <Button color="primary" variant="contained" onClick={ this.handleClickManageDone }>
                   Done
                   </Button> : 
-                  <Button className="managePostButton" color="secondary" variant="contained" onClick={ this.handleClickManage }>
+                  <Button color="primary" variant="contained" onClick={ this.handleClickManage }>
                   Manage Posts
                   </Button> }
                 
-              </Grid>
+              </Card> */}
+
+              <Card>
+                <CardActions className={ classes.forumTopBar }>
+                  <FormControl className={ classes.filter }>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+                    <InputLabel>Filter Posts</InputLabel>
+                    <Select onChange={ this.handleFilterInputChange }>
+                      <MenuItem value="">None</MenuItem>
+                      <MenuItem value="Announcement">Announcement</MenuItem>
+                      <MenuItem value="Question">Question</MenuItem>
+                      <MenuItem value="Opinion">Opinion</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl className={ classes.filter }>         {/*Warning: inline styling!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+                    <InputLabel>Sort By</InputLabel>
+                    <Select onChange={ this.handleSortInputChange }>
+                      <MenuItem value="Oldest">Oldest</MenuItem>
+                      <MenuItem value="Newest">Newest</MenuItem>
+                      <MenuItem value="MostUpvotes">Most Upvotes</MenuItem>
+                      <MenuItem value="BestRated">Best Rated</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Grid Container justify="flex-end">
+                    { this.state.openManagePost === true || this.state.openNewPost === true ? 
+                      <IconButton color="primary" onClick={ this.handleClickOpen } disabled>
+                        <AddCircleIcon fontSize="large"/>
+                      </IconButton>
+                      :
+                      <IconButton color="primary" onClick={ this.handleClickOpen }>
+                        <AddCircleIcon fontSize="large"/>
+                      </IconButton>
+                    }
+                    { this.state.openManagePost ? 
+                      <Button className={ classes.forumBarButton } color="primary" variant="contained" onClick={ this.handleClickManageDone }>
+                      Done
+                      </Button> : 
+                      <Button className={ classes.forumBarButton } color="primary" variant="contained" onClick={ this.handleClickManage }>
+                      Manage Posts
+                      </Button> 
+                    }
+                  </Grid>
+                  
+                </CardActions>
+                
+                { this.state.openNewPost ? 
+                <React.Fragment>
+                  <CardContent>
+                    <TextField
+                      value={ this.state.title }
+                      onChange={ this.handleInputChange }
+                      size="small"
+                      variant="outlined"
+                      margin="dense"
+                      name="title"
+                      label="Post Title"
+                      fullWidth
+                    />
+
+                    <span>Category: </span>
+                    <br></br>
+                    <br></br>
+                    <ButtonGroup color="primary" aria-label="outlined primary button group" fullWidth>
+                      <Button variant={ this.state.category === "Announcement" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Announcement") }>Announcement</Button>
+                      <Button variant={ this.state.category === "Question" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Question") }>Question</Button>
+                      <Button variant={ this.state.category === "Opinion" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Opinion") }>Opinion</Button>
+                    </ButtonGroup>
+
+                    <TextField
+                      value={ this.state.content }
+                      onChange={ this.handleInputChange }
+                      multiline
+                      rows="5"
+                      variant="outlined"
+                      margin="dense"
+                      name="content"
+                      label="Say something here..."
+                      fullWidth
+                    />
+                  </CardContent>
+
+                  <CardActions>
+                    <Button onClick={ this.handleClose } color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={ () => this.addPost(username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                      Post
+                    </Button>
+                  </CardActions>
+                </React.Fragment>
+                : null }
+                
+              </Card>
               
-            </List>
+            {/* </List> */}
 
             <br></br>
 
-            <List className="forumList">
+            <List className={ classes.forumList }>
               { this.state.posts.map((thread) => {
                   if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === username : this.state.postFilter === "") {
                     return (
@@ -399,9 +549,11 @@ class ForumList extends React.Component {
               }
             </List>
           </Container>
+
+          
           
 
-          <Dialog open={ this.state.openNewPost } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
+          {/* <Dialog open={ this.state.openNewPost } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
             <DialogTitle id="form-dialog-title">New Post:</DialogTitle>
             <DialogContent>
 
@@ -416,7 +568,7 @@ class ForumList extends React.Component {
                 fullWidth
               />
 
-              <span className="categoryTitle">Category: </span>
+              <span>Category: </span>
               <br></br>
               <br></br>
               <ButtonGroup color="primary" aria-label="outlined primary button group" fullWidth>
@@ -440,54 +592,20 @@ class ForumList extends React.Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={ this.handleClose } color="primary">
-                Done
+                Cancel
               </Button>
               <Button onClick={ () => this.addPost(username) } color="primary">
                 Post
               </Button>
             </DialogActions>
-          </Dialog>
-
-          {/* <Dialog open={ this.state.openManagePost } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
-
-            <DialogTitle id="form-dialog-title">Your Posts:</DialogTitle>
-
-            <DialogContent>
-              <List className="forumList">
-                {this.state.posts.map((thread) => {
-                  if (thread.author === username) {
-                    return (
-                      <div>
-                        <ForumListItem postTitle={ thread.title }
-                                      postAuthor={ thread.author }
-                                      postTextContent={ thread.content }
-                                      avatar={ thread.authorAvatar }
-                                      category={ thread.category }
-                                      comments={ thread.comments }
-                                      postID={ thread.postID }
-                                      openManagePost={ true }
-                                      deletePosts={ this.deletePosts }
-                                      postComment={ this.postComment }/>
-                        <Divider variant="inset" component="li" />
-                      </div>
-                    )
-                  }
-                })}
-              </List>
-            </DialogContent>
-
-            <DialogActions>
-              <Button onClick={ this.handleClose } color="primary">
-                Done
-              </Button>
-            </DialogActions>
-
           </Dialog> */}
-
         </div>
-      </ThemeProvider>
     )
   }
 }
 
-export default ForumList;
+// ForumList.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
+
+export default withStyles(styles)(ForumList);
