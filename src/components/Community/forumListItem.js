@@ -42,6 +42,10 @@ const styles =  theme => ({
   redText: {
     color: '#dd0000',
   },
+  purpleText: {
+    color: deepPurple[500],
+    fontSize: 30
+  },
   upvoteText: {
     color: '#aaaaaa',
   },
@@ -51,6 +55,9 @@ const styles =  theme => ({
   financialAdvisorTag: {
     color: '#ffffff',
     backgroundColor: green[500]
+  },
+  followButtonGrid: {
+    padding: 20,
   },
 });
 
@@ -76,10 +83,16 @@ class ForumListItem extends React.Component {
     state = {
       postID: null,
       openPost: false,
+      openFAInfo: false,
       comment: "",
       upvoted: false,
       downvoted: false,
-      spaces: "     ",
+      authorFAInfo: {
+        FAName: "",
+        FAIntro: "",
+        FAFields: [],
+        FAPoints: 0,
+      }
     }
 
     componentDidMount() {
@@ -129,7 +142,22 @@ class ForumListItem extends React.Component {
     }
 
     handleOpenFAInfo = () => {
-      // add this stuff later++++++++++++++++++++++++++++++++++++++++++++
+      const targetFAInfo = this.props.FAInfo.filter((I) => { return I.FAName === this.props.postAuthor})
+      console.log("FFFFFFFAAAAAAAAA:", targetFAInfo)
+      this.setState({
+        authorFAInfo: targetFAInfo[0],
+        openFAInfo: true,
+      })
+    }
+
+    handleCloseFAInfo = () => {
+      this.setState({ openFAInfo: false })
+    }
+
+    handleUserFollowFA = () => {
+      let newUserInfo = this.props.userInfo
+      newUserInfo.userFollows.push(this.state.authorFAInfo)
+      this.props.userInfoUpdater(newUserInfo)
     }
 
     toggleUpvote = () => {
@@ -172,7 +200,7 @@ class ForumListItem extends React.Component {
     render() {
   
       const { classes, avatar, postTitle, postAuthor, postTextContent, category, comments, postComment, 
-              deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype } = this.props
+              deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
   
       return (
         <div>
@@ -284,6 +312,51 @@ class ForumListItem extends React.Component {
               
             </DialogContent>
 
+          </Dialog>
+
+          <Dialog open={ this.state.openFAInfo } onClose={ this.handleCloseFAInfo }>
+            
+            <DialogTitle>
+              <Grid container justify="center">
+                <Avatar></Avatar>
+              </Grid>
+              <Grid container justify="center">
+                { this.state.authorFAInfo.FAName }
+              </Grid>
+            </DialogTitle>
+
+            <Divider variant="middle" />
+
+            <DialogContent>
+              <DialogContentText align="center">
+                { this.state.authorFAInfo.FAIntro }
+              </DialogContentText>
+              <DialogContentText align="center">
+                { this.state.authorFAInfo.FAFields.map((field) => {
+                  return (
+                    <span>
+                      <Chip label={ field } size="small" color="secondary" />
+                      { this.state.authorFAInfo.FAFields[this.state.authorFAInfo.FAFields.length - 1] === field ? null : <span> : </span> }
+                    </span>
+                  )
+                }) }
+              </DialogContentText>
+              <DialogContentText align="center">
+                <span className={ classes.blackText }>Community Points: </span>
+                <span className={ classes.purpleText }>{ this.state.authorFAInfo.FAPoints }</span>
+              </DialogContentText>
+              
+            </DialogContent>
+
+            <Grid container justify="space-evenly" className={ classes.followButtonGrid }>
+              { userInfo.userFollows.includes(this.state.authorFAInfo) ? 
+              <Button color="primary" variant="contained" disabled>
+                Following
+              </Button> : 
+              <Button color="primary" variant="contained" onClick={ this.handleUserFollowFA }>
+                Follow
+              </Button> }
+            </Grid>
           </Dialog>
         </div>
       )

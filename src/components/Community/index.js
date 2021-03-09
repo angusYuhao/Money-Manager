@@ -85,7 +85,7 @@ class Community extends React.Component {
   }
 
   userInfoUpdater(newUserInfo) {
-    this.setState({ userInfo: newUserInfo })
+    this.setState({ userInfo: newUserInfo }, () => { console.log("new userFollows:", this.state.userInfo.userFollows) })
   }
 
 
@@ -95,6 +95,7 @@ class Community extends React.Component {
       <ThemeProvider theme={ theme }>
         <ForumList className={ classes.root }
                    userInfo={ this.state.userInfo }
+                   FAInfo={ this.state.tempFAInfo }
                    userInfoUpdater={ this.userInfoUpdater }/>
       </ThemeProvider>
     )

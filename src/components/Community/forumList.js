@@ -359,7 +359,7 @@ class ForumList extends React.Component {
 
   render() {
 
-    const { userInfo, userInfoUpdater } = this.props
+    const { userInfo, FAInfo, userInfoUpdater } = this.props
     const { classes } = this.props
 
     return (
@@ -481,6 +481,8 @@ class ForumList extends React.Component {
                                       numUpvotes={ thread.numUpvotes }
                                       numDownvotes={ thread.numDownvotes }
                                       userInfo={ userInfo }
+                                      FAInfo={ FAInfo }
+                                      userInfoUpdater={ userInfoUpdater }
                                       addUpvote={ this.addUpvote }
                                       minusUpvote={ this.minusUpvote }
                                       addDownvote={ this.addDownvote }
@@ -506,6 +508,8 @@ class ForumList extends React.Component {
                                       numUpvotes={ thread.numUpvotes }
                                       numDownvotes={ thread.numDownvotes }
                                       userInfo={ userInfo }
+                                      FAInfo={ FAInfo }
+                                      userInfoUpdater={ userInfoUpdater }
                                       addUpvote={ this.addUpvote }
                                       minusUpvote={ this.minusUpvote }
                                       addDownvote={ this.addDownvote }
