@@ -40,12 +40,12 @@ class App extends React.Component {
     }
     else this.state.loggedIn = false;
 
-    this.setState({ 
+    this.setState({
       loggedIn: this.state.loggedIn,
       username: this.state.username,
       password: this.state.password,
       userLevel: this.state.userLevel,
-     })
+    })
   }
 
   render() {
@@ -54,19 +54,20 @@ class App extends React.Component {
 
       <div>
         <BrowserRouter>
-          {this.state.loggedIn ? 
+          {this.state.loggedIn ?
             <div>
-              <NavBar 
+              <NavBar
                 username={this.state.username}
-                password={this.state.password}/>
+                password={this.state.password} />
 
             </div> : null}
-          
+
 
           <Switch>
 
             <Route exact path='/'
-              render={() => (<Home />)} />
+              render={() => (<Home
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/login'
               render={() => (<Login
@@ -87,31 +88,34 @@ class App extends React.Component {
               render={() => (<Investments />)} />
 
             <Route exact path='/community'
-              render={() => (<Community 
+              render={() => (<Community
                 username={this.state.username}
-                userLevel={this.state.userLevel}/>)} />
+                userLevel={this.state.userLevel} />)} />
 
             <Route exact path='/contact'
-              render={() => (<Contact />)} />
+              render={() => (<Contact
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/sent'
-              render={() => (<Sent />)} />
+              render={() => (<Sent
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/about'
-              render={() => (<About />)} />
+              render={() => (<About
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
-              render={() => (<Profile 
+              render={() => (<Profile
                 username={this.state.username}
                 password={this.state.password}
               />)} />
 
           </Switch>
-          
+
 
         </BrowserRouter>
-        
-        
+
+
       </div>
       /*<div>
 

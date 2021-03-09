@@ -5,7 +5,7 @@ import Footer from './../Footer/footer.js';
 import { deepPurple, grey } from '@material-ui/core/colors';
 
 const useStyles = theme => ({
-    
+
     contact: {
         position: 'relative',
         justifyContent: 'center',
@@ -48,27 +48,27 @@ class Sent extends React.Component {
 
     handleInputChange = (event) => {
         console.log(event)
-    
+
         // get the value we type in 
         const target = event.target;
         const value = target.value;
         const name = target.name;
         console.log(value);
-    
+
         // state is updated and value is also updated in JSX
         // the square bracket dynamically changes the name 
         this.setState({
-          [name]: value
+            [name]: value
         })
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, loggedIn } = this.props;
 
         return (
             <ThemeProvider theme={theme}>
                 <div>
-                    <HomeAppBar />
+                    <HomeAppBar loggedIn={loggedIn} />
                     <Typography variant="h2" className={classes.contact}>
                         Thank you. <br></br>
                         Your request has been successfully sent!

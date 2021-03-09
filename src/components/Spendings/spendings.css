@@ -3,7 +3,7 @@
 }
 
 .Content {
-    width: 90vw;
+    width: 93vw;
     height: 90vh;
     margin: none;
     display: flex;
@@ -12,7 +12,6 @@
 .Table {
     width: 50%;
     display: inline-block;
-    /* margin-right: 5%; */
     margin-top: 5%;
 }
 
@@ -35,6 +34,7 @@
 
 .SortButtons {
     margin-top: 5%;
+    max-height: 1vh;
 }
 
 .SortButton {
@@ -43,7 +43,7 @@
 
 .DrawerDiv {
     width: 5vw;
-    height: 90vh;
+    height: 88vh;
     float: left;
     display: flex;
     margin-top: 1%;
