@@ -42,6 +42,13 @@ const useStyles = () => ({
   }
 })
 
+const useStyles = () => ({
+  drawer_paper: {
+    position: "relative",
+    height: "100%"
+  }
+})
+
 class Spendings extends React.Component {
 
   constructor(props) {
@@ -358,6 +365,11 @@ class Spendings extends React.Component {
 
             <div className="Chart">
 
+              <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
+
+              <div className="AccountBalance">
+                Total Amount: {this.state.accountBalance}
+
               {/* <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
               <PieChart
                 listToDisplay={this.state.sumForCategories}
@@ -433,6 +445,68 @@ class Spendings extends React.Component {
 
             </div>
 
+            <div className="Table">
+
+              <TableComp
+                // use the TableContainer class to style the table itself 
+                classes={{ TableContainer: 'TableContainer' }}
+                headings={this.state.transactions_headings}
+                data={this.state.transactions_data}
+                options={this.state.transactions_options}
+                categories={this.state.transactions_categories}
+                addRow={this.addTransaction}
+                editRow={this.editTransaction}
+                removeRow={this.deleteTransaction}
+                addCategory={this.addCategory}
+                removeCategory={this.deleteCategory}
+              />
+
+              <div className="SortButtons">
+
+                <Grid container spacing={3}>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Date")}>
+                        Sort By Date
+                          {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Amount")}>
+                        Sort By Amount
+                          {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </ Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Category")}>
+                        Sort By Category
+                          {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                </Grid>
+
+              </div>
+
+            </div>
+            
           </div>
 
         </div >
