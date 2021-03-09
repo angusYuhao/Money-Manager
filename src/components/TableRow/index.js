@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 class TableRowComp extends React.Component {
 
@@ -72,6 +73,7 @@ class TableRowComp extends React.Component {
             switch (this.props.options[index]) {
 
                 case "Number":
+                case "Percentage":
                     // error if input not a number, or less than 0 
                     if (!isNaN(e.target.value) && parseFloat(e.target.value) >= 0) this.state.error[index] = false
                     else this.state.error[index] = true
@@ -184,6 +186,17 @@ class TableRowComp extends React.Component {
                     </Select>
                 </FormControl>
 
+            case "Number":
+                return <TextField
+                    error={this.state.error[index]}
+                    helperText={this.state.error[index] ? `Please enter: ${option}` : ""}
+                    id="standard-basic"
+                    label={this.props.headings[index]}
+                    defaultValue={this.props.rowForAdd ? "" : this.props.row[heading]}
+                    onChange={(e) => this.textFieldOnChangeHandler(e, this.props.headings, index)}
+                // InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+                > </TextField>
+
             default:
                 return <TextField
                     error={this.state.error[index]}
@@ -196,6 +209,17 @@ class TableRowComp extends React.Component {
 
         }
 
+    }
+
+    renderCellValue(option, value) {
+        switch (option) {
+            case "Percentage":
+                return value + '%'
+            case "Number":
+                return '$' + value;
+            default:
+                return value
+        }
     }
 
     doneIconOnClick() {
@@ -244,8 +268,10 @@ class TableRowComp extends React.Component {
                             <div>
                                 {this.renderEditCell(options[index], heading, index)}
                             </div>
-
-                            : row[heading]
+                            :
+                            <div>
+                                {this.renderCellValue(options[index], row[heading])}
+                            </div>
 
                         }
 

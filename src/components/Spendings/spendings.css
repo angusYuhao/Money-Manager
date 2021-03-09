@@ -2,6 +2,13 @@
     max-height: 65vh;
 }
 
+.Content {
+    width: 90vw;
+    height: 90vh;
+    margin: none;
+    display: flex;
+}
+
 .Table {
     width: 50%;
     display: inline-block;
@@ -32,13 +39,6 @@
 
 .SortButton {
     width: 100%;
-}
-
-.Content {
-    width: 90vw;
-    height: 90vh;
-    margin: none;
-    display: flex;
 }
 
 .DrawerDiv {

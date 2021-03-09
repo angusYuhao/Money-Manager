@@ -10,14 +10,20 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from "@material-ui/core/Divider";
 import AddIcon from '@material-ui/icons/Add';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import './spendings.css'
 import PieChart from '../Investments/PieChart'
@@ -26,6 +32,13 @@ const useStyles = () => ({
   drawer_paper: {
     position: "relative",
     height: "100%"
+  },
+  menu_list: {
+    width: "15vw"
+  },
+  formControl_root: {
+    outline: "none",
+    minWidth: "15vw"
   }
 })
 
@@ -65,7 +78,11 @@ class Spendings extends React.Component {
       // true for displaying the drawer (sidebar for months), false to hide
       openDrawer: false,
       // the array used for displaying the pie chart, will contain array of objects, key is the category, value is the total spending of that category
-      sumForCategories: []
+      sumForCategories: [],
+      // the position for the menu used to create a new spendings page
+      menuPosition: null,
+      // the month selected for the menu 
+      monthSelected: ""
     }
 
     this.sumAccountBalance()
@@ -224,6 +241,19 @@ class Spendings extends React.Component {
     this.setState({ openDrawer: this.state.openDrawer })
   }
 
+  hideAddNewMonth = () => {
+    this.setState({ menuPosition: null })
+  }
+
+  displayAddNewMonth = (e) => {
+    this.setState({ menuPosition: e.currentTarget })
+  }
+
+  selectFieldOnChangeHandler = (e) => {
+    this.state.monthSelected = e.target.value
+    this.setState({ monthSelected: this.state.monthSelected })
+  }
+
   render() {
 
     const { loggedIn, classes } = this.props
@@ -252,7 +282,62 @@ class Spendings extends React.Component {
               variant="permanent"
             >
 
-              <IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={this.state.menuPosition}
+                open={Boolean(this.state.menuPosition)}
+                onClose={() => this.hideAddNewMonth()}
+                classes={{ list: classes.menu_list }}
+              >
+
+                <FormControl
+                  classes={{ root: classes.formControl_root }}
+                >
+
+                  <InputLabel id="simple-select-label">Month</InputLabel>
+                  <Select
+                    id="simple-select"
+                    defaultValue={this.state.monthSelected}
+                    onChange={(e) => this.selectFieldOnChangeHandler(e)}
+                  >
+
+                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month =>
+                      <MenuItem
+                        value={month}>
+                        {month}
+                      </MenuItem>
+                    )}
+
+                  </Select>
+
+                </FormControl>
+
+                <TextField
+                  id="standard-basic"
+                  label="Year"
+                  classes={{ root: classes.menu_list }}
+                />
+
+                <TextField
+                  id="standard-basic"
+                  label="Projected Spendings"
+                  classes={{ root: classes.menu_list }}
+                />
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  classes={{ root: classes.menu_list }}
+                  size="small"
+                >
+                  Add New Spendings Page
+                </Button>
+
+              </Menu>
+
+              <IconButton
+                aria-label="add"
+                onClick={(e) => this.displayAddNewMonth(e)}>
                 <AddIcon />
               </IconButton>
               <Divider />
@@ -281,7 +366,7 @@ class Spendings extends React.Component {
               </PieChart>
 
               <div className="AccountBalance">
-                Total Amount: {this.state.accountBalance}
+                Total Amount: ${this.state.accountBalance}
               </div>
 
             </div>
@@ -350,7 +435,7 @@ class Spendings extends React.Component {
 
           </div>
 
-        </div>
+        </div >
 
         : <Redirect to="/login" />
 
