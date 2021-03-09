@@ -24,17 +24,17 @@ class Investments extends React.Component {
 
   state = {
     //general stock data
-    stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss", "Percentage of portfolio"],
+    stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Any", "Number", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
-    stocklist_data: [{"Name": "FB", "Quantity": 20, "Price": 1.0, "Average Cost": 32.5,  "Market Value": 1, "Book Cost": 100, "Gain/Loss":100, "Percentage of portfolio":100 },
-    {"Name": "GOOGL", "Quantity": 3, "Price": 1.0, "Average Cost": 1523,  "Market Value": 1, "Book Cost": 37, "Gain/Loss":200, "Percentage of portfolio":100 },
-    {"Name": "PDD", "Quantity": 8, "Price": 1.0, "Average Cost": 170,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":20, "Percentage of portfolio":100 },
-    {"Name": "GME", "Quantity": 4, "Price": 1.0, "Average Cost": 340,  "Market Value": 1, "Book Cost": 78, "Gain/Loss":-89, "Percentage of portfolio":100 },
-    {"Name": "MSFT", "Quantity": 4, "Price": 1.0, "Average Cost": 230,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":-201, "Percentage of portfolio":100 },
-    {"Name": "BABA", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 46, "Gain/Loss":30, "Percentage of portfolio":100 },
-    {"Name": "V", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 50, "Gain/Loss":67, "Percentage of portfolio":100 },
-    {"Name": "SHOP", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 87, "Gain/Loss":3, "Percentage of portfolio":100 }],
+    stocklist_data: [{"Name": "FB", "Quantity": 20, "Price": 1.0, "Average Cost": 32.5,  "Market Value": 1, "Book Cost": 100, "Gain/Loss":100},
+    {"Name": "GOOGL", "Quantity": 3, "Price": 1.0, "Average Cost": 1523,  "Market Value": 1, "Book Cost": 37, "Gain/Loss":200 },
+    {"Name": "PDD", "Quantity": 8, "Price": 1.0, "Average Cost": 170,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":20},
+    {"Name": "GME", "Quantity": 4, "Price": 1.0, "Average Cost": 340,  "Market Value": 1, "Book Cost": 78, "Gain/Loss":-89 },
+    {"Name": "MSFT", "Quantity": 4, "Price": 1.0, "Average Cost": 230,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":-201},
+    {"Name": "BABA", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 46, "Gain/Loss":30 },
+    {"Name": "V", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 50, "Gain/Loss":67},
+    {"Name": "SHOP", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 87, "Gain/Loss":3}],
 
     //table values
     sortBy: "Market Value",
@@ -43,13 +43,12 @@ class Investments extends React.Component {
       "Quantity": false,
       "Market Value": false,
       "Gain/Loss": false,
-      "Percentage of portfolio": false,
     },
     openDrawer: false,
 
     //Pie chart values
-    pieChartSize: 600,
-    pieChartRadius: 150,
+    pieChartSize: 650,
+    pieChartRadius: 175,
   }
 
   // componentDidUpdate(undefined, prevState) {
@@ -105,16 +104,6 @@ class Investments extends React.Component {
           else return 1
         }
     
-      case "Percentage of portfolio":
-        if (!this.state.sortDes["Percentage of portfolio"]) {
-          if (parseFloat(a["Percentage of portfolio"]) < parseFloat(b["Percentage of portfolio"])) return -1
-          else return 1
-        }
-        else {
-          if (parseFloat(a["Percentage of portfolio"]) > parseFloat(b["Percentage of portfolio"])) return -1
-          else return 1
-        }
-      
 
       case "Default":
         return

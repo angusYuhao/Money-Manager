@@ -37,7 +37,10 @@ class PieChart extends React.Component {
 
     drawSlices = () => {
         //!!!Ian: bookCost is the total amount spend on that stock/in that category
+       
         const {listToDisplay} = this.props
+        console.log(listToDisplay);
+
         let startAngle = 0; 
         let radius = this.state.radius;
         let cx = this.state.canvasWidth/2;
@@ -45,7 +48,7 @@ class PieChart extends React.Component {
         let total = listToDisplay.reduce( (ttl, stock) => {
             console.log(stock)
             //return ttl + (stock.bookCost)
-            return ttl + (stock["Book Cost"])
+            return ttl + (parseFloat(stock["Book Cost"]))
         }, 0);
         
         console.log(total)
@@ -61,7 +64,7 @@ class PieChart extends React.Component {
             
             // draw the pie wedges
             //let endAngle = ((element.bookCost / total) * Math.PI * 2) + startAngle;
-            let endAngle = ((element["Book Cost"] / total) * Math.PI * 2) + startAngle;
+            let endAngle = ((parseFloat(element["Book Cost"])/ total) * Math.PI * 2) + startAngle;
             this.context.moveTo(cx, cy);
             this.context.arc(cx, cy, radius, startAngle, endAngle);
             this.context.lineTo(cx, cy);
@@ -87,14 +90,14 @@ class PieChart extends React.Component {
 
             //!!!Ian: name is the name of the stock category
             // let percentage = Math.round(+((element.bookCost*100)/total));
-            let percentage = Math.round(+((element["Book Cost"]*100)/total));
+            let percentage = Math.round(+((parseFloat(element["Book Cost"])*100)/total));
 
             this.context.fillText(element.Name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
             
             //this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
-            console.log(element["Book Cost"])
+            console.log(parseFloat(element["Book Cost"]))
             //store the slice information
             this.state.slices.push({ 
                     "name" : element.Name,
@@ -104,7 +107,7 @@ class PieChart extends React.Component {
                     "drawStartAngle": startAngle,
                     "drawEndAngle": endAngle,
                     //"bookCost": element.bookCost
-                    "bookCost": element["Book Cost"]
+                    "bookCost": parseFloat(element["Book Cost"])
             });
             startAngle = endAngle;
         });
