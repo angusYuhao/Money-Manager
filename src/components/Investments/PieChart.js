@@ -278,7 +278,8 @@ class PieChart extends React.Component {
         //clear slices
         this.state.slices = [];
         
-        if(this.state != prevState)this.drawSlices();//redraw
+        // if(this.state != prevState)
+        this.drawSlices();//redraw
     }
     
     render() {
