@@ -9,16 +9,38 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Divider from "@material-ui/core/Divider";
+import AddIcon from '@material-ui/icons/Add';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import './spendings.css'
-import pieChart from './pieChart.png'
+import PieChart from '../Investments/PieChart'
+
+const useStyles = () => ({
+  drawer_paper: {
+    position: "relative",
+    height: "100%"
+  },
+  menu_list: {
+    width: "15vw"
+  },
+  formControl_root: {
+    outline: "none",
+    minWidth: "15vw"
+  }
+})
 
 const useStyles = () => ({
   drawer_paper: {
@@ -61,10 +83,17 @@ class Spendings extends React.Component {
         "Category": false
       },
       // true for displaying the drawer (sidebar for months), false to hide
-      openDrawer: false
+      openDrawer: false,
+      // the array used for displaying the pie chart, will contain array of objects, key is the category, value is the total spending of that category
+      sumForCategories: [],
+      // the position for the menu used to create a new spendings page
+      menuPosition: null,
+      // the month selected for the menu 
+      monthSelected: ""
     }
 
     this.sumAccountBalance()
+    this.sumCategoriesAmount()
 
   }
 
@@ -90,7 +119,10 @@ class Spendings extends React.Component {
 
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
-    if (prevState.transactions_data != this.state.transactions_data) this.sumAccountBalance()
+    if (prevState.transactions_data != this.state.transactions_data) {
+      this.sumAccountBalance()
+      this.sumCategoriesAmount()
+    }
   }
 
   sumAccountBalance = () => {
@@ -100,6 +132,24 @@ class Spendings extends React.Component {
       return sum
     }, 0)
     this.setState({ accountBalance: this.state.accountBalance })
+  }
+
+  sumCategoriesAmount = () => {
+
+    this.state.sumForCategories = []
+
+    this.state.transactions_data.map(transaction => {
+      const category = transaction["Category"]
+      let index = this.state.sumForCategories.findIndex(x => x.name == category)
+      if (index == -1) {
+        this.state.sumForCategories.push({ name: category, bookCost: 0 })
+        index = this.state.sumForCategories.length - 1
+      }
+      this.state.sumForCategories[index].bookCost += parseFloat(transaction["Amount"])
+    })
+
+    this.setState({ sumForCategories: this.state.sumForCategories })
+
   }
 
   sortObj = (a, b) => {
@@ -153,6 +203,8 @@ class Spendings extends React.Component {
   addTransaction = (newTransaction) => {
     this.state.transactions_data.unshift(newTransaction)
     this.setState({ transactions_data: this.state.transactions_data })
+    this.sumAccountBalance()
+    this.sumCategoriesAmount()
   }
 
   // finds the index of the oldTransaction data and replace it with the newTransaction data
@@ -160,6 +212,8 @@ class Spendings extends React.Component {
     const index = this.state.transactions_data.findIndex(t => t === oldTransaction)
     this.state.transactions_data[index] = newTransaction
     this.setState({ transactions_data: this.state.transactions_data })
+    this.sumAccountBalance()
+    this.sumCategoriesAmount()
   }
 
   // deletes transaction from transactions_data array 
@@ -194,6 +248,19 @@ class Spendings extends React.Component {
     this.setState({ openDrawer: this.state.openDrawer })
   }
 
+  hideAddNewMonth = () => {
+    this.setState({ menuPosition: null })
+  }
+
+  displayAddNewMonth = (e) => {
+    this.setState({ menuPosition: e.currentTarget })
+  }
+
+  selectFieldOnChangeHandler = (e) => {
+    this.state.monthSelected = e.target.value
+    this.setState({ monthSelected: this.state.monthSelected })
+  }
+
   render() {
 
     const { loggedIn, classes } = this.props
@@ -222,6 +289,66 @@ class Spendings extends React.Component {
               variant="permanent"
             >
 
+              <Menu
+                id="long-menu"
+                anchorEl={this.state.menuPosition}
+                open={Boolean(this.state.menuPosition)}
+                onClose={() => this.hideAddNewMonth()}
+                classes={{ list: classes.menu_list }}
+              >
+
+                <FormControl
+                  classes={{ root: classes.formControl_root }}
+                >
+
+                  <InputLabel id="simple-select-label">Month</InputLabel>
+                  <Select
+                    id="simple-select"
+                    defaultValue={this.state.monthSelected}
+                    onChange={(e) => this.selectFieldOnChangeHandler(e)}
+                  >
+
+                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month =>
+                      <MenuItem
+                        value={month}>
+                        {month}
+                      </MenuItem>
+                    )}
+
+                  </Select>
+
+                </FormControl>
+
+                <TextField
+                  id="standard-basic"
+                  label="Year"
+                  classes={{ root: classes.menu_list }}
+                />
+
+                <TextField
+                  id="standard-basic"
+                  label="Projected Spendings"
+                  classes={{ root: classes.menu_list }}
+                />
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  classes={{ root: classes.menu_list }}
+                  size="small"
+                >
+                  Add New Spendings Page
+                </Button>
+
+              </Menu>
+
+              <IconButton
+                aria-label="add"
+                onClick={(e) => this.displayAddNewMonth(e)}>
+                <AddIcon />
+              </IconButton>
+              <Divider />
+
               <List>
                 {["Jan", "Feb", "Mar", "Apr"].map((text, index) => (
                   <ListItem button key={text}>
@@ -242,6 +369,78 @@ class Spendings extends React.Component {
 
               <div className="AccountBalance">
                 Total Amount: {this.state.accountBalance}
+
+              {/* <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
+              <PieChart
+                listToDisplay={this.state.sumForCategories}
+              >
+
+              </PieChart>
+
+              <div className="AccountBalance">
+                Total Amount: ${this.state.accountBalance}
+              </div>
+
+            </div>
+
+            <div className="Table">
+
+              <TableComp
+                // use the TableContainer class to style the table itself 
+                classes={{ TableContainer: 'TableContainer' }}
+                headings={this.state.transactions_headings}
+                data={this.state.transactions_data}
+                options={this.state.transactions_options}
+                categories={this.state.transactions_categories}
+                addRow={this.addTransaction}
+                editRow={this.editTransaction}
+                removeRow={this.deleteTransaction}
+                addCategory={this.addCategory}
+                removeCategory={this.deleteCategory}
+              />
+
+              <div className="SortButtons">
+
+                <Grid container spacing={3}>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Date")}>
+                        Sort By Date
+                          {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Amount")}>
+                        Sort By Amount
+                          {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </ Button>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Button
+                        className="SortButton"
+                        variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                        onClick={() => this.changeSort("Category")}>
+                        Sort By Category
+                          {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                      </Button>
+                    </Paper>
+                  </Grid>
+
+                </Grid>
+
               </div>
 
             </div>
@@ -310,7 +509,7 @@ class Spendings extends React.Component {
             
           </div>
 
-        </div>
+        </div >
 
         : <Redirect to="/login" />
 
