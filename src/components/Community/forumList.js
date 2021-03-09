@@ -6,10 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -97,14 +93,33 @@ class ForumList extends React.Component {
     sortOrder: "",
     commenter: "",
     commentContent: "",
+    tempFAInfo: [
+      {FAName: "Angus Wang",
+        FAIntro: "I am Angus Wang. I am here to guide you to treasures you'll never find yourself. Bow down to me you mere mortal",
+        FAFields: ["Stocks", "Budget Planning", "Life Hacks"],
+        FAPoints: 123,
+      },
+      {FAName: "Angela Merkel",
+        FAIntro: "I am Angela Merkel, the chancellor of Germany. Bow down to me you mere mortal",
+        FAFields: ["Politics", "Nation Building"],
+        FAPoints: 456,
+      },
+      {FAName: "dragonslayer420",
+        FAIntro: "I am dragonslayer420, the slayer of 420 dragons. I am here to teach you the way of dragonslaying. Bow down to me you mere mortal",
+        FAFields: ["Dragon Slaying"],
+        FAPoints: 789,
+      }
+    ],
     userInfo: {
       username: "",
       usertype: "",
       userUpvotedPosts: [],
       userDownvotedPosts: [],
+      userFollows: [],
     },
     posts: [
       {author: 'Angus Wang', 
+        authorUsertype: "FA",
         title: 'welcome to communtiy', 
         content: 'this is the first community thread', 
         authorAvatar: null,
@@ -120,6 +135,7 @@ class ForumList extends React.Component {
         ]
       },
       {author: 'boogy boy', 
+        authorUsertype: "RU",
         title: 'test thread', 
         content: 'another community thread lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao ', 
         authorAvatar: null,
@@ -140,7 +156,7 @@ class ForumList extends React.Component {
   componentDidMount() {
     this.setState({
       username: this.props.username,
-      // usertype: this.props.usertype,
+      usertype: "RU",
       // later include the upvotes and downvotes of the user
     })
   }
@@ -226,6 +242,7 @@ class ForumList extends React.Component {
 
     const newPost = {
       author: username,
+      authorUsertype: this.state.userInfo.usertype,
       title: this.state.title,
       authorAvatar: null,
       content: this.state.content,
@@ -473,6 +490,7 @@ class ForumList extends React.Component {
                       <div>
                         <ForumListItem postTitle={ thread.title }
                                       postAuthor={ thread.author }
+                                      postAuthorUsertype={ thread.authorUsertype}
                                       postTextContent={ thread.content }
                                       avatar={ thread.authorAvatar }
                                       category={ thread.category }
@@ -497,6 +515,7 @@ class ForumList extends React.Component {
                       <div>
                         <ForumListItem postTitle={ thread.title }
                                       postAuthor={ thread.author }
+                                      postAuthorUsertype={ thread.authorUsertype}
                                       postTextContent={ thread.content }
                                       avatar={ thread.authorAvatar }
                                       category={ thread.category }

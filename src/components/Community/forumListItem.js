@@ -21,12 +21,13 @@ import Fab from '@material-ui/core/Fab';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { deepPurple, grey } from '@material-ui/core/colors';
+import { deepPurple, grey, green } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import CloseIcon from '@material-ui/icons/Close';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import Comment from "./comment.js"
 
@@ -38,8 +39,18 @@ const styles =  theme => ({
   blackText: {
     color: '#000000',
   },
+  redText: {
+    color: '#dd0000',
+  },
   upvoteText: {
     color: '#aaaaaa',
+  },
+  checkCircle: {
+    color: green[500]
+  },
+  financialAdvisorTag: {
+    color: '#ffffff',
+    backgroundColor: green[500]
   },
 });
 
@@ -117,6 +128,10 @@ class ForumListItem extends React.Component {
       this.setState({ comment: "" })
     }
 
+    handleOpenFAInfo = () => {
+      // add this stuff later++++++++++++++++++++++++++++++++++++++++++++
+    }
+
     toggleUpvote = () => {
 
       // clean up downvote
@@ -157,7 +172,7 @@ class ForumListItem extends React.Component {
     render() {
   
       const { classes, avatar, postTitle, postAuthor, postTextContent, category, comments, postComment, 
-              deletePosts, openManagePost, numUpvotes, numDownvotes } = this.props
+              deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype } = this.props
   
       return (
         <div>
@@ -168,12 +183,18 @@ class ForumListItem extends React.Component {
             <ListItemText
               primary={
                 <React.Fragment>
-                  <span>{ postTitle } :: { postAuthor } </span>
-                  <IconButton size="small" component="span" onClick={ this.toggleUpvote } disabled>
+                  <span>{ postTitle } :: </span>
+                  <span> { postAuthor } </span>
+                  { postAuthorUsertype === "FA" ? 
+                    <IconButton size="small" component="span" disabled>
+                      <CheckCircleIcon className={ classes.checkCircle } fontSize="small" />
+                    </IconButton>
+                  : null }
+                  <IconButton size="small" component="span" disabled>
                     <ThumbUpAltIcon color={ this.state.upvoted ? "primary" : '#dddddd'} fontSize="small" />
                   </IconButton>
                   <span className={ classes.upvoteText }>{ numUpvotes } : { numDownvotes }</span>
-                  <IconButton size="small" component="span" onClick={ this.toggleDownvote } disabled>
+                  <IconButton size="small" component="span" disabled>
                     <ThumbDownAltIcon color={ this.state.downvoted ? "primary" : '#dddddd'} fontSize="small" />
                   </IconButton>
                 </React.Fragment>
@@ -193,6 +214,11 @@ class ForumListItem extends React.Component {
           <Dialog open={ this.state.openPost } onClose={ this.closePost } aria-labelledby="form-dialog-title" fullScreen>
 
             <DialogActions className={ classes.closePostButton }>
+              { postAuthorUsertype === "FA" ? 
+                <Button variant="contained" color="secondary" onClick={ this.handleOpenFAInfo }>
+                  View Financial Advisor Info
+                </Button>
+              : null }
               <Tooltip title="Close">
                 <Fab color="secondary" size="small" onClick={ this.closePost }>
                   <CloseIcon fontSize="default" />
@@ -202,7 +228,10 @@ class ForumListItem extends React.Component {
             
             <DialogTitle id="form-dialog-title">
               <Chip label={ category } size="small"/> :: { postTitle } :: 
-              <span> { postAuthor }</span>
+              <span> { postAuthor } </span>
+              { postAuthorUsertype === "FA" ? 
+                <Chip className={ classes.financialAdvisorTag } label={ "Financial Advisor" } size="small"/>
+              : null }
               <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ this.toggleUpvote }>
                 <ThumbUpAltIcon />
               </IconButton>
