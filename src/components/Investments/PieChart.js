@@ -264,7 +264,7 @@ class PieChart extends React.Component {
         }); 
     }
 
-    componentDidUpdate() {        
+    componentDidUpdate(prevProps, prevState) {        
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
         let rect = elem.getBoundingClientRect();
@@ -278,7 +278,7 @@ class PieChart extends React.Component {
         //clear slices
         this.state.slices = [];
         
-        this.drawSlices();//redraw
+        if(this.state != prevState)this.drawSlices();//redraw
     }
     
     render() {

@@ -27,14 +27,14 @@ class Investments extends React.Component {
     stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Any", "Number", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
-    stocklist_data: [{"Name": "FB", "Quantity": 20, "Price": 1.0, "Average Cost": 32.5,  "Market Value": 1, "Book Cost": 100, "Gain/Loss":100},
-    {"Name": "GOOGL", "Quantity": 3, "Price": 1.0, "Average Cost": 1523,  "Market Value": 1, "Book Cost": 37, "Gain/Loss":200 },
-    {"Name": "PDD", "Quantity": 8, "Price": 1.0, "Average Cost": 170,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":20},
-    {"Name": "GME", "Quantity": 4, "Price": 1.0, "Average Cost": 340,  "Market Value": 1, "Book Cost": 78, "Gain/Loss":-89 },
-    {"Name": "MSFT", "Quantity": 4, "Price": 1.0, "Average Cost": 230,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":-201},
-    {"Name": "BABA", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 46, "Gain/Loss":30 },
-    {"Name": "V", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 50, "Gain/Loss":67},
-    {"Name": "SHOP", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 87, "Gain/Loss":3}],
+    stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
+    {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
+    {"Name": "PDD", "Quantity": 8, "Price": 260.03, "Average Cost": 190,  "Market Value": 1840.24, "Book Cost": 2080.24, "Gain/Loss":-240},
+    {"Name": "GME", "Quantity": 11, "Price": 280.45, "Average Cost": 340,  "Market Value": 3084.95, "Book Cost": 3740, "Gain/Loss":-655.05 },
+    {"Name": "MSFT", "Quantity": 4, "Price": 330.0, "Average Cost": 230,  "Market Value": 1320, "Book Cost": 920, "Gain/Loss":1473.56},
+    {"Name": "BABA", "Quantity": 17, "Price": 222.98, "Average Cost": 136.3,  "Market Value": 3790.66, "Book Cost": 2317.1, "Gain/Loss":1473.56 },
+    {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
+    {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
 
     //table values
     sortBy: "Market Value",
@@ -289,7 +289,7 @@ class Investments extends React.Component {
           
       
           {/* <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/> */}
-        <BarChart listToDisplay = {this.state.stocklist_data}/>
+        <BarChart listToDisplay = {this.state.stocklist_data} col = "Gain/Loss"/>
       </div>
     </div>
 
