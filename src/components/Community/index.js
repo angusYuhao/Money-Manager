@@ -35,9 +35,6 @@ const theme = createMuiTheme({
 
 class Community extends React.Component {
 
-  // state = {
-  //   username: ""
-  // }
 
   render() {
     const { classes, username } = this.props
