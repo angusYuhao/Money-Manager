@@ -92,9 +92,11 @@ class NavBar extends React.Component {
                 { username }
               </Typography>
 
-              <Avatar className={classes.avatar}>
-                <AccountCircleIcon/>
-              </Avatar>
+              <Link to={'/profile'}>
+                <Avatar className={classes.avatar}>
+                  <AccountCircleIcon/>
+                </Avatar>
+              </Link>
 
             </Toolbar>
           </AppBar>
