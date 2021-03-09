@@ -28,7 +28,7 @@ class BarChart extends React.Component {
         
         
         let total = listToDisplay.reduce( (ttl, stock) => {
-            return ttl + (stock.bookCost)
+            return ttl + (stock["Book Cost"])
         }, 0);
 
         //get the max and min gain loss stocks

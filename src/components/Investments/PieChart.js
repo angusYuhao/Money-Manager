@@ -151,13 +151,11 @@ class PieChart extends React.Component {
 
             this.context.closePath();
         }else{
-            this.context.translate(0.05, 0.05);
             this.context.moveTo(parseFloat(cx+deltaX/1.65), parseFloat(cy+deltaY/1.65));
             this.context.lineTo(parseFloat((4.0*deltaX/5)+cx), parseFloat((4.0*deltaY/5)+cy));
             this.context.lineWidth = 3;
             this.context.stroke();
             this.context.closePath();
-            this.context.translate(-0.05, -0.05);
         }
         
     }

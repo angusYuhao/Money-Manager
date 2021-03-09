@@ -6,17 +6,27 @@ import PieChart from './PieChart'
 import BarChart from './BarChart'
 import TableComp from '../Table'
 import './investments.css'
+import SortButton from './SortButton';
+import Button from '@material-ui/core/Button';
+
+import Paper from '@material-ui/core/Paper';
+
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+// import Title from './Title'
+
 
 
 
 class Investments extends React.Component {
 
   state = {
-    //new values for tables
+    //general stock data
     stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss", "Percentage of portfolio"],
     stockList_options: ["Any", "Number", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
-    
     stocklist_data: [{"Name": "FB", "Quantity": 20, "Price": 1.0, "Average Cost": 32.5,  "Market Value": 1, "Book Cost": 100, "Gain/Loss":100, "Percentage of portfolio":100 },
     {"Name": "GOOGL", "Quantity": 3, "Price": 1.0, "Average Cost": 1523,  "Market Value": 1, "Book Cost": 37, "Gain/Loss":200, "Percentage of portfolio":100 },
     {"Name": "PDD", "Quantity": 8, "Price": 1.0, "Average Cost": 170,  "Market Value": 1, "Book Cost": 45, "Gain/Loss":20, "Percentage of portfolio":100 },
@@ -25,28 +35,8 @@ class Investments extends React.Component {
     {"Name": "BABA", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 46, "Gain/Loss":30, "Percentage of portfolio":100 },
     {"Name": "V", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 50, "Gain/Loss":67, "Percentage of portfolio":100 },
     {"Name": "SHOP", "Quantity": 20, "Price": 1.0, "Average Cost": 220,  "Market Value": 1, "Book Cost": 87, "Gain/Loss":3, "Percentage of portfolio":100 }],
-    
-    
-    //old values for tables
-    pieChartSize: 600,
-    pieChartRadius: 150,
-    totalAmountInvested: 100,
-    ticker: 0,
-    quantity: 0,
-    price: 0,
-    avgCost: 0,
-    mktValue: 0,
-    bookCost: 0,
-    gainLoss: 0,
-    percentageOfPortfolio:0,
-    stockList: [{name: "FB", quantity: 20, price: 1.0, avgCost: 32.5, mktValue: 1, bookCost: 100, gainLoss:100, percentageOfPortfolio:100 },
-    {name: "GOOGL", quantity: 3, price: 1.0, avgCost: 1523, mktValue: 1, bookCost: 37, gainLoss:200, percentageOfPortfolio:100 },
-    {name: "PDD", quantity: 8, price: 1.0, avgCost: 170, mktValue: 1, bookCost: 34, gainLoss:20, percentageOfPortfolio:100 },
-    {name: "GME", quantity: 4, price: 1.0, avgCost: 340, mktValue: 1, bookCost: 78, gainLoss:-89, percentageOfPortfolio:100 },
-    {name: "MSFT", quantity: 4, price: 1.0, avgCost: 230, mktValue: 1, bookCost: 45, gainLoss:-201, percentageOfPortfolio:100 },
-    {name: "BABA", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 46, gainLoss:30, percentageOfPortfolio:100 },
-    {name: "V", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 50, gainLoss:67, percentageOfPortfolio:100 },
-    {name: "SHOP", quantity: 20, price: 1.0, avgCost: 220, mktValue: 1, bookCost: 87, gainLoss:3, percentageOfPortfolio:100 }],
+
+    //table values
     sortBy: "Market Value",
     sortDes: {
       "Name": false,
@@ -55,19 +45,84 @@ class Investments extends React.Component {
       "Gain/Loss": false,
       "Percentage of portfolio": false,
     },
-    openDrawer: false
+    openDrawer: false,
+
+    //Pie chart values
+    pieChartSize: 600,
+    pieChartRadius: 150,
   }
 
   // componentDidUpdate(undefined, prevState) {
   //   // only update the account balance if any transaction has been modified
   //   if (prevState.transactions_data != this.state.transactions_data) this.sumAccountBalance()
   // }
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     canvasRef: useCanvas()
-  //   };
-  // }
+ 
+  constructor(props) {
+    super(props);
+    this.changeSort = this.changeSort.bind(this);
+  }
+
+  sortObj = (a, b) => {
+
+    switch (this.state.sortBy) {
+
+      case "Name":
+        if (!this.state.sortDes["Name"]) {
+          if (a["Name"] < b["Name"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Name"] > b["Name"]) return -1
+          else return 1
+        }
+
+      case "Quantity":
+        if (!this.state.sortDes["Quantity"]) {
+          if (parseFloat(a["Quantity"]) < parseFloat(b["Quantity"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Quantity"]) > parseFloat(b["Quantity"])) return -1
+          else return 1
+        }
+
+      case "Market Value":
+        if (!this.state.sortDes["Market Value"]) {
+          if (parseFloat(a["Market Value"]) < parseFloat(b["Market Value"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Market Value"]) > parseFloat(b["Market Value"])) return -1
+          else return 1
+        }
+      case "Gain/Loss":
+        if (!this.state.sortDes["Gain/Loss"]) {
+          if (parseFloat(a["Gain/Loss"]) < parseFloat(b["Gain/Loss"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Gain/Loss"]) > parseFloat(b["Gain/Loss"])) return -1
+          else return 1
+        }
+    
+      case "Percentage of portfolio":
+        if (!this.state.sortDes["Percentage of portfolio"]) {
+          if (parseFloat(a["Percentage of portfolio"]) < parseFloat(b["Percentage of portfolio"])) return -1
+          else return 1
+        }
+        else {
+          if (parseFloat(a["Percentage of portfolio"]) > parseFloat(b["Percentage of portfolio"])) return -1
+          else return 1
+        }
+      
+
+      case "Default":
+        return
+
+    }
+
+  }
+
 
 
   // sorting the transactions based on the currently selected element 
@@ -96,6 +151,14 @@ class Investments extends React.Component {
     this.setState({ stocklist_data: keepTransactions })
   }
 
+  changeSort(sortBy) {
+    console.log("Sorting!")
+    this.state.sortBy = sortBy
+    this.setState({ sortBy: this.state.sortBy })
+    this.state.sortDes[sortBy] = !this.state.sortDes[sortBy]
+    this.setState({ sortDes: this.state.sortDes })
+    this.sortStocks()
+  }
 
   handleInputStock = () => {
     console.log("Handling input stock");
@@ -187,38 +250,48 @@ class Investments extends React.Component {
   render() {
     return (
 
-      <div className = "InvestmentContent">
-        <div className = "PieChart">
-          {/* <Input stockList={this.state.stockList} 
-          handleInputStock = {this.handleInputStock} 
-          handleInputChange = {this.handleInputChange}
-          />
-          <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/> */}
-          
-      
-          <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>
-        {/* <BarChart listToDisplay = {this.state.stockList}/> */}
-        
-        </div>
+    <div className = "InvestmentPage"> 
+      <div className = "PieChartTable">
+          <div className = "TitleAndPieChart">
+            <div className = "StockPieChartTitle">
+                Stock Portfolio
+            </div>
+            <div className = "PieChart">
+              <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
+            </div>
+          </div>
 
-        <div style={{ width: "100vw", display: "block" }} >
-          <div className="Stocklist Table" width = "100vw">
+          <div className = "StockList">
+            <div className="StockTable" width = "100vw">
+              <TableComp 
+                
+                // use the TableContainer class to style the table itself 
+                classes={{ TableContainer: 'TableContainer' }}
+                headings={this.state.stockList_headings}
+                data={this.state.stocklist_data}
+                options={this.state.stockList_options}
+                categories={this.state.stockList_categories}
+                addRow={this.addStock}
+                editRow={this.editStock}
+                removeRow={this.deleteStock}
+              />
+          </div>
 
-            <TableComp 
-              
-              // use the TableContainer class to style the table itself 
-              classes={{ TableContainer: 'TableContainer' }}
-              headings={this.state.stockList_headings}
-              data={this.state.stocklist_data}
-              options={this.state.stockList_options}
-              categories={this.state.stockList_categories}
-              addRow={this.addStock}
-              editRow={this.editStock}
-              removeRow={this.deleteStock}
-            />
+          <div className="SortButtons">
+            <SortButton categoryName = "Name" callBackFunction = {this.changeSort} 
+            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+            <SortButton categoryName = "Quantity" callBackFunction = {this.changeSort} 
+            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+            <SortButton categoryName = "Market Value" callBackFunction = {this.changeSort} 
+            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+            <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
+            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+            <SortButton categoryName = "Percentage of portfolio" callBackFunction = {this.changeSort} 
+            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
           </div>
         </div>
-        <div className = "BarChart">
+      </div>
+      <div className = "BarChart">
           {/* <Input stockList={this.state.stockList} 
           handleInputStock = {this.handleInputStock} 
           handleInputChange = {this.handleInputChange}
@@ -227,19 +300,9 @@ class Investments extends React.Component {
           
       
           {/* <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/> */}
-          <BarChart listToDisplay = {this.state.stockList}/>
-        
-        </div>
-
-
-
-
-
+        <BarChart listToDisplay = {this.state.stocklist_data}/>
       </div>
-
-
-      
-      
+    </div>
 
     )
 

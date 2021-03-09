@@ -1,4 +1,4 @@
-.InvestmentContent {
+.PieChartTable {
     width: 100vw;
     height: 90vh;
     /* margin: none; */
@@ -10,13 +10,47 @@
     display: inline-block;
     margin-right: 5%;
     margin-top: 5%;
+    position: relative;
 }
 
 .PieChart{
     margin-top: 0.6%;
+    position: relative;
+    
 }
 
 .BarChart{
     margin-top: 1%;
-    position:absolute
+    /* position:absolute; */
+}
+
+.StockTable{
+    position: relative;
+    margin-top: 7%;
+}
+
+.SortButtons{
+    width: 100%; 
+    float: left;
+    display: flex;
+    height: 100%;
+
+}
+
+.InvestmentSortButton{
+    height: 95px
+}
+
+.StockPieChartTitle{
+    height: 20px;
+    color: #673ab7;
+    font-weight: bold;
+    font-size: 180%;
+    width: 100%;
+    float: center;
+    text-align: center;
+    margin-top: 15%;
+    margin-bottom: 0%;
+	left: 0;
+	right: 0;
 }
