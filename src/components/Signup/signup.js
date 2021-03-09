@@ -21,6 +21,7 @@ import {
   ThemeProvider} from '@material-ui/core';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withRouter } from 'react-router-dom';
+import Footer from '../Footer/footer.js';
 
 const useStyles = theme => ({
   root: {
@@ -78,6 +79,9 @@ const useStyles = theme => ({
   radio: {
     marginRight: theme.spacing(3),
   },
+  footer: {
+    marginTop: theme.spacing(5),
+  }
 });
 
 const theme = createMuiTheme({
@@ -539,6 +543,10 @@ class SignUp extends React.Component {
               </form>
             </Paper>
           </Grid>
+
+          <div className={classes.footer}>
+            <Footer />
+          </div>
         </div>
       </ThemeProvider>
 

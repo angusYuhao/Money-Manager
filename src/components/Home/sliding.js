@@ -9,6 +9,8 @@ import { deepPurple } from '@material-ui/core/colors';
 import { NavigateNext, NavigateBefore } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 import React from 'react';
+import bitcoin from './bitcoin.jpg';
+import stock from './stock.jpg';
 import "./sliding.css";
 
 const theme = createMuiTheme({
@@ -75,10 +77,10 @@ const useStyles = theme => ({
 
 const slides = [
     {
-        image: 'https://images.unsplash.com/photo-1614858335969-b05a35df2ab1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'
+        image: bitcoin
     },
     {
-        image: 'https://images.unsplash.com/photo-1614862053138-10ca7a58866e?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'
+        image: stock
     },
     {
         image: 'https://images.unsplash.com/photo-1614867517189-34c259f98b17?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'

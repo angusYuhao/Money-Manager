@@ -12,6 +12,7 @@ import { makeStyles,
   Paper,
   ThemeProvider} from '@material-ui/core';
 import { deepPurple, grey } from '@material-ui/core/colors';
+import Footer from '../Footer/footer.js';
 
 
 const useStyles = theme => ({
@@ -61,6 +62,10 @@ const useStyles = theme => ({
   signInButton: {
     float: 'right',
     marginRight: 10,
+  },
+  footer: {
+    position: 'relative',
+    marginTop: theme.spacing(25),
   }
 });
 
@@ -177,6 +182,10 @@ class Login extends React.Component {
                     </form>
                   </Paper>
                 </Grid>
+
+                <div className={classes.footer}>
+                  <Footer />
+                </div>
             </div>   
       </ThemeProvider>
     )
