@@ -110,6 +110,8 @@ class Spendings extends React.Component {
     const month = this.getMonthFromIndex("0", "0", year)
     this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
     this.setState({ transactions_data: this.state.transactions_data })
+    this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
+    this.setState({ projectedSpendings: this.state.projectedSpendings })
 
     this.sumCategoriesAmount()
     this.sumAccountBalance()
