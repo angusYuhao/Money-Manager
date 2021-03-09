@@ -42,13 +42,6 @@ const useStyles = () => ({
   }
 })
 
-const useStyles = () => ({
-  drawer_paper: {
-    position: "relative",
-    height: "100%"
-  }
-})
-
 class Spendings extends React.Component {
 
   constructor(props) {
@@ -365,12 +358,12 @@ class Spendings extends React.Component {
 
             <div className="Chart">
 
-              <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img>
-
-              <div className="AccountBalance">
-                Total Amount: {this.state.accountBalance}
-
               {/* <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
+
+              {/* <div className="AccountBalance">
+                Total Amount: {this.state.accountBalance} */}
+
+              {/* <img src={Piechart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
               <PieChart
                 listToDisplay={this.state.sumForCategories}
               >
@@ -445,7 +438,7 @@ class Spendings extends React.Component {
 
             </div>
 
-            <div className="Table">
+            {/* <div className="Table">
 
               <TableComp
                 // use the TableContainer class to style the table itself 
@@ -505,11 +498,11 @@ class Spendings extends React.Component {
 
               </div>
 
-            </div>
+            </div> */}
             
           </div>
 
-        </div >
+        </div>
 
         : <Redirect to="/login" />
 
