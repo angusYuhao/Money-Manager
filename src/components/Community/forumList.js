@@ -93,30 +93,6 @@ class ForumList extends React.Component {
     sortOrder: "",
     commenter: "",
     commentContent: "",
-    tempFAInfo: [
-      {FAName: "Angus Wang",
-        FAIntro: "I am Angus Wang. I am here to guide you to treasures you'll never find yourself. Bow down to me you mere mortal",
-        FAFields: ["Stocks", "Budget Planning", "Life Hacks"],
-        FAPoints: 123,
-      },
-      {FAName: "Angela Merkel",
-        FAIntro: "I am Angela Merkel, the chancellor of Germany. Bow down to me you mere mortal",
-        FAFields: ["Politics", "Nation Building"],
-        FAPoints: 456,
-      },
-      {FAName: "dragonslayer420",
-        FAIntro: "I am dragonslayer420, the slayer of 420 dragons. I am here to teach you the way of dragonslaying. Bow down to me you mere mortal",
-        FAFields: ["Dragon Slaying"],
-        FAPoints: 789,
-      }
-    ],
-    userInfo: {
-      username: "",
-      usertype: "",
-      userUpvotedPosts: [],
-      userDownvotedPosts: [],
-      userFollows: [],
-    },
     posts: [
       {author: 'Angus Wang', 
         authorUsertype: "FA",
@@ -242,7 +218,7 @@ class ForumList extends React.Component {
 
     const newPost = {
       author: username,
-      authorUsertype: this.state.userInfo.usertype,
+      authorUsertype: this.props.userInfo.usertype,
       title: this.state.title,
       authorAvatar: null,
       content: this.state.content,
@@ -306,11 +282,12 @@ class ForumList extends React.Component {
     console.log("posts length: ", otherPosts.length)
     this.setState({ posts: otherPosts })
 
-    const userInfo = this.state.userInfo
+    const userInfo = this.props.userInfo
     const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
     if (index !== -1) {
       userInfo.userUpvotedPosts.splice(index, 1)
-      this.setState({ userInfo: userInfo })
+      // this.setState({ userInfo: userInfo })
+      this.props.userInfoUpdater(userInfo)
     }
   }
 
@@ -324,9 +301,10 @@ class ForumList extends React.Component {
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
     this.setState({ posts: otherPosts })
 
-    const userInfo = this.state.userInfo
+    const userInfo = this.props.userInfo
     userInfo.userUpvotedPosts.push(targetPostID)
-    this.setState({ userInfo: userInfo })
+    // this.setState({ userInfo: userInfo })
+    this.props.userInfoUpdater(userInfo)
   }
 
   minusUpvote = (target) => {
@@ -339,10 +317,11 @@ class ForumList extends React.Component {
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
     this.setState({ posts: otherPosts })
 
-    const userInfo = this.state.userInfo
+    const userInfo = this.props.userInfo
     const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
-    this.setState({ userInfo: userInfo })
+    // this.setState({ userInfo: userInfo })
+    this.props.userInfoUpdater(userInfo)
   }
 
   addDownvote = (target) => {
@@ -355,9 +334,10 @@ class ForumList extends React.Component {
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
     this.setState({ posts: otherPosts })
 
-    const userInfo = this.state.userInfo
+    const userInfo = this.props.userInfo
     userInfo.userDownvotedPosts.push(targetPostID)
-    this.setState({ userInfo: userInfo })
+    // this.setState({ userInfo: userInfo })
+    this.props.userInfoUpdater(userInfo)
   }
 
   minusDownvote = (target) => {
@@ -370,15 +350,16 @@ class ForumList extends React.Component {
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
     this.setState({ posts: otherPosts })
 
-    const userInfo = this.state.userInfo
+    const userInfo = this.props.userInfo
     const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
-    this.setState({ userInfo: userInfo })
+    // this.setState({ userInfo: userInfo })
+    this.props.userInfoUpdater(userInfo)
   }
 
   render() {
 
-    const { username } = this.props
+    const { userInfo, userInfoUpdater } = this.props
     const { classes } = this.props
 
     return (
@@ -474,7 +455,7 @@ class ForumList extends React.Component {
                   <Button onClick={ this.handleClose } color="primary">
                     Cancel
                   </Button>
-                  <Button onClick={ () => this.addPost(username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                  <Button onClick={ () => this.addPost(userInfo.username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
                 </CardActions>
@@ -485,7 +466,7 @@ class ForumList extends React.Component {
               
             <List className={ classes.forumList }>
               { this.state.posts.map((thread) => {
-                  if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === username : this.state.postFilter === "") {
+                  if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === "" : this.state.postFilter === "" && thread.author === userInfo.username) : this.state.postFilter === "") {
                     return (
                       <div>
                         <ForumListItem postTitle={ thread.title }
@@ -499,7 +480,7 @@ class ForumList extends React.Component {
                                       openManagePost={ this.state.openManagePost ? true : false }
                                       numUpvotes={ thread.numUpvotes }
                                       numDownvotes={ thread.numDownvotes }
-                                      userInfo={ this.state.userInfo }
+                                      userInfo={ userInfo }
                                       addUpvote={ this.addUpvote }
                                       minusUpvote={ this.minusUpvote }
                                       addDownvote={ this.addDownvote }
@@ -510,7 +491,7 @@ class ForumList extends React.Component {
                       </div>
                     )
                   }
-                  else if (this.state.openManagePost ? this.state.postFilter === thread.category && thread.author === username : this.state.postFilter === thread.category) {
+                  else if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === thread.category : this.state.postFilter === thread.category && thread.author === userInfo.username) : this.state.postFilter === thread.category) {
                     return (
                       <div>
                         <ForumListItem postTitle={ thread.title }
@@ -524,7 +505,7 @@ class ForumList extends React.Component {
                                       openManagePost={ this.state.openManagePost ? true : false }
                                       numUpvotes={ thread.numUpvotes }
                                       numDownvotes={ thread.numDownvotes }
-                                      userInfo={ this.state.userInfo }
+                                      userInfo={ userInfo }
                                       addUpvote={ this.addUpvote }
                                       minusUpvote={ this.minusUpvote }
                                       addDownvote={ this.addDownvote }
