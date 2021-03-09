@@ -2,24 +2,49 @@
     max-height: 65vh;
 }
 
+.Content {
+    width: 90vw;
+    height: 90vh;
+    margin: none;
+    display: flex;
+}
+
 .Table {
-    max-width: 50%;
-    width: 45%;
+    width: 50%;
     display: inline-block;
-    margin-right: 5%;
+    /* margin-right: 5%; */
+    margin-top: 5%;
 }
 
 .Chart {
-    max-width: 50%;
     width: 50%;
     display: inline-block;
+    align-items: stretch;
+    position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 .AccountBalance {
     margin-top: 5%;
     text-align: center;
+    position: absolute;
+    top: 80%;
+    display: inline-block;
 }
 
 .SortButtons {
     margin-top: 5%;
+}
+
+.SortButton {
+    width: 100%;
+}
+
+.DrawerDiv {
+    width: 5vw;
+    height: 90vh;
+    float: left;
+    display: flex;
+    margin-top: 1%;
 }
