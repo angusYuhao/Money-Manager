@@ -1,3 +1,6 @@
+//Sources referenced:
+//https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php#:~:text=The%20formula%20for%20compound%20interest,the%20number%20of%20time%20periods.
+
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
@@ -10,6 +13,14 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { deepPurple } from '@material-ui/core/colors';
+import { withStyles } from '@material-ui/core'
+
+
+const useStyles = () => ({
+    calculator: {
+        backgroundColor: deepPurple[100],
+    },
+});
 
 
 const theme = createMuiTheme({
@@ -39,45 +50,43 @@ class Calculator extends React.Component{
         compound: 1,
         amount: 0,
         error: 0,
+        strToDisplay: "",
+        buttonText: "Compound Rate",
     }
 
-    toggleDrawer = () => {
-        this.state.openDrawer = !this.state.openDrawer
-        this.setState({ openDrawer: this.state.openDrawer })
-    }
+    //To open and close the menu:
 
     displayCompoundTypes(e) {
         this.setState({ menuPosition: e.currentTarget })
     }
-    
+
     hideCompoundTypes() {
         this.setState({ menuPosition: null })
     }
     
+    //To handle the inputs(error checking will be done once the user clicks calculate):
     handleInitInvestment(e){
-        console.log(e.target.value)
         this.setState({
             initialInvestment: e.target.value
         })
-        // if(!isNaN(e.target.value) && parseFloat(e.target.value) >= 0
     }
 
     handleInterestRate(e){
-        console.log(e.target.value)
         this.setState({
             interestRate: e.target.value
         })
     }
     handleYrsToGrow(e){
-        console.log(e.target.value)
         this.setState({
             yrsToGrow: e.target.value
         })
     }
-    
+
+    //Menu options, make sure to update what's shown on the button
     clickedMonthly(event){
         this.setState({
-            compound: 12
+            compound: 12,
+            buttonText: "Monthly",
         })
         this.anchorEl = null;
         this.state.menuPosition = null;
@@ -85,7 +94,8 @@ class Calculator extends React.Component{
 
     clickedAnnually(event){
         this.setState({
-            compound: 1
+            compound: 1,
+            buttonText: "Annualy",
         })
         this.anchorEl = null;
         this.state.menuPosition = null;
@@ -93,7 +103,8 @@ class Calculator extends React.Component{
 
     clickedQuarterly(event){
         this.setState({
-            compound: 4
+            compound: 4,
+            buttonText: "Quarterly",
         })
         this.anchorEl = null;
         this.state.menuPosition = null;
@@ -101,12 +112,14 @@ class Calculator extends React.Component{
 
     clickedSemiAnnually(event){
         this.setState({
-            compound: 2
+            compound: 2,
+            buttonText: "Semi-annually",
         })
         this.anchorEl = null;
         this.state.menuPosition = null;
     }
 
+    //Calculate the final amount and do error checking:
     calculateAmount(){
         let insideBrackets = ((this.state.interestRate/100)/(this.state.compound)) + 1;
         console.log(insideBrackets);
@@ -116,42 +129,68 @@ class Calculator extends React.Component{
         console.log(appliedPower);
         let finalAmount = appliedPower* this.state.initialInvestment;
         console.log(finalAmount)
-        this.setState({
-            amount: finalAmount.toFixed(2)
-        })
+        let compoundStr = "";
+        if(this.compound == 1){
+            compoundStr = "annually";
+        }else if (this.compound == 2){
+            compoundStr = "semi-annually";
+        }else if (this.compound == 4){
+            compoundStr = "quarterly";
+        }else{
+            compoundStr = "monthly";
+        }
+        let finalStr =  "Your initial investment of $"+String(this.state.initialInvestment)+" at interest rate of " + String(this.state.interestRate)+ "% will be worth $" + String(finalAmount.toFixed(2))
+        + " after " + String(this.state.yrsToGrow)+ " year(s) when compounded " +compoundStr;
+       
+        if(isNaN(insideBrackets) || isNaN(exponentVal) || isNaN(appliedPower) || isNaN(finalAmount)
+        || insideBrackets<0 || exponentVal < 0 || appliedPower < 0 || finalAmount < 0){
+            this.setState({
+                error:1,
+                strToDisplay:"Erroneous input. Please only enter in positive numbers.",
+            })
+        }else{
+            this.setState({
+                amount: finalAmount.toFixed(2),
+                strToDisplay: finalStr,
+            })
+        }
+        
         this.setState({
             interestRate: 0,
-            yrsToGrow: 0,
+            yrsToGrow: 1,
             compound: 0,
             initialInvestment: 0,
+            buttonText: "Compound Rate",
+            error:0
         })
     }
 
     render(){
-        const {compoundTypes} = this.props;
+        const {compoundTypes, classes } = this.props
         return(
         <ThemeProvider theme={ theme }>
-        <Card className = "CalculatorCard" variant="outlined" color = "secondary"> 
+        <Card className = {classes.calculator} variant="outlined" color = "secondary"> 
             <CardContent>
                 <Typography variant="h3" component="h2">
                     Investment Calculator
                 </Typography>
                 <br/>
                 <form noValidate autoComplete="off">
-                    <TextField value = {this.state.initialInvestment} id="standard-basic" label = "Intial investment($):" defaultValue = "0" 
+             
+                    <TextField value = {this.state.initialInvestment} label = "Intial investment($):" placeholder="ie. 5000" 
                      margin="normal"  onChange = {(e) => this.handleInitInvestment(e)}/>
                     <br/>
-                    <TextField value = {this.state.interestRate} id="standard-basic" label="Interest rate(%):" defaultValue = "0" 
+                    <TextField value = {this.state.interestRate} label="Interest rate(%):" placeholder="ie. 5" 
                     margin="normal" onChange = {(e) => this.handleInterestRate(e)}/>
                     <br/>
-                    <TextField value = {this.state.yrsToGrow} id="standard-basic" label="Years to grow(yrs):" defaultValue = "1" 
+                    <TextField value = {this.state.yrsToGrow} label="Years to grow(yrs):" placeholder="ie. 1"
                     margin="normal" onChange = {(e) => this.handleYrsToGrow(e)}/>
                     <br/>
                     <br/>
 
                     <div className = "CalculatorButtons">
                         <Button variant="outlined" aria-label="add" color = "primary" onClick={(e) => this.displayCompoundTypes(e)}>
-                            Compounding interval
+                            {this.state.buttonText}
                             <AddCircleIcon/>
                         </Button>
                             <Menu
@@ -174,8 +213,8 @@ class Calculator extends React.Component{
                         </Button>
                     </div>
                     <br/>
-                    <TextField InputProps={{readOnly: true,}} label = "Results($)"
-                        value={this.state.amount}
+                    <TextField fullWidth = "true" InputProps={{readOnly: true,}} label = "Results($)"
+                        value={this.state.strToDisplay}
                     />
                 </form>
             </CardContent>
@@ -185,5 +224,4 @@ class Calculator extends React.Component{
     }
 }
 
-
-export default Calculator;
+export default withStyles(useStyles)(Calculator);

@@ -1,4 +1,4 @@
-//Tutorials followed:
+//Sources used:
 //https://stackoverflow.com/questions/33924150/how-to-access-canvas-context-in-react
 //https://stackoverflow.com/questions/27736288/how-to-fill-the-whole-canvas-with-specific-color
 //https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
@@ -46,14 +46,11 @@ class PieChart extends React.Component {
         let cx = this.state.canvasWidth/2;
         let cy = this.state.canvasHeight/2;
         let total = listToDisplay.reduce( (ttl, stock) => {
-            //console.log(stock)
-            //return ttl + (stock.bookCost)
             return ttl + Math.round( (parseFloat(stock["Book Cost"])  * 100)/ 100 )
         }, 0);
-        //console.log(total)
 
         listToDisplay.forEach(element => {
-            //here the slices are draw backwards...(clockwise) so makesure to push into the list properly
+            //here the slices are draw backwards...(clockwise) so make sure to push into the list properly
            
             this.context.lineWidth = 3;
             this.context.strokeStyle = '#fafafa';
@@ -62,10 +59,8 @@ class PieChart extends React.Component {
             this.context.beginPath();
             
             // draw the pie wedges
-            //let endAngle = ((element.bookCost / total) * Math.PI * 2) + startAngle;
             let actualBookCost = parseFloat(element["Book Cost"]);
-            actualBookCost = Math.round(actualBookCost * 100) / 100;
-
+            actualBookCost = Math.round(actualBookCost * 100) / 100; //such that it's only to 2 decimal places
             let endAngle = ((actualBookCost/ total) * Math.PI * 2) + startAngle;
             this.context.moveTo(cx, cy);
             this.context.arc(cx, cy, radius, startAngle, endAngle);
@@ -90,17 +85,12 @@ class PieChart extends React.Component {
             this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
             this.context.stroke();
 
-            //!!!Ian: name is the name of the stock category
-            // let percentage = Math.round(+((element.bookCost*100)/total));
             let percentage = Math.round(+((actualBookCost*100)/total));
-
             this.context.fillText(element.Name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
             
-            //this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
-            //console.log(actualBookCost)
-            //store the slice information
+            //store the slice information for redrawing after hovering
             this.state.slices.push({ 
                     "name" : element.Name,
                     "colour" : sliceColour,
@@ -112,7 +102,6 @@ class PieChart extends React.Component {
             });
             startAngle = endAngle;
         });
-        //console.log(this.state.slices)
     }
 
     drawAccentedSlice = (slice, accented) => {
@@ -162,10 +151,7 @@ class PieChart extends React.Component {
             // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
             // this.context.lineTo((4.0*deltaX/5)+cx, (4.0*deltaY/5)+cy);
             // this.context.stroke();
-
-
-            this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
-
+            this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy); 
             this.context.closePath();
         }else{
             this.context.moveTo(parseFloat(cx+deltaX/1.65), parseFloat(cy+deltaY/1.65));
@@ -201,7 +187,6 @@ class PieChart extends React.Component {
         let elem = document.getElementById('pieChartCanvas');
 
         const {listToDisplay} = this.props
-        //console.log(listToDisplay)
         this.drawSlices();
 
         //NOTE!!!!!! get bounding client rect gets the positions according to the window not the document!!!
@@ -213,7 +198,6 @@ class PieChart extends React.Component {
         })
 
         document.addEventListener('mousemove', (e) => {
-    
             let mouseX=parseInt(e.clientX);
             let mouseY=parseInt(e.clientY);
             let cx = this.state.canvasWidth/2;
@@ -225,28 +209,20 @@ class PieChart extends React.Component {
             let relativeY;
             let angle;
       
+            //Find the mouse positions relative to the center of the pie chart
+
             // quadrant I & II:
             if(mouseY > rect.y && mouseY < (rect.y + cy)){
                 relativeY = (cy + rect.y ) - mouseY;
                 //quadrant I:
                 if(mouseX > (rect.x + cx) && mouseX < rect.x + (2*cx)){
-                    // console.log(mouseX);
-                    // console.log(rect.x + cx);
                     relativeX = mouseX - (cx + rect.x);
                     angle = Math.atan(relativeY/relativeX);
 
-                    // console.log(relativeX)
-                    // console.log(relativeY)
-                    // console.log("quad I")
-                    // console.log(angle)
                 //quadrant II:
                 }else if(mouseX > rect.x && mouseX < (rect.x + cx)){
                     relativeX = (cx + rect.x) - mouseX;
                     angle = Math.PI - Math.atan(relativeY/relativeX);
-                    // console.log(relativeX)
-                    // console.log(relativeY)
-                    // console.log("quad II")
-                    // console.log(angle)
                 }
             //quadrant III & IV:
             }else if (mouseY > cy + rect.y && mouseY < rect.y + (2*cy)){
@@ -255,22 +231,13 @@ class PieChart extends React.Component {
                 if(mouseX > (rect.x + cx) && mouseX < rect.x + (2*cx)){
                     relativeX = mouseX - (cx + rect.x);
                     angle = (2*Math.PI) - Math.atan(relativeY/relativeX);
-                    // console.log(relativeX)
-                    // console.log(relativeY)
-                    // console.log("quad IV")
-                    // console.log(angle)
                 //quadrant III:
                 }else if(mouseX > rect.x && mouseX < (rect.x + cx)){
                     relativeX = (cx + rect.x) - mouseX;
                     angle = Math.PI + Math.atan(relativeY/relativeX);
-                    // console.log(relativeX)
-                    // console.log(relativeY)
-                    // console.log("quad III")
-                    // console.log(angle)
                 }
             }
 
-            //console.log(angle)
             let distanceOk = false;
         
             let distance = Math.sqrt( (relativeX * relativeX ) +  ( relativeY * relativeY));
@@ -286,21 +253,8 @@ class PieChart extends React.Component {
                 if(s.startAngle < angle && angle < s.endAngle){
                     
                     if(distanceOk){
-                        
-                        // const context = this.context;
-                        // context.clearRect(0, 0, rect.width, rect.height);
-
-                        // context.beginPath();
-                        // //clear canvas
-                        //context.clearRect(0, 0, elem.width, elem.height);
-                       
-
                         this.drawAccentedSlice(s, 1);
-                        
                         setTimeout(this.drawAccentedSlice, 500, s, 0);
-                        // setTimeout(this.redraw, 500);
-
-                        //this.drawAccentedSlice(s, 0);
                         distanceOk = false;
                     }
                 }else continue;
@@ -312,20 +266,16 @@ class PieChart extends React.Component {
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
         let rect = elem.getBoundingClientRect();
-        
         const context = this.context;
 
         //clear canvas
-        //context.clearRect(0, 0, elem.width, elem.height);
         context.clearRect(0, 0, rect.width, rect.height);
-
         context.beginPath();
 
         //clear slices
         this.state.slices = [];
-        
-        // if(this.state != prevState)
-        this.drawSlices();//redraw
+        //redraw to reflect newly editted table
+        this.drawSlices();
     }
     
     render() {

@@ -41,6 +41,8 @@ class Investments extends React.Component {
     stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
     stockList_categories: [],
+
+    //some hard coded stock entries: will need to be linked to some database
     stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
     {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
     {"Name": "PDD", "Quantity": 9, "Price": 260.03, "Average Cost": 250,  "Market Value": 2340.27, "Book Cost": 2250, "Gain/Loss":-240},
@@ -61,24 +63,21 @@ class Investments extends React.Component {
     openDrawer: false,
 
     //Pie chart values
+    //These sizes were chosen to have a good ratio between the account 
+    //overview card and the pie chart itself
     pieChartSize: 700,
     pieChartRadius: 200,
     total: 0,
   }
 
-  // componentDidUpdate(undefined, prevState) {
-  //   // only update the account balance if any transaction has been modified
-  //   if (prevState.transactions_data != this.state.transactions_data) this.sumAccountBalance()
-  // }
- 
   constructor(props) {
     super(props);
     this.changeSort = this.changeSort.bind(this);
     this.totalMoneyInvested();
   }
 
+  //For sorting the stock entries in the table:
   sortObj = (a, b) => {
-
     switch (this.state.sortBy) {
 
       case "Name":
@@ -128,27 +127,23 @@ class Investments extends React.Component {
 
   }
 
-
+  //For re-ensuring the sum is up to date:
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
     if (prevState.stocklist_data != this.state.stocklist_data) {
+      console.log("componenet updated");
       this.totalMoneyInvested();
       
     }
   }
 
   totalMoneyInvested = () => {
-
     this.state.total = this.state.stocklist_data.reduce( (ttl, stock) => {
-      //console.log(stock)
-      //return ttl + (stock.bookCost)
       return ttl +  parseFloat(stock["Book Cost"]) 
     }, 0);
     this.setState({total: this.state.total})
     console.log(this.state.total)
   }
-
-
 
 
   // sorting the transactions based on the currently selected element 
@@ -157,28 +152,30 @@ class Investments extends React.Component {
     this.setState({ stocklist_data: this.state.stocklist_data })
   }
 
-  // add newTransaction to the beginning of the transactions_data array 
+  // add newTransaction to the beginning of the stocklist array 
   addStock = (newStock) => {
     this.state.stocklist_data.unshift(newStock)
     this.setState({ stocklist_data: this.state.stocklist_data })
+    this.totalMoneyInvested();
   }
 
-  // finds the index of the oldTransaction data and replace it with the newTransaction data
+  // finds the index of the stock data and replace it with the new stock data
   editStock = (oldStock, newStock) => {
     //console.log("Edit")
     const index = this.state.stocklist_data.findIndex(t => t === oldStock)
     this.state.stocklist_data[index] = newStock
     this.setState({ stocklist_data: this.state.stocklist_data })
+    this.totalMoneyInvested();
   }
 
-  // deletes transaction from transactions_data array 
+  // deletes stocks from the stock list
   deleteStock = (transaction) => {
     const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
     this.setState({ stocklist_data: keepTransactions })
+    this.totalMoneyInvested();
   }
 
   changeSort(sortBy) {
-    //console.log("Sorting!")
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
     this.state.sortDes[sortBy] = !this.state.sortDes[sortBy]
@@ -187,8 +184,7 @@ class Investments extends React.Component {
   }
 
   render() {
-    return (
-
+    return ( 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
 
@@ -203,15 +199,13 @@ class Investments extends React.Component {
           </div>
           <div className = "GeneralInfo">
             <GeneralCard total = {this.state.total}/>
-            
           </div>
       </div>
 
 
       <div className = "StockList">
         <div className="StockTable" width = "100vw">
-          <TableComp 
-            
+          <TableComp
             // use the TableContainer class to style the table itself 
             classes={{ TableContainer: 'TableContainer' }}
             headings={this.state.stockList_headings}

@@ -48,6 +48,17 @@ Each month/year is a seperate spendings page. The user can use the sidebar on th
 -- Projected Spendings: the goal amount you want for your spendings that month
 
 # Investments 
+Calculator:
+This is a compound interest calculator. It will only consider valid responses(ie. where the initial amount to invest is positive number). If the user enters in invalid data, upon pressing on calculate, the results will show an error message.
+
+General card:
+Shows an overview of the user's porfolio. Currently the values are hard coded in. 
+
+Sort button: 
+Will sort the stock entries imn the able based on the category selected.
+
+Table:
+Currently, it is assumed that all inputted entries are valid and are based on manual entries. Ideally, this information would be from the user's actual investment accounts from say brokers or banks. This is where we will call a database to get data. Each row represents a stock this person purchased, including the number of shares, book cost(which is how much they paid), price(which is the current price), bookCosts(the total amount spent on this stock), gain/loss based on the purchasing price and current price, market value based on the total number of shares' value...etc. These stocks not validated and the entries are hard coded in. It currently only checks for the data type(ie. string or float)
 
 # Community 
 
@@ -125,3 +136,19 @@ This page contains general information about the developers.
  The items in the table can be sorted by different conditions. If the arrow icon beside the condition is an up arrow, this indicates an ascending order. If the arrow icon besides the condition is a down arrow, this indicates a descending order. 
 
 # Pie Chart 
+Setup:
+    -The width and height of the overall canvas and the radius will be set by the parent component
+
+Calculations:
+    -Angles are based  on the ratio of the book cost of the stock/total amount of money spent on investing OR total amount spent on the category/total amount spent
+    -The endAngle of one wedge is the starting angle of the other wedge, drawn one by one on the canvas
+    -The colours of the wedges are randomly generated
+    -Upon any updates to the dom(such as adding/deleting/editing the table), the pie chart will redraw, with new colours
+
+Hover:
+    -When you place your cursor over a certain edge, it will show the dollar amount invested in a stock/spent in that category
+    -After 0.5s the dollar amount will disappear by repainting that wedge with the saved colour and angles
+    -The hover detection is based on the mouse's position relative to the surface area of the wedges(by comparing the angle with respect to the center of the piechart and the absolute distance between the cursor and the center of the pie char)
+        -If the angle is within the start and end angles of a wedge and the absolute distance between
+         the mouse and the center of the pie is less than the radius, than it will detect this as a hover
+
