@@ -1,5 +1,16 @@
 import React from 'react';
-import { Typography, Button, withStyles, createMuiTheme, Grid, Paper, FormControl, InputLabel, Select, MenuItem, ThemeProvider, TextField } from '@material-ui/core';
+import { Typography, 
+        Button, 
+        withStyles, 
+        createMuiTheme, 
+        Grid, 
+        Paper, 
+        FormControl, 
+        InputLabel, 
+        Select, 
+        MenuItem, 
+        ThemeProvider, 
+        TextField } from '@material-ui/core';
 import HomeAppBar from './../Home/appBar.js';
 import Footer from './../Footer/footer.js';
 import { withRouter } from 'react-router-dom';
@@ -10,10 +21,6 @@ const useStyles = theme => ({
     contact: {
         position: 'relative',
         marginTop: theme.spacing(3),
-        marginLeft: theme.spacing(2),
-    },
-    subtitle: {
-        position: 'relative',
         marginLeft: theme.spacing(2),
     },
     grid: {
@@ -71,6 +78,7 @@ const theme = createMuiTheme({
     },
 });
 
+// The request will be send to a database and stored in there
 class Contact extends React.Component {
 
     state = {
@@ -101,8 +109,7 @@ class Contact extends React.Component {
         console.log("inside validation!")
         
         this.props.history.push('/sent');
-        return;
-        
+        return; 
     }
 
     render() {
