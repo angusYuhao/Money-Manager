@@ -10,20 +10,20 @@
 }
 
 .Table {
-    width: 50%;
+    width: 20%;
     display: inline-block;
     margin-top: 5%;
     left: 5%;
 }
 
 .Chart {
-    width: 50%;
+    width: 80%;
     left: 2%;
-    bottom: 7%;
+    bottom: 3%;
     display: inline-block;
     align-items: stretch;
     position: relative;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
 }
 

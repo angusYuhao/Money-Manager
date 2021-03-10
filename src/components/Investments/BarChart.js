@@ -64,8 +64,6 @@ class BarChart extends React.Component {
         }else{
             amountVertical = maxAmount.gainLoss; 
         }
-        
-
     }
 
 

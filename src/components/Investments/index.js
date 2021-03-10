@@ -43,9 +43,9 @@ class Investments extends React.Component {
     stockList_categories: [],
     stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
     {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
-    {"Name": "PDD", "Quantity": 8, "Price": 260.03, "Average Cost": 190,  "Market Value": 1840.24, "Book Cost": 2080.24, "Gain/Loss":-240},
+    {"Name": "PDD", "Quantity": 9, "Price": 260.03, "Average Cost": 250,  "Market Value": 2340.27, "Book Cost": 2250, "Gain/Loss":-240},
     {"Name": "GME", "Quantity": 11, "Price": 280.45, "Average Cost": 340,  "Market Value": 3084.95, "Book Cost": 3740, "Gain/Loss":-655.05 },
-    {"Name": "MSFT", "Quantity": 4, "Price": 330.0, "Average Cost": 230,  "Market Value": 1320, "Book Cost": 920, "Gain/Loss":1473.56},
+    {"Name": "MSFT", "Quantity": 6, "Price": 330.0, "Average Cost": 280,  "Market Value": 1980, "Book Cost": 1680, "Gain/Loss":1473.56},
     {"Name": "BABA", "Quantity": 17, "Price": 222.98, "Average Cost": 136.3,  "Market Value": 3790.66, "Book Cost": 2317.1, "Gain/Loss":1473.56 },
     {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
     {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
@@ -249,6 +249,3 @@ class Investments extends React.Component {
 }
 
 export default withStyles(useStyles)(Investments);
-
-
-/*  */
