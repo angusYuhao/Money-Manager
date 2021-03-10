@@ -28,6 +28,10 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import DeleteIcon from '@material-ui/icons/Delete';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import Comment from "./comment.js"
 
@@ -167,6 +171,19 @@ class ForumListItem extends React.Component {
       this.props.userInfoUpdater(newUserInfo)
     }
 
+    handleSavePost = () => {
+      let newUserInfo = this.props.userInfo
+      newUserInfo.userSavedPosts.push(this.state.postID)
+      this.props.userInfoUpdater(newUserInfo)
+    }
+
+    handleUnsavePost = () => {
+      let newUserInfo = this.props.userInfo
+      const newUserSavedPosts = newUserInfo.userSavedPosts.filter((US) => { return US !== this.state.postID })
+      newUserInfo.userSavedPosts = newUserSavedPosts
+      this.props.userInfoUpdater(newUserInfo)
+    }
+
     toggleUpvote = () => {
 
       // clean up downvote
@@ -240,9 +257,29 @@ class ForumListItem extends React.Component {
                 </React.Fragment>
               }
             />
-            <Chip label={ category }/>
-            { openManagePost ? <Button variant="contained" color="primary" onClick={ this.openPost }>View</Button> : null }
-            { openManagePost ? <Button variant="contained" color="primary" onClick={ () => deletePosts(this.state) }>Delete</Button> : null }
+
+            {/* <Grid container justify="flex-end" > */}
+              <Chip label={ category }/>
+              { openManagePost ? 
+                <Tooltip title="View">
+                  <IconButton color="primary" size="medium" onClick={ this.openPost }>
+                    <VisibilityIcon fontSize="default" />
+                  </IconButton>
+                </Tooltip> 
+                : 
+                null
+              }
+              { openManagePost ? 
+                <Tooltip title="Delete">
+                  <IconButton color="primary" size="medium" onClick={ () => deletePosts(this.state) }>
+                    <DeleteIcon fontSize="default" />
+                  </IconButton>
+                </Tooltip> 
+                : 
+                null
+              }
+            {/* </Grid> */}
+            
             
           </ListItem>
   
@@ -254,6 +291,26 @@ class ForumListItem extends React.Component {
                   View Financial Advisor Info
                 </Button>
               : null }
+
+              { userInfo.userSavedPosts.includes(this.props.postID) ? 
+              <Tooltip title="Unsave Post">
+                <Fab color="secondary" size="small" onClick={ this.handleUnsavePost }>
+                  <IndeterminateCheckBoxIcon fontSize="default" />
+                </Fab>
+              </Tooltip>
+               : 
+              <Tooltip title="Save Post">
+                <Fab color="secondary" size="small" onClick={ this.handleSavePost }>
+                  <SaveAltIcon fontSize="default" />
+                </Fab>
+              </Tooltip> }
+
+
+              {/* <Tooltip title="Save Post">
+                <Fab color="secondary" size="small" onClick={ this.handleSavePost }>
+                  <SaveAltIcon fontSize="default" />
+                </Fab>
+              </Tooltip> */}
               <Tooltip title="Close">
                 <Fab color="secondary" size="small" onClick={ this.closePost }>
                   <CloseIcon fontSize="default" />

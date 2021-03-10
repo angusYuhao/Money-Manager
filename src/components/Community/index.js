@@ -82,6 +82,7 @@ class Community extends React.Component {
       usertype: "",
       userUpvotedPosts: [],
       userDownvotedPosts: [],
+      userSavedPosts: [],
       userFollows: [],
     },
     openSidebar: false,
@@ -104,6 +105,7 @@ class Community extends React.Component {
       usertype: usertype,
       userUpvotedPosts: [],
       userDownvotedPosts: [],
+      userSavedPosts: [],
       userFollows: [],
     }
 

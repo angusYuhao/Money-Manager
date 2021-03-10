@@ -149,6 +149,36 @@ class ForumList extends React.Component {
         {commenter: "Dude with an attitude2",
           commentContent: "The Communist Manifesto, originally the Manifesto of the Communist Party (German: Manifest der Kommunistischen Partei), is an 1848 political document by German philosophers Karl Marx and Friedrich Engels. Commissioned by the Communist League and originally published in London just as the Revolutions of 1848 began to erupt, the Manifesto was later recognised as one of the world's most influential political documents. It presents an analytical approach to the class struggle (historical and then-present) and the conflicts of capitalism and the capitalist mode of production, rather than a prediction of communism's potential future forms."}
         ]
+      },
+      {author: 'dragonslayer420', 
+        authorUsertype: "FA",
+        title: 'Another awesome thread', 
+        content: 'The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying ', 
+        authorAvatar: null,
+        category: "Question",
+        postID: 4,
+        numUpvotes: 40,
+        numDownvotes: 20,
+        comments: [
+        {commenter: "Lord of the rings",
+          commentContent: "This truly is the greatest post, many thanks!"},
+        {commenter: "Claude Debussy",
+          commentContent: "This thread is pure garbage, please don't ever post again."}
+        ]
+      },
+      {author: 'Random dude', 
+        authorUsertype: "RU",
+        title: 'Unpopular Opinions are unpopular for a reason', 
+        content: 'The title says it all!', 
+        authorAvatar: null,
+        category: "Opinion",
+        postID: 5,
+        numUpvotes: 1,
+        numDownvotes: 50,
+        comments: [
+        {commenter: "Unpopular Opinion",
+          commentContent: "This is an insult, I will have to report this thread"}
+        ]
       }
     ]
   }
@@ -307,10 +337,19 @@ class ForumList extends React.Component {
     this.setState({ posts: otherPosts })
 
     const userInfo = this.props.userInfo
-    const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
-    if (index !== -1) {
-      userInfo.userUpvotedPosts.splice(index, 1)
-      // this.setState({ userInfo: userInfo })
+    const indexu = userInfo.userUpvotedPosts.indexOf(targetPostID)
+    const indexd = userInfo.userDownvotedPosts.indexOf(targetPostID)
+    const indexs = userInfo.userSavedPosts.indexOf(targetPostID)
+    if (indexu !== -1) {
+      userInfo.userUpvotedPosts.splice(indexu, 1)
+      this.props.userInfoUpdater(userInfo)
+    }
+    if (indexd !== -1) {
+      userInfo.userDownvotedPosts.splice(indexd, 1)
+      this.props.userInfoUpdater(userInfo)
+    }
+    if (indexs !== -1) {
+      userInfo.userSavedPosts.splice(indexs, 1)
       this.props.userInfoUpdater(userInfo)
     }
   }
@@ -542,6 +581,67 @@ class ForumList extends React.Component {
               )
             }
             else if (this.state.postFilter === thread.category && userInfo.userUpvotedPosts.includes(thread.postID)) {
+              return (
+                <div>
+                  <ForumListItem postTitle={ thread.title }
+                                postAuthor={ thread.author }
+                                postAuthorUsertype={ thread.authorUsertype}
+                                postTextContent={ thread.content }
+                                avatar={ thread.authorAvatar }
+                                category={ thread.category }
+                                comments={ thread.comments }
+                                postID={ thread.postID }
+                                openManagePost={ this.state.openManagePost ? true : false }
+                                numUpvotes={ thread.numUpvotes }
+                                numDownvotes={ thread.numDownvotes }
+                                userInfo={ userInfo }
+                                FAInfo={ FAInfo }
+                                userInfoUpdater={ userInfoUpdater }
+                                addUpvote={ this.addUpvote }
+                                minusUpvote={ this.minusUpvote }
+                                addDownvote={ this.addDownvote }
+                                minusDownvote={ this.minusDownvote }
+                                deletePosts={ this.deletePosts }
+                                postComment={ this.postComment }/>
+                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                </div>
+              )
+            }
+          })
+        }
+      </List>
+    }
+    else if (sidebarToggle === "Saved Posts") {
+      mainList = <List className={ classes.forumList }>
+        { this.state.posts.map((thread) => {
+            if (this.state.postFilter === "" && userInfo.userSavedPosts.includes(thread.postID)) {
+              return (
+                <div>
+                  <ForumListItem postTitle={ thread.title }
+                                postAuthor={ thread.author }
+                                postAuthorUsertype={ thread.authorUsertype}
+                                postTextContent={ thread.content }
+                                avatar={ thread.authorAvatar }
+                                category={ thread.category }
+                                comments={ thread.comments }
+                                postID={ thread.postID }
+                                openManagePost={ this.state.openManagePost ? true : false }
+                                numUpvotes={ thread.numUpvotes }
+                                numDownvotes={ thread.numDownvotes }
+                                userInfo={ userInfo }
+                                FAInfo={ FAInfo }
+                                userInfoUpdater={ userInfoUpdater }
+                                addUpvote={ this.addUpvote }
+                                minusUpvote={ this.minusUpvote }
+                                addDownvote={ this.addDownvote }
+                                minusDownvote={ this.minusDownvote }
+                                deletePosts={ this.deletePosts }
+                                postComment={ this.postComment }/>
+                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                </div>
+              )
+            }
+            else if (this.state.postFilter === thread.category && userInfo.userSavedPosts.includes(thread.postID)) {
               return (
                 <div>
                   <ForumListItem postTitle={ thread.title }
