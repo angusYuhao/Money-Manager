@@ -12,6 +12,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
+import Grid from '@material-ui/core/Grid';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 
@@ -242,6 +244,7 @@ class Investments extends React.Component {
         </div>
 
         <div className="SortButtons">
+        {/* <Grid container spacing={4}> */}
           <SortButton categoryName = "Name" callBackFunction = {this.changeSort} 
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
           <SortButton categoryName = "Quantity" callBackFunction = {this.changeSort} 
@@ -250,6 +253,7 @@ class Investments extends React.Component {
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
           <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+        {/* </Grid> */}
         </div>
       </div>
 

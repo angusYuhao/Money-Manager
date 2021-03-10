@@ -13,7 +13,7 @@ class GeneralCard extends React.Component {
         return(
             <Card >
             <CardContent>
-               <Typography variant="h3" component="h2">
+              <Typography variant="h3" component="h2">
                 Account overview
               </Typography>
               <br/>

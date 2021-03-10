@@ -33,11 +33,15 @@
 
 .SortButtons{
     display: flex; 
-    table-layout: fixed;    
+    width: 100%; 
+    margin-top: 2%;
+    justify-content: space-between;
 }
 
 .InvestmentSortButton{
-    height: 95px
+    height: 100%;
+    width: 100%;
+    display: flex; 
 }
 
 .StockPieChartTitle{
@@ -71,7 +75,7 @@
 .StockList{
     margin-top: 10%;
     margin-left: 5%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
     margin-right: 5%;
 }
 
