@@ -2,79 +2,50 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
 import Typography from '@material-ui/core/Typography';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Icon from '@material-ui/core/Icon';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { deepPurple } from '@material-ui/core/colors';
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: deepPurple[800],
+        },
+        secondary: {
+            main: deepPurple[100],
+        }
     },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: '25ch',
+    typography: {
+        fontFamily: [
+            'Poppins',
+            'sans-serif',
+        ].join(','),
     },
-}));
+  });
 
 
 class Calculator extends React.Component{
-    
     state = {
         menuPosition: null,
         initialInvestment: 0,
         interestRate: 0,
         yrsToGrow: 0,
+        compound: 0,
+        amount: 0,
+        error: 0,
     }
 
- 
-      
-    textFieldOnChangeHandler(e, headings, index) {
-
-        this.state.update[headings[index]] = e.target.value
-        this.setState({ update: this.state.update })
-
-        // if nothing is in the cell, put null error 
-        if (e.target.value == "" || e.target.value === null) this.state.error[index] = null
-
-        else {
-            switch (this.props.options[index]) {
-
-                case "Number":
-                case "Percentage":
-                    // error if input not a number, or less than 0 
-                    if (!isNaN(e.target.value) && parseFloat(e.target.value) >= 0) this.state.error[index] = false
-                    else this.state.error[index] = true
-                    break
-                case "Any":
-                    // I think description can be anything? 
-                    this.state.error[index] = false
-                    break
-                case "Select":
-                    this.state.error[index] = false
-                    break
-                default:
-                    throw ("Please specify a valid option.")
-
-            }
-        }
-
-        this.setState({ error: this.state.error })
+    toggleDrawer = () => {
+        this.state.openDrawer = !this.state.openDrawer
+        this.setState({ openDrawer: this.state.openDrawer })
     }
-
 
     displayCompoundTypes(e) {
         this.setState({ menuPosition: e.currentTarget })
@@ -89,6 +60,7 @@ class Calculator extends React.Component{
         this.setState({
             initialInvestment: e.target.value
         })
+        // if(!isNaN(e.target.value) && parseFloat(e.target.value) >= 0
     }
 
     handleInterestRate(e){
@@ -103,11 +75,55 @@ class Calculator extends React.Component{
             yrsToGrow: e.target.value
         })
     }
+    
+    clickedMonthly(event){
+        this.setState({
+            compound: 12
+        })
+        this.anchorEl = null;
+        this.state.menuPosition = null;
+    }
+
+    clickedAnnually(event){
+        this.setState({
+            compound: 1
+        })
+        this.anchorEl = null;
+        this.state.menuPosition = null;
+    }
+
+    clickedQuarterly(event){
+        this.setState({
+            compound: 4
+        })
+        this.anchorEl = null;
+        this.state.menuPosition = null;
+    }
+
+    clickedSemiAnnually(event){
+        this.setState({
+            compound: 2
+        })
+        this.anchorEl = null;
+        this.state.menuPosition = null;
+    }
+
+    calculateAmount(){
+        let insideBrackets = ((this.state.interestRate/100)/(this.state.compound)) + 1;
+        console.log(insideBrackets);
+        let appliedPower = Math.pow(insideBrackets,this.state.compound * this.state.yrsToGrow);
+        console.log(appliedPower);
+        let finalAmount = appliedPower* this.state.initialInvestment;
+        console.log(finalAmount)
+        this.setState({
+            amount: finalAmount.toFixed(2)
+        })
+    }
 
     render(){
         const {compoundTypes} = this.props;
-        
         return(
+        <ThemeProvider theme={ theme }>
         <Card className = "CalculatorCard" variant="outlined" color = "secondary"> 
             <CardContent>
                 <Typography variant="h3" component="h2">
@@ -120,49 +136,47 @@ class Calculator extends React.Component{
                     <br/>
                     <TextField id="standard-basic" label="Interest rate(%):" defaultValue = "0" 
                     margin="normal" onChange = {(e) => this.handleInterestRate(e)}/>
-                    {/* <TextField id="standard-basic" label="Compounding interval:" defaultValue = "Monthly" margin="normal"/> */}
                     <br/>
-                    <TextField id="standard-basic" label="Years to grow(years):" defaultValue = "1" 
+                    <TextField id="standard-basic" label="Years to grow(yrs):" defaultValue = "1" 
                     margin="normal" onChange = {(e) => this.handleYrsToGrow(e)}/>
-                    <br/>   
-                    <Button variant="outlined" aria-label="add" onClick={(e) => this.displayCompoundTypes(e)}>
-                        
-                        Compounding interval
-                        <AddCircleIcon/>
-                    </Button>
-                      <Menu
-                        id="long-menu"
-                        anchorEl={this.state.menuPosition}
-                        open={Boolean(this.state.menuPosition)}
-                        onClose={() => this.hideCompoundTypes()}
-                      >
-
-             
-                        <MenuItem >
-                            <MenuItem onClick={e => e.stopPropagation()}>Monthly</MenuItem>
-                            <MenuItem onClick={e => e.stopPropagation()}>Quarterly</MenuItem>
-                            <MenuItem onClick={e => e.stopPropagation()}>Semi-annually</MenuItem>
-                            <MenuItem onClick={e => e.stopPropagation()}>Yearly</MenuItem>
-
-                        </MenuItem>
-
-                      </Menu>
                     <br/>
-                    <Button variant="outlined" aria-label="add" onClick={() => this.toggleEdit()}>
-                        Calculate
-                    </Button>
-                    
+                    <br/>
 
+                    <div className = "CalculatorButtons">
+                        <Button variant="outlined" aria-label="add" color = "primary" onClick={(e) => this.displayCompoundTypes(e)}>
+                            Compounding interval
+                            <AddCircleIcon/>
+                        </Button>
+                            <Menu
+                                id="long-menu"
+                                anchorEl={this.state.menuPosition}
+                                open={Boolean(this.state.menuPosition)}
+                                onClose={() => this.hideCompoundTypes()}
+                            >
+                                <MenuItem >
+                                    <MenuItem onClick={(e)=>this.clickedMonthly(e)}>Monthly</MenuItem>
+                                    <MenuItem onClick={(e)=>this.clickedQuarterly(e)}>Quarterly</MenuItem>
+                                    <MenuItem onClick={(e)=>this.clickedSemiAnnually(e)}>Semi-annually</MenuItem>
+                                    <MenuItem onClick={(e)=>this.clickedAnnually(e)}>Annually</MenuItem>
+                                </MenuItem>
+                            </Menu>
+                        <br/>
+                        <br/>
+                        <Button variant="outlined" aria-label="add" color = "primary" onClick={() => this.calculateAmount()}>
+                            Calculate
+                        </Button>
+                    </div>
+                    <br/>
+                    <TextField InputProps={{readOnly: true,}} label = "Results($)"
+                        value={this.state.amount}
+                    />
                 </form>
             </CardContent>
-
         </Card>
+        </ThemeProvider>
         )
-
     }
-
-
 }
 
 
-export default Calculator ;
+export default Calculator;

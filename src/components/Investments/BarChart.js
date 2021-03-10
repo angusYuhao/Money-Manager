@@ -68,17 +68,13 @@ class BarChart extends React.Component {
 
     }
 
-  
 
     componentDidMount() {
-        console.log("Did mount!")
         this.context = this.barChartRef.current.getContext('2d');
         let elem = document.getElementById('barChartCanvas');
         let rect = elem.getBoundingClientRect();
         console.log(rect);
         this.drawBars();
-        
-   
     }
 
     
