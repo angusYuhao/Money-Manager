@@ -327,8 +327,8 @@ class Profile extends React.Component {
         this.state.followingData = keep
         const changeFollowingStatus = this.state.followerData.filter(f => f["id"] == wantToUnfollow["id"])
         const indexForChangingFollowingStatus = this.state.followerData.indexOf(changeFollowingStatus[0])
-        this.state.followerData[indexForChangingFollowingStatus]["following"] = false
-        // this.state.followingData[index]["following"] = false;
+        if (indexForChangingFollowingStatus != -1) this.state.followerData[indexForChangingFollowingStatus]["following"] = false
+        
         this.setState({
             followingData: this.state.followingData,
             followerData: this.state.followerData
@@ -336,13 +336,11 @@ class Profile extends React.Component {
     }
 
     handleInputChange = (event) => {
-        console.log(event)
     
         // get the value we type in 
         const target = event.target;
         const value = target.value;
         const name = target.name;
-        console.log(value);
         
         /********************************************************************************
         for phase 2, you would be making a server call to get the username of the post
