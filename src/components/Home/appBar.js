@@ -1,13 +1,12 @@
 import React from 'react';
 import { makeStyles, 
          AppBar,
-         Box, 
          Toolbar, 
          Typography,
          Button,
          createMuiTheme,
          ThemeProvider} from '@material-ui/core';
-import { deepPurple, green } from '@material-ui/core/colors';
+import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,40 +46,42 @@ const theme = createMuiTheme({
     },
 });
 
-export default function HomeAppBar() {
+export default function HomeAppBar(props) {
     const classes = useStyles();
 
     return (
         <ThemeProvider theme={theme}>
-            <div className={classes.root}>
-                <AppBar position="sticky" color="secondary">
-                    
-                    <Toolbar>
-                        
-                        <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
-                            <Typography variant="h6" className={classes.title}>
-                                Money Manager
+            {!props.loggedIn ?
+
+                <div className={classes.root}>
+                    <AppBar position="sticky" color="secondary">
+
+                        <Toolbar>
+
+                            <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
+                                <Typography variant="h6" className={classes.title}>
+                                    Money Manager
                             </Typography>
-                        </Link>
-                        
-                       
-                        <Link to={'/login'}>
-                            <Button className={classes.logInButton}>
-                                Login
-                            </Button>
-                        </Link>
-                        
-                        <Link to={'/signup'}>
-                            <Button color="primary" variant="contained" className={classes.signInButton}>
-                                Get Started
-                            </Button>
-                        </Link>
-                      
-                        
-                    </Toolbar>
-                    
-                </AppBar>
-            </div>
+                            </Link>
+
+                            <Link to={'/login'}>
+                                <Button className={classes.logInButton}>
+                                    Login
+                                    </Button>
+                            </Link>
+
+                            <Link to={'/signup'}>
+                                <Button color="primary" variant="contained" className={classes.signInButton}>
+                                    Get Started
+                                    </Button>
+                            </Link>
+
+                        </Toolbar>
+
+                    </AppBar>
+                </div>
+                : null}
+
         </ThemeProvider>
     );
 }

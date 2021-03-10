@@ -1,14 +1,24 @@
+/* References:
+   bitcoin image: https://unsplash.com/photos/Ph5_4TnXXYE
+   stock image: https://unsplash.com/photos/osWDvhPlGLU
+   finance image: https://unsplash.com/photos/5fNmWej4tAA
+   image slider reference: https://www.youtube.com/watch?v=l1MYfu5YWHc
+*/
+
 import { withStyles,
-    Button,
-    Box,
-    Typography,
-    createMuiTheme,
-    ThemeProvider,
-    IconButton} from '@material-ui/core';
+        Button,
+        Box,
+        Typography,
+        createMuiTheme,
+        ThemeProvider,
+        IconButton} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { NavigateNext, NavigateBefore } from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 import React from 'react';
+import bitcoin from './../Images/bitcoin.jpg';
+import stock from './../Images/stock.jpg';
+import finance from './../Images/finance.jpg';
 import "./sliding.css";
 
 const theme = createMuiTheme({
@@ -70,19 +80,12 @@ const useStyles = theme => ({
     nextIcon: {
         fontSize: '1em',
     }
-
 });
 
 const slides = [
-    {
-        image: 'https://images.unsplash.com/photo-1614858335969-b05a35df2ab1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'
-    },
-    {
-        image: 'https://images.unsplash.com/photo-1614862053138-10ca7a58866e?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'
-    },
-    {
-        image: 'https://images.unsplash.com/photo-1614867517189-34c259f98b17?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60'
-    }
+    { image: bitcoin },
+    { image: stock },
+    { image: finance }
 ]
 
 const length = slides.length;

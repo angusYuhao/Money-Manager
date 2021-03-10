@@ -1,20 +1,22 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import { withStyles } from '@material-ui/core'
-import TableComp from '../Table'
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { deepPurple } from '@material-ui/core/colors';
 
+// imports for sorting buttons 
 import Button from '@material-ui/core/Button';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
+// imports for drawer
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from "@material-ui/core/Divider";
 import AddIcon from '@material-ui/icons/Add';
@@ -24,8 +26,12 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Typography from '@material-ui/core/Typography';
 
 import './spendings.css'
+import { data } from './data'
+
+import TableComp from '../Table'
 import PieChart from '../Investments/PieChart'
 
 const useStyles = () => ({
@@ -34,13 +40,43 @@ const useStyles = () => ({
     height: "100%"
   },
   menu_list: {
-    width: "15vw"
+    width: "15vw",
+    marginTop: "5%",
+    marginLeft: "1vw",
+    marginRight: "1vw"
+  },
+  menu_item: {
+    width: "15vw",
+    marginTop: "5%",
   },
   formControl_root: {
     outline: "none",
     minWidth: "15vw"
+  },
+  listItem_buttonSelected: {
+    backgroundColor: deepPurple[100]
+  },
+  listItem_button: {
+    backgroundColor: ""
   }
 })
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: deepPurple[800],
+    },
+    secondary: {
+      main: deepPurple[100],
+    }
+  },
+  typography: {
+    fontFamily: [
+      'Poppins',
+      'sans-serif',
+    ].join(','),
+  },
+});
 
 class Spendings extends React.Component {
 
@@ -51,20 +87,13 @@ class Spendings extends React.Component {
       // the headings to appear in the header bar 
       transactions_headings: ["Date", "Amount", "Description", "Category"],
       // the options for each transaction for the table to know which kind of cell to display
-      transactions_options: ["Date", "Number", "Any", "Select"],
+      transactions_options: ["Date", "Dollar", "Any", "Select"],
       // a list of the categories that the transaction falls under 
       transactions_categories: ["Food", "Personal", "Transportation", "Home"],
-      // the data to appear in each rows of the table 
-      transactions_data: [
-        { "Date": "02/01/2021", "Amount": "35.23", "Description": "McDonalds", "Category": "Food" },
-        { "Date": "02/03/2021", "Amount": "26.38", "Description": "Starbucks", "Category": "Food" },
-        { "Date": "02/05/2021", "Amount": "136.83", "Description": "Runners", "Category": "Personal" },
-        { "Date": "02/07/2021", "Amount": "13.28", "Description": "Movies", "Category": "Personal" },
-        { "Date": "02/09/2021", "Amount": "52.85", "Description": "Presto Card", "Category": "Transportation" },
-        { "Date": "02/12/2021", "Amount": "83.16", "Description": "Internet + Utilities", "Category": "Home" },
-        { "Date": "02/15/2021", "Amount": "267.33", "Description": "Gift for Joe", "Category": "Personal" },
-        { "Date": "02/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food" },
-      ],
+      // the data to appear in each rows of the table, the transactions for a specific year and month
+      transactions_data: [],
+      // the entire data for all years and all months
+      entire_data: data,
       // the net balance on the account 
       accountBalance: 0,
       // current sorting by string, default is sort by date
@@ -81,34 +110,34 @@ class Spendings extends React.Component {
       sumForCategories: [],
       // the position for the menu used to create a new spendings page
       menuPosition: null,
-      // the month selected for the menu 
-      monthSelected: ""
+      // the month selected for the menu
+      newSpendings: { month: "", year: "", projectedSpendings: "" },
+      // the projected balance on the selected year and month 
+      projectedSpendings: 0,
+      currentlySelectedMonth: {}
     }
 
-    this.sumAccountBalance()
+    // initialize transactions_data
+    this.sortEntireData()
+    const year = this.getYearFromIndex("0")
+    const month = this.getMonthFromIndex("0", "0", year)
+    this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
+    this.setState({ transactions_data: this.state.transactions_data })
+    this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
+    this.setState({ projectedSpendings: this.state.projectedSpendings })
+
     this.sumCategoriesAmount()
+    this.sumAccountBalance()
 
   }
 
-  // array form for data 
-  // ["02/01/2021", "35.23", "McDonalds", "Food"],
-  // ["02/03/2021", "26.38", "Starbucks", "Food"],
-  // ["02/05/2021", "136.83", "Runners", "Personal"],
-  // ["02/07/2021", "13.28", "Movies", "Personal"],
-  // ["02/09/2021", "52.85", "Presto Card", "Transportation"],
-  // ["02/12/2021", "83.16", "Internet + Utilities", "Home"],
-  // ["02/15/2021", "267.33", "Gift for Joe", "Personal"],
-  // ["02/18/2021", "8.37", "Bubble Tea", "Food"]
-
-  // just in case if we need to switch structure to obj 
-  // {"Date": "02/01/2021", "Amount": "35.23", "Description": "McDonalds", "Category": "Food"},
-  // {"Date": "02/03/2021", "Amount": "26.38", "Description": "Starbucks", "Category": "Food"},
-  // {"Date": "02/05/2021", "Amount": "136.83", "Description": "Runners", "Category": "Personal"},
-  // {"Date": "02/07/2021", "Amount": "13.28", "Description": "Movies", "Category": "Personal"},
-  // {"Date": "02/09/2021", "Amount": "52.85", "Description": "Presto Card", "Category": "Transportation"},
-  // {"Date": "02/12/2021", "Amount": "83.16", "Description": "Internet + Utilities", "Category": "Home"},
-  // {"Date": "02/15/2021", "Amount": "267.33", "Description": "Gift for Joe", "Category": "Personal"},
-  // {"Date": "02/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food"},
+  // conversion from numbers representation to letter representation of months 
+  numbersToMonth = {
+    "1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "May", "6": "Jun",
+    "7": "Jul", "8": "Aug", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
+    "Jan": "1", "Feb": "2", "Mar": "3", "Apr": "4", "May": "5", "Jun": "6",
+    "Jul": "7", "Aug": "8", "Sep": "9", "Oct": "10", "Nov": "11", "Dec": "12"
+  }
 
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
@@ -133,12 +162,12 @@ class Spendings extends React.Component {
 
     this.state.transactions_data.map(transaction => {
       const category = transaction["Category"]
-      let index = this.state.sumForCategories.findIndex(x => x.name == category)
+      let index = this.state.sumForCategories.findIndex(x => x.Name == category)
       if (index == -1) {
-        this.state.sumForCategories.push({ name: category, bookCost: 0 })
+        this.state.sumForCategories.push({ "Name": category, "Book Cost": 0 })
         index = this.state.sumForCategories.length - 1
       }
-      this.state.sumForCategories[index].bookCost += parseFloat(transaction["Amount"])
+      this.state.sumForCategories[index]["Book Cost"] += parseFloat(transaction["Amount"])
     })
 
     this.setState({ sumForCategories: this.state.sumForCategories })
@@ -249,9 +278,154 @@ class Spendings extends React.Component {
     this.setState({ menuPosition: e.currentTarget })
   }
 
+  // to update the months on the select for the menu
   selectFieldOnChangeHandler = (e) => {
-    this.state.monthSelected = e.target.value
-    this.setState({ monthSelected: this.state.monthSelected })
+    this.state.newSpendings.month = e.target.value
+    this.setState({ newSpendings: this.state.newSpendings })
+  }
+
+  updateSpendingsYear = (e) => {
+    if (isNaN(e.target.value)) return
+    this.state.newSpendings.year = e.target.value
+    this.setState({ newSpendings: this.state.newSpendings })
+  }
+
+  updateSpendingsProjected = (e) => {
+    if (isNaN(e.target.value)) return
+    this.state.newSpendings.projectedSpendings = e.target.value
+    this.setState({ newSpendings: this.state.newSpendings })
+  }
+
+  createNewSpendings() {
+
+    if (this.state.newSpendings.year == "" || this.state.newSpendings.month == "" || this.state.newSpendings.projectedSpendings == "") return
+
+    const year = this.state.newSpendings.year
+    const month = this.numbersToMonth[this.state.newSpendings.month.substr(0, 3)]
+    const projectedSpendings = this.state.newSpendings.projectedSpendings
+    let yearIndex = this.getIndexFromYear(year)
+
+    // create new object for the year if the year doesn't exist
+    if (!this.checkIfInArray(year, this.state.entire_data)) {
+      let newObj = new Object()
+      newObj[year] = []
+      this.state.entire_data.push(newObj)
+    }
+
+    yearIndex = this.getIndexFromYear(year)
+
+    // if attempting to create an exisiting month/year combination, return 
+    if (this.checkIfInArray(month, this.state.entire_data[yearIndex][year])) {
+      console.log("repeated")
+      return
+    }
+
+    // create new object for the month 
+    else {
+      let newObj = new Object()
+      newObj[month] = new Object()
+      this.state.entire_data[yearIndex][year].push(newObj)
+    }
+
+    const monthIndex = this.getIndexFromMonth(month, this.state.entire_data[yearIndex][year])
+
+    this.state.entire_data[yearIndex][year][monthIndex][month]["Transactions"] = []
+    this.state.entire_data[yearIndex][year][monthIndex][month]["Projected Spendings"] = projectedSpendings
+
+    // sorting data again so it's in order 
+    this.sortEntireData()
+    this.setState({ entire_data: this.state.entire_data })
+
+    // resetting form and closing menu 
+    Object.keys(this.state.newSpendings).map(heading => {
+      this.state.newSpendings[heading] = ""
+    })
+    this.state.menuPosition = null
+    this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
+
+  }
+
+  // sorting the entire dataset for transactions of all months and years 
+  sortEntireData() {
+    this.state.entire_data.map((yearObj, index) => {
+      const year = Object.keys(yearObj)[0]
+      this.state.entire_data[index][year].sort(this.sortDataByKey)
+    })
+    this.state.entire_data.sort(this.sortDataByKey)
+  }
+
+  sortDataByKey(a, b) {
+    // keys can be either month or year, want the latest to be on top 
+    const keyA = parseInt(Object.keys(a)[0])
+    const keyB = parseInt(Object.keys(b)[0])
+    if (keyA > keyB) return -1
+    else return 1
+  }
+
+  // when clicking the months on the drawer, need to update the transactions_data in state for the table 
+  monthsOnClickHandler(e, yearIndex, monthIndex, year, month) {
+    this.state.transactions_data = this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Transactions"]
+    this.setState({ transactions_data: this.state.transactions_data })
+    this.setState({ projectedSpendings: this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Projected Spendings"] })
+    this.sumAccountBalance()
+    this.sumCategoriesAmount()
+  }
+
+  // renders the months for a specific year in the drawer
+  renderMonths(yearObj, index) {
+    let months = []
+    Object.keys(yearObj).map(yearArr => {
+      this.state.entire_data[index][yearArr].map(monthObj => {
+        Object.keys(monthObj).map(month => {
+          months.push(this.numbersToMonth[month])
+        })
+      })
+    })
+    return months
+  }
+
+  // get the year from the year index 
+  getYearFromIndex(yearIndex) {
+    // there will always be only one key, which is the year
+    const objKeys = Object.keys(this.state.entire_data[yearIndex])
+    return objKeys[0]
+  }
+
+  // get the year index from the year 
+  getIndexFromYear(year) {
+    let index = undefined
+    this.state.entire_data.map((yearObj, i) => {
+      const objKeys = Object.keys(yearObj)
+      if (objKeys[0] == year) index = i
+    })
+    return index
+  }
+
+  // get the month from the month index 
+  getMonthFromIndex(monthIndex, yearIndex, year) {
+    // there will always be only one key, which is the month
+    const objKeys = Object.keys(this.state.entire_data[yearIndex][year][monthIndex])
+    return objKeys[0]
+  }
+
+  // get the month index from the month
+  getIndexFromMonth(month, arr) {
+    let index = undefined
+    arr.map((yearObj, i) => {
+      const objKeys = Object.keys(yearObj)
+      if (objKeys[0] == month) index = i
+    })
+    return index
+  }
+
+  // check if a key exists in any objects in an array of objects 
+  checkIfInArray(key, arr) {
+    let exists = false
+    arr.map(obj => {
+      const keys = Object.keys(obj)
+      if (keys.includes(key)) exists = true
+    })
+    return exists
   }
 
   render() {
@@ -262,11 +436,13 @@ class Spendings extends React.Component {
 
       loggedIn ?
 
-        <div>
+        <ThemeProvider theme={theme}>
 
-          <div className="DrawerDiv">
+          <div>
 
-            {/* <IconButton className="OpenDrawerButton"
+            <div className="DrawerDiv">
+
+              {/* <IconButton className="OpenDrawerButton"
                 // color="inherit"
                 aria-label="open drawer"
                 onClick={() => this.toggleDrawer()}
@@ -278,231 +454,197 @@ class Spendings extends React.Component {
                 <MenuIcon />
               </IconButton> */}
 
-            <Drawer classes={{ paper: classes.drawer_paper, paperAnchorDocked: classes.drawer_paper }}
-              variant="permanent"
-            >
-
-              <Menu
-                id="long-menu"
-                anchorEl={this.state.menuPosition}
-                open={Boolean(this.state.menuPosition)}
-                onClose={() => this.hideAddNewMonth()}
-                classes={{ list: classes.menu_list }}
+              <Drawer
+                classes={{ paper: classes.drawer_paper, paperAnchorDocked: classes.drawer_paper }}
+                variant="permanent"
               >
 
-                <FormControl
-                  classes={{ root: classes.formControl_root }}
+                <Menu
+                  id="long-menu"
+                  anchorEl={this.state.menuPosition}
+                  open={Boolean(this.state.menuPosition)}
+                  onClose={() => this.hideAddNewMonth()}
+                  classes={{ list: classes.menu_list }}
                 >
 
-                  <InputLabel id="simple-select-label">Month</InputLabel>
-                  <Select
-                    id="simple-select"
-                    defaultValue={this.state.monthSelected}
-                    onChange={(e) => this.selectFieldOnChangeHandler(e)}
+                  <FormControl
+                    classes={{ root: classes.formControl_root }}
                   >
 
-                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month =>
-                      <MenuItem
-                        value={month}>
-                        {month}
-                      </MenuItem>
-                    )}
+                    <InputLabel id="simple-select-label">Month</InputLabel>
+                    <Select
+                      id="simple-select"
+                      defaultValue={this.state.newSpendings.month}
+                      onChange={(e) => this.selectFieldOnChangeHandler(e)}
+                    >
 
-                  </Select>
+                      {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month =>
+                        <MenuItem
+                          value={month}>
+                          {month}
+                        </MenuItem>
+                      )}
 
-                </FormControl>
+                    </Select>
 
-                <TextField
-                  id="standard-basic"
-                  label="Year"
-                  classes={{ root: classes.menu_list }}
-                />
+                  </FormControl>
 
-                <TextField
-                  id="standard-basic"
-                  label="Projected Spendings"
-                  classes={{ root: classes.menu_list }}
-                />
+                  <TextField onKeyDown={e => e.stopPropagation()}
+                    id="standard-basic"
+                    label="Year"
+                    classes={{ root: classes.menu_item }}
+                    value={this.state.newSpendings.year}
+                    onChange={(e) => this.updateSpendingsYear(e)}
+                  />
 
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  classes={{ root: classes.menu_list }}
-                  size="small"
+                  <TextField onKeyDown={e => e.stopPropagation()}
+                    id="standard-basic"
+                    label="Projected Spendings"
+                    classes={{ root: classes.menu_item }}
+                    value={this.state.newSpendings.projectedSpendings}
+                    onChange={(e) => this.updateSpendingsProjected(e)}
+                  />
+
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    classes={{ root: classes.menu_item }}
+                    size="small"
+                    onClick={() => this.createNewSpendings()}
+                  >
+                    Add New Spendings Page
+                  </Button>
+
+                </Menu>
+
+                <IconButton
+                  aria-label="add"
+                  onClick={(e) => this.displayAddNewMonth(e)}>
+                  <AddIcon />
+                </IconButton>
+                <Divider />
+
+                <div>
+                  {this.state.entire_data.map((yearObj, yearIndex) => (
+                    <div>
+
+                      <Typography
+                        color="textSecondary"
+                        display="block"
+                        variant="caption"
+                        align="center"
+                      >
+                        {Object.keys(yearObj).map(year => <p>{year}</p>)}
+                      </Typography>
+
+                      <List>
+                        {this.renderMonths(yearObj, yearIndex).map((month, monthIndex) => (
+                          <ListItem classes={{ button: classes.listItem_button }} button key={month} onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
+                            <ListItemText primary={month} />
+                          </ListItem>
+                        ))}
+                      </List>
+
+                    </div>
+                  ))}
+                </div>
+
+              </Drawer>
+
+            </div>
+
+            <div className="Content">
+
+              <div className="Chart">
+
+                <PieChart
+                  listToDisplay={this.state.sumForCategories}
+                  pieChartSize={600}
+                  pieChartRadius={150}
                 >
-                  Add New Spendings Page
-                </Button>
 
-              </Menu>
+                </PieChart>
 
-              <IconButton
-                aria-label="add"
-                onClick={(e) => this.displayAddNewMonth(e)}>
-                <AddIcon />
-              </IconButton>
-              <Divider />
+                <div className="AccountBalance">
+                  <Typography variant="h5">
+                    Total Amount: ${this.state.accountBalance}
+                    <br></br>
+                    Projected Spendings: ${this.state.projectedSpendings}
+                  </Typography>
+                </div>
 
-              <List>
-                {["Jan", "Feb", "Mar", "Apr"].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
-
-            </Drawer>
-
-          </div>
-
-          <div className="Content">
-
-            <div className="Chart">
-
-              {/* <img src={pieChart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
-
-              {/* <div className="AccountBalance">
-                Total Amount: {this.state.accountBalance} */}
-
-              {/* <img src={Piechart} alt="pieChart" style={{ marginRight: "auto", marginLeft: "auto", width: "50%", display: "block" }}></img> */}
-              <PieChart
-                listToDisplay={this.state.sumForCategories}
-              >
-
-              </PieChart>
-
-              <div className="AccountBalance">
-                Total Amount: ${this.state.accountBalance}
               </div>
 
-            </div>
+              <div className="Table">
 
-            <div className="Table">
+                <TableComp
+                  // use the TableContainer class to style the table itself 
+                  classes={{ TableContainer: 'TableContainer' }}
+                  headings={this.state.transactions_headings}
+                  data={this.state.transactions_data}
+                  options={this.state.transactions_options}
+                  categories={this.state.transactions_categories}
+                  addRow={this.addTransaction}
+                  editRow={this.editTransaction}
+                  removeRow={this.deleteTransaction}
+                  addCategory={this.addCategory}
+                  removeCategory={this.deleteCategory}
+                />
 
-              <TableComp
-                // use the TableContainer class to style the table itself 
-                classes={{ TableContainer: 'TableContainer' }}
-                headings={this.state.transactions_headings}
-                data={this.state.transactions_data}
-                options={this.state.transactions_options}
-                categories={this.state.transactions_categories}
-                addRow={this.addTransaction}
-                editRow={this.editTransaction}
-                removeRow={this.deleteTransaction}
-                addCategory={this.addCategory}
-                removeCategory={this.deleteCategory}
-              />
+                <div className="SortButtons">
 
-              <div className="SortButtons">
+                  <Grid container spacing={3}>
 
-                <Grid container spacing={3}>
-
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Date")}>
-                        Sort By Date
+                    <Grid item xs={4}>
+                      <Paper>
+                        <Button
+                          className="SortButton"
+                          variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                          color="primary"
+                          onClick={() => this.changeSort("Date")}>
+                          Sort By Date
                           {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </Button>
-                    </Paper>
-                  </Grid>
+                        </Button>
+                      </Paper>
+                    </Grid>
 
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Amount")}>
-                        Sort By Amount
+                    <Grid item xs={4}>
+                      <Paper>
+                        <Button
+                          className="SortButton"
+                          variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                          color="primary"
+                          onClick={() => this.changeSort("Amount")}>
+                          Sort By Amount
                           {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </ Button>
-                    </Paper>
-                  </Grid>
+                        </ Button>
+                      </Paper>
+                    </Grid>
 
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Category")}>
-                        Sort By Category
+                    <Grid item xs={4}>
+                      <Paper>
+                        <Button
+                          className="SortButton"
+                          variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                          color="primary"
+                          onClick={() => this.changeSort("Category")}>
+                          Sort By Category
                           {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </Button>
-                    </Paper>
+                        </Button>
+                      </Paper>
+                    </Grid>
+
                   </Grid>
 
-                </Grid>
+                </div>
 
               </div>
 
             </div>
 
-            {/* <div className="Table">
+          </div >
 
-              <TableComp
-                // use the TableContainer class to style the table itself 
-                classes={{ TableContainer: 'TableContainer' }}
-                headings={this.state.transactions_headings}
-                data={this.state.transactions_data}
-                options={this.state.transactions_options}
-                categories={this.state.transactions_categories}
-                addRow={this.addTransaction}
-                editRow={this.editTransaction}
-                removeRow={this.deleteTransaction}
-                addCategory={this.addCategory}
-                removeCategory={this.deleteCategory}
-              />
-
-              <div className="SortButtons">
-
-                <Grid container spacing={3}>
-
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Date")}>
-                        Sort By Date
-                          {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </Button>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Amount")}>
-                        Sort By Amount
-                          {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </ Button>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Paper>
-                      <Button
-                        className="SortButton"
-                        variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
-                        onClick={() => this.changeSort("Category")}>
-                        Sort By Category
-                          {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                      </Button>
-                    </Paper>
-                  </Grid>
-
-                </Grid>
-
-              </div>
-
-            </div> */}
-            
-          </div>
-
-        </div>
+        </ThemeProvider>
 
         : <Redirect to="/login" />
 

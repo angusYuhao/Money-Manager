@@ -1,5 +1,10 @@
 import React from 'react';
-import { Typography, withStyles, createMuiTheme, Grid, Paper, FormControl, InputLabel, Select, MenuItem, ThemeProvider, TextField } from '@material-ui/core';
+import { Typography, 
+        withStyles, 
+        createMuiTheme, 
+        Grid, 
+        Paper, 
+        ThemeProvider } from '@material-ui/core';
 import HomeAppBar from './../Home/appBar.js';
 import Footer from './../Footer/footer.js';
 import { deepPurple, grey } from '@material-ui/core/colors';
@@ -82,12 +87,12 @@ class Sent extends React.Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, loggedIn } = this.props;
 
         return (
             <ThemeProvider theme={theme}>
                 <div>
-                    <HomeAppBar />
+                    <HomeAppBar loggedIn={loggedIn} />
                     <Grid container className={classes.grid} >
                         <Paper elevation={3} className={classes.paper}>
                             <Typography variant="h5" className={classes.contact}>

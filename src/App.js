@@ -40,12 +40,19 @@ class App extends React.Component {
     }
     else this.state.loggedIn = false;
 
-    this.setState({ 
+    this.setState({
       loggedIn: this.state.loggedIn,
       username: this.state.username,
       password: this.state.password,
       userLevel: this.state.userLevel,
-     })
+    })
+  }
+
+  handleLogOut = () => {
+    this.state.loggedIn = false;
+    this.setState({
+      loggedIn: this.state.loggedIn,
+    })
   }
 
   render() {
@@ -54,19 +61,20 @@ class App extends React.Component {
 
       <div>
         <BrowserRouter>
-          {this.state.loggedIn ? 
+          {this.state.loggedIn ?
             <div>
-              <NavBar 
+              <NavBar
                 username={this.state.username}
-                password={this.state.password}/>
+                password={this.state.password} />
 
             </div> : null}
-          
+
 
           <Switch>
 
             <Route exact path='/'
-              render={() => (<Home />)} />
+              render={() => (<Home
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/login'
               render={() => (<Login
@@ -87,60 +95,37 @@ class App extends React.Component {
               render={() => (<Investments />)} />
 
             <Route exact path='/community'
-              render={() => (<Community 
+              render={() => (<Community
                 username={this.state.username}
                 usertype={this.state.userLevel}/>)} />
 
             <Route exact path='/contact'
-              render={() => (<Contact />)} />
+              render={() => (<Contact
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/sent'
-              render={() => (<Sent />)} />
+              render={() => (<Sent
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/about'
-              render={() => (<About />)} />
+              render={() => (<About
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
               render={() => (<Profile 
+                handleLogOut={this.handleLogOut}
                 username={this.state.username}
                 password={this.state.password}
+                userLevel={this.state.userLevel}
               />)} />
 
           </Switch>
-          
+
 
         </BrowserRouter>
-        
-        
+
+
       </div>
-      /*<div>
-
-        <BrowserRouter>
-
-          <div class="NavBar">
-            <NavBar/>
-          </div>
-
-          <br></br>
-          <br></br>
-          <br></br>
-          
-          <div className="PageContent">
-            <Switch>
-
-              <Route exact path='/spendings' render={() => 
-                    (<Spendings/>)}/>
-              <Route exact path='/investments' render={() => 
-                    (<Investments/>)}/>
-              <Route exact path='/community' render={() => 
-                    (<Community/>)}/>
-
-            </Switch>
-          </div>
-
-        </BrowserRouter>
-
-      </div>*/
 
     )
 

@@ -53,7 +53,7 @@ const theme = createMuiTheme({
             'sans-serif',
         ].join(','),
     },
-  });
+});
 
 class Footer extends React.Component {
 
@@ -70,17 +70,21 @@ class Footer extends React.Component {
                                     <HelpIcon className={classes.contactIcon} />
                                 </IconButton>
                             </Link>
-                            <Typography variant="subtitle2" className={classes.contact}>
-                                Contact us
-                            </Typography>
+                            <Link to={"/contact"} style={{ textDecoration: 'none', color: 'black' }} >
+                                <Typography variant="subtitle2" className={classes.contact}>
+                                    Contact us
+                                </Typography>
+                            </Link>
                             <Link to={"/about"} >
                                 <IconButton name="about" color="primary" size="large" aria-label="about" className={classes.contactButton}>
                                     <InfoIcon className={classes.contactIcon} />
                                 </IconButton>
                             </Link>
-                            <Typography variant="subtitle2" className={classes.contact}>
-                                About us
-                            </Typography>
+                            <Link to={"/about"} style={{ textDecoration: 'none', color: 'black' }} >
+                                <Typography variant="subtitle2" className={classes.contact}>
+                                    About us
+                                </Typography>
+                            </Link>
                             <Typography variant="subtitle2" className={classes.copyRight}>
                                 Copyright © 2021 All Rights Reserved
                             </Typography>
