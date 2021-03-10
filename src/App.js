@@ -6,8 +6,9 @@ import './App.css';
 import Spendings from './components/Spendings'
 import Investments from './components/Investments'
 import Community from './components/Community'
-import NavBar from './components/NavBar'
-import Home from './components/Home'
+import NavBar from './components/NavBar/index.js';
+import AdminNavBar from './components/NavBar/adminNavBar.js';
+import Home from './components/Home';
 import Login from './components/Login/login';
 import SignUp from './components/Signup/signup.js';
 import Contact from './components/ContactUs/contact.js';
@@ -50,8 +51,10 @@ class App extends React.Component {
 
   handleLogOut = () => {
     this.state.loggedIn = false;
+    this.state.userLevel = "";
     this.setState({
       loggedIn: this.state.loggedIn,
+      userLevel: this.state.userLevel,
     })
   }
 
@@ -61,14 +64,21 @@ class App extends React.Component {
 
       <div>
         <BrowserRouter>
-          {this.state.loggedIn ?
+
+          { this.state.userLevel === "Financial Advisor" ?
+            <div>
+              <AdminNavBar
+                username={this.state.username}
+                password={this.state.password} />
+            </div>
+            : this.state.loggedIn ?
             <div>
               <NavBar
                 username={this.state.username}
                 password={this.state.password} />
-
-            </div> : null}
-
+            </div> 
+            : null
+          }
 
           <Switch>
 

@@ -211,7 +211,7 @@ class ForumListItem extends React.Component {
 
             <DialogActions className={ classes.closePostButton }>
               { postAuthorUsertype === "FA" ? 
-                <Button variant="contained" color="secondary" onClick={ this.handleOpenFAInfo }>
+                <Button disabled variant="contained" color="secondary" onClick={ this.handleOpenFAInfo }>
                   View Financial Advisor Info
                 </Button>
               : null }
