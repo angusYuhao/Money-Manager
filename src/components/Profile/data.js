@@ -19,6 +19,12 @@ const followingData = [
     "following": true},
     { "id": "FA3",
     "following": true},
+    { "id": "userA",
+    "following": true},
+    { "id": "userC",
+    "following": true},
+    { "id": "FA1",
+    "following": true},
 ]
 
 const followerData = [

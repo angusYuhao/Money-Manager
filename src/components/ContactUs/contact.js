@@ -104,6 +104,10 @@ class Contact extends React.Component {
         })
     };
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to send this request into the
+    database based on its request category
+    *********************************************************************************/
     submitValidation = (event) => {
         event.preventDefault();
         console.log("inside validation!")
