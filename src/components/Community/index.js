@@ -62,18 +62,18 @@ class Community extends React.Component {
   state = {
     tempFAInfo: [
       {FAName: "Angus Wang",
-        FAIntro: "I am Angus Wang. I am here to guide you to treasures you'll never find yourself. Bow down to me you mere mortal",
+        FAIntro: "I am Angus Wang. I am here to guide you to treasures you'll never find yourself.",
         FAFields: ["Stocks", "Budget Planning", "Life Hacks"],
         FAPoints: 123,
       },
       {FAName: "Angela Merkel",
-        FAIntro: "I am Angela Merkel, the chancellor of Germany. Bow down to me you mere mortal",
+        FAIntro: "I am Angela Merkel, the chancellor of Germany. I post stuff about the EU on here sometimes.",
         FAFields: ["Politics", "Nation Building"],
         FAPoints: 456,
       },
-      {FAName: "dragonslayer420",
-        FAIntro: "I am dragonslayer420, the slayer of 420 dragons. I am here to teach you the way of dragonslaying. Bow down to me you mere mortal",
-        FAFields: ["Dragon Slaying"],
+      {FAName: "Bill Gates",
+        FAIntro: "I am Bill Gates. I won't say much here because my name says it all",
+        FAFields: ["Programming", "Company Building"],
         FAPoints: 789,
       }
     ],
