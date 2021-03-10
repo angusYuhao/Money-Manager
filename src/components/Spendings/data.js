@@ -34,12 +34,10 @@ const data = [
             {
                 "1": {
                     "Transactions": [
-                        { "Date": "01/01/2021", "Amount": "335.23", "Description": "Decorations", "Category": "Home" },
                         { "Date": "01/03/2021", "Amount": "66.38", "Description": "Starbucks", "Category": "Food" },
                         { "Date": "01/05/2021", "Amount": "111.83", "Description": "Glasses", "Category": "Personal" },
                         { "Date": "01/07/2021", "Amount": "74.28", "Description": "Movies", "Category": "Personal" },
-                        { "Date": "01/09/2021", "Amount": "13.85", "Description": "Presto Card", "Category": "Transportation" },
-                        { "Date": "01/12/2021", "Amount": "34.16", "Description": "Internet + Utilities", "Category": "Home" },
+                        { "Date": "01/09/2021", "Amount": "133.85", "Description": "Presto Card", "Category": "Transportation" },
                         { "Date": "01/15/2021", "Amount": "22.33", "Description": "Gift for Joe", "Category": "Personal" },
                         { "Date": "01/18/2021", "Amount": "8.37", "Description": "Bubble Tea", "Category": "Food" },
                     ],

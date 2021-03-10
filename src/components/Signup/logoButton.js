@@ -8,6 +8,10 @@ const useStyles = theme => ({
         cursor: 'pointer',
         marginRight: '70vw',
     },
+    removeLine: {
+        textDecoration: 'none',
+        color: 'black'
+    }
 });
 
 class LogoButton extends React.Component {
@@ -15,7 +19,7 @@ class LogoButton extends React.Component {
         const { classes, buttonTitle } = this.props;
 
         return (
-            <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
+            <Link to={'/'} className={classes.removeLine}>
                 <Typography variant="h6" className={classes.title}>
                   { buttonTitle }
                 </Typography>

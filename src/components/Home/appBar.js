@@ -1,11 +1,13 @@
 import React from 'react';
-import { makeStyles, 
-         AppBar,
-         Toolbar, 
-         Typography,
-         Button,
-         createMuiTheme,
-         ThemeProvider} from '@material-ui/core';
+import {
+    makeStyles,
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    createMuiTheme,
+    ThemeProvider
+} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 
@@ -26,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     logInButton: {
         float: 'right',
         marginRight: 10,
+    },
+    removeLine: {
+        textDecoration: 'none',
+        color: 'black'
     }
 }))
 
@@ -58,7 +64,7 @@ export default function HomeAppBar(props) {
 
                         <Toolbar>
 
-                            <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
+                            <Link to={'/'} className={classes.removeLine}>
                                 <Typography variant="h6" className={classes.title}>
                                     Money Manager
                             </Typography>

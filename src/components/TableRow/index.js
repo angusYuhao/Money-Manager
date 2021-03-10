@@ -228,7 +228,12 @@ class TableRowComp extends React.Component {
                 return value + '%'
             case "Dollar":
                 if (value > 0) return '$' + value
-                else return '-' + '$' + value.slice(1)
+                else {
+                    // if value is a string (used by spendings)
+                    if (typeof value === "string") return '-' + '$' + value.slice(1)
+                    // if value is a float (used by investments)
+                    else return '-' + '$' + Math.abs(value)
+                }
             default:
                 return value
         }

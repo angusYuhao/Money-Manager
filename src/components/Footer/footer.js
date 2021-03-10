@@ -35,6 +35,10 @@ const useStyles = theme => ({
         marginTop: theme.spacing(1),
         top: '50%',
         marginLeft: theme.spacing(45),
+    },
+    removeLine: {
+        textDecoration: 'none',
+        color: 'black'
     }
 })
 
@@ -65,12 +69,12 @@ class Footer extends React.Component {
                 <div className={classes.root}>
                     <AppBar position="sticky" color="secondary" className={classes.root}>
                         <Toolbar>
-                            <Link to={"/contact"} style={{ textDecoration: 'none', color: 'black' }}>
+                            <Link to={"/contact"} className={classes.removeLine}>
                                 <IconButton name="contact" color="primary" size="large" aria-label="contact" className={classes.contactButton}>
                                     <HelpIcon className={classes.contactIcon} />
                                 </IconButton>
                             </Link>
-                            <Link to={"/contact"} style={{ textDecoration: 'none', color: 'black' }} >
+                            <Link to={"/contact"} className={classes.removeLine} >
                                 <Typography variant="subtitle2" className={classes.contact}>
                                     Contact us
                                 </Typography>
@@ -80,7 +84,7 @@ class Footer extends React.Component {
                                     <InfoIcon className={classes.contactIcon} />
                                 </IconButton>
                             </Link>
-                            <Link to={"/about"} style={{ textDecoration: 'none', color: 'black' }} >
+                            <Link to={"/about"} className={classes.removeLine} >
                                 <Typography variant="subtitle2" className={classes.contact}>
                                     About us
                                 </Typography>
