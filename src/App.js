@@ -122,34 +122,6 @@ class App extends React.Component {
         
         
       </div>
-      /*<div>
-
-        <BrowserRouter>
-
-          <div class="NavBar">
-            <NavBar/>
-          </div>
-
-          <br></br>
-          <br></br>
-          <br></br>
-          
-          <div className="PageContent">
-            <Switch>
-
-              <Route exact path='/spendings' render={() => 
-                    (<Spendings/>)}/>
-              <Route exact path='/investments' render={() => 
-                    (<Investments/>)}/>
-              <Route exact path='/community' render={() => 
-                    (<Community/>)}/>
-
-            </Switch>
-          </div>
-
-        </BrowserRouter>
-
-      </div>*/
 
     )
 

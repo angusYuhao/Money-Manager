@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles, 
-  withStyles,
-  AppBar, 
-  Toolbar, 
-  Typography,
-  Button,
-  TextField,
-  Grid,
-  createMuiTheme,
-  Paper,
-  ThemeProvider} from '@material-ui/core';
-import { deepPurple, grey } from '@material-ui/core/colors';
+import { withStyles,
+        AppBar, 
+        Toolbar, 
+        Typography,
+        Button,
+        TextField,
+        Grid,
+        createMuiTheme,
+        Paper,
+        ThemeProvider} from '@material-ui/core';
+import { deepPurple } from '@material-ui/core/colors';
 import Footer from '../Footer/footer.js';
-
+import LogoButton from './../Signup/logoButton.js';
+import FormTitle from './../Signup/formTitle.js';
 
 const useStyles = theme => ({
   root: {
@@ -41,14 +41,6 @@ const useStyles = theme => ({
     marginTop: theme.spacing(2),
     color: theme.palette.getContrastText(deepPurple[800]),
     backgroundColor: deepPurple[500],
-  },
-  text1: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(3),
-  },
-  subtitle: {
-    marginLeft: theme.spacing(3),
-    color: grey[500],
   },
   form: {
     margin: theme.spacing(3),
@@ -100,8 +92,6 @@ class Login extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    console.log(value);
-    console.log(name);
 
     // state is updated and value is also updated in JSX
     // the square bracket dynamically changes the name 
@@ -112,7 +102,7 @@ class Login extends React.Component {
 
   render() {
     
-    const { classes, loginHandler } = this.props;
+    const { classes, loginHandler, signedUp } = this.props;
 
     return (
 
@@ -120,33 +110,29 @@ class Login extends React.Component {
             <div className={classes.root}>
                 <AppBar position="sticky" color="secondary">
                     <Toolbar>
-                      <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
-                        <Typography variant="h6" className={classes.title}>
-                          Money Manager
-                        </Typography>
+                      <LogoButton buttonTitle="Money Manager" />
+                      <Typography variant="subtitle1" className={classes.new}>
+                        New User?
+                      </Typography>
+                      <Link to={'/signup'}>
+                        <Button color="primary" variant="contained" className={classes.signInButton}>
+                          Get Started
+                        </Button>
                       </Link>
-                        <Typography variant="subtitle1" className={classes.new}>
-                          New User?
-                        </Typography>
-                        <Link to={'/signup'}>
-                          <Button color="primary" variant="contained" className={classes.signInButton}>
-                            Get Started
-                          </Button>
-                        </Link>
                     </Toolbar>
                 </AppBar>
 
                 <Grid container className={classes.grid} >
                   <Paper elevation={3} className={classes.paper}>
-                    
-                    <Typography variant="h5" className={classes.text1}>
-                      Welcome back!
-                    </Typography>
-                    
-            
-                    <Typography variant="subtitle2" className={classes.subtitle}>
-                      Login to continue
-                    </Typography>
+                    { signedUp ? 
+                      <FormTitle firstTitle="You have successfully signed up!"
+                                subTitle="Login to continue"
+                      />
+                      :
+                      <FormTitle firstTitle="Welcome back!"
+                                subTitle="Login to continue"
+                      />
+                    }
 
                     <form className={classes.form}>
                       <Grid container direction="column" spacing={2}>

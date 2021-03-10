@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import { Typography, 
         Grid,
         Paper,
@@ -9,22 +8,18 @@ import { Typography,
         Drawer,
         withStyles, 
         createMuiTheme,
-        Table,
-        TableContainer,
-        TableBody,
-        TableCell,
-        TableRow,
         Tab,
         Tabs,
         Avatar,
         ThemeProvider, 
         List,
-        Divider,
-        TextField } from '@material-ui/core';
-import { deepPurple, grey } from '@material-ui/core/colors';
+        Divider} from '@material-ui/core';
+import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 import ForumListItem from '../Community/forumListItem';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import Edit from './edit.js';
+import Done from './done.js';
 
 const drawerWidth = 400;
 
@@ -73,34 +68,6 @@ const useStyles = theme => ({
         marginLeft: theme.spacing(18.5),
         backgroundColor: deepPurple[800],
     },
-    username: {
-        marginTop: theme.spacing(2),
-        marginLeft: theme.spacing(12),
-    },
-    email: {
-        marginTop: theme.spacing(1),
-        marginLeft: theme.spacing(5),
-    },
-    table: {
-        marginTop: theme.spacing(1),
-    },
-    tableCell: {
-        borderBottom: 'none',
-        paddingLeft: theme.spacing(3),
-        fontSize: '1em',
-    },
-    text_username: {
-        marginLeft: theme.spacing(4),
-    },
-    text_email: {
-        marginLeft: theme.spacing(9),
-    },
-    text_occupation: {
-        marginLeft: theme.spacing(2.7),
-    },
-    text_birthday: {
-        marginLeft: theme.spacing(6),
-    },
     editButton: {
         float: 'right',
         marginRight: theme.spacing(3),
@@ -125,11 +92,6 @@ const useStyles = theme => ({
     },
     textfield: {
         minWidth: 340,
-    },
-    bio: {
-        marginLeft: theme.spacing(3),
-        marginBottom: theme.spacing(1),
-        marginRight: theme.spacing(3),
     },
     number: {
         marginLeft: theme.spacing(3),
@@ -175,6 +137,8 @@ const theme = createMuiTheme({
     },
 });
 
+// All the profile information should be fetched from the database
+// that stores the user information
 class Profile extends React.Component {
 
     state = {
@@ -400,7 +364,7 @@ class Profile extends React.Component {
             })
             
         } else if(this.state.userLevel === "Financial Advisor") {
-            this.state.avatar = "FA";
+            this.state.avatar = "A";
             this.state.bio = "A certified financial advisor, dedicated to help others";
             this.state.username = "admin";
             this.state.name = "Admin X";
@@ -412,7 +376,7 @@ class Profile extends React.Component {
                 authorUsertype: "FA",
                 title: 'Welcome to communtiy', 
                 content: 'I am the financial advisor', 
-                authorAvatar: "FA",
+                authorAvatar: "A",
                 category: "Announcement",
                 postID: 1,
                 numUpvotes: 5,
@@ -428,7 +392,7 @@ class Profile extends React.Component {
                 authorUsertype: "FA",
                 title: 'My second post', 
                 content: 'I am here to provide you guys with some help in financing', 
-                authorAvatar: "FA",
+                authorAvatar: "A",
                 category: "Opinion",
                 postID: 2,
                 numUpvotes: 4,
@@ -504,139 +468,33 @@ class Profile extends React.Component {
                                     className={classes.avatar}>{ this.state.avatar }</Avatar>
 
                             { this.state.edit ? 
-                                <TableContainer>
-                                    <Table className={classes.table} aria-label="profile table">
-                                        <TableBody>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField onChange={ this.handleInputChange }
-                                                            value={ this.state.username }
-                                                            defaultValue="user"
-                                                            id="outlined" 
-                                                            label="username" 
-                                                            name="username"
-                                                            variant="outlined" 
-                                                            className={classes.textfield}
-                                                            />
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField onChange={ this.handleInputChange }
-                                                                value={ this.state.name }
-                                                                defaultValue="User X"
-                                                                id="outlined" 
-                                                                label="name" 
-                                                                name="name"
-                                                                variant="outlined" 
-                                                                className={classes.textfield}
-                                                                />
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField onChange={ this.handleInputChange }
-                                                                    value={ this.state.email }
-                                                                    defaultValue="user@123.com"
-                                                                    id="outlined" 
-                                                                    label="email" 
-                                                                    name="email"
-                                                                    variant="outlined" 
-                                                                    className={classes.textfield}
-                                                                    />
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField onChange={ this.handleInputChange }
-                                                                    value={ this.state.occupation }
-                                                                    defaultValue="student"
-                                                                    id="outlined" 
-                                                                    label="occupation" 
-                                                                    name="occupation"
-                                                                    variant="outlined" 
-                                                                    className={classes.textfield}
-                                                                    />
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField 
-                                                        value={ this.state.birthday } 
-                                                        onChange={ this.handleInputChange }
-                                                        defaultValue="2021-03-08"
-                                                        id="date" 
-                                                        label="Birthday" 
-                                                        type="date"
-                                                        name="birthday"
-                                                        variant="outlined" 
-                                                        InputLabelProps={{
-                                                        shrink: true,
-                                                        }}
-                                                        className={classes.textfield}
-                                                        />
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>
-                                                    <TextField 
-                                                        value={ this.state.bio } 
-                                                        onChange={ this.handleInputChange }
-                                                        multiline
-                                                        defaultValue="An individual that is pursuing one's passions."
-                                                        id="bio" 
-                                                        label="Bio"
-                                                        name="bio"
-                                                        variant="outlined" 
-                                                        className={classes.textfield}
-                                                        />
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <Edit 
+                                    handleInputChange={ this.handleInputChange }
+                                    username={ this.state.username }
+                                    name={ this.state.name }
+                                    email={ this.state.email }
+                                    occupation={ this.state.occupation }
+                                    birthday={ this.state.birthday }
+                                    bio={ this.state.bio }
+                                />
                                 :
-                                <TableContainer>
-                                    <Table className={classes.table} aria-label="profile table">
-                                        <TableBody>
-                                            <TableRow>
-                                                <Typography align="center" className={classes.name}>{ this.state.name }</Typography>
-                                            </TableRow>
-                                            <TableRow>
-                                                <Typography className={classes.bio}>{ this.state.bio }</Typography>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>Username: 
-                                                    <span className={classes.text_username}>{ this.state.username }</span>
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>Email: 
-                                                    <span className={classes.text_email}>{ this.state.email }</span>
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>Occupation: 
-                                                    <span className={classes.text_occupation}>{ this.state.occupation }</span>
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell className={classes.tableCell}>Birthday: 
-                                                    <span className={classes.text_birthday}>{ this.state.birthday }</span>
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>       
+                                <Done  
+                                    username={ this.state.username }
+                                    name={ this.state.name }
+                                    email={ this.state.email }
+                                    occupation={ this.state.occupation }
+                                    birthday={ this.state.birthday }
+                                    bio={ this.state.bio } 
+                                />    
                             }
                             
                             { this.state.edit ? 
-                            <Button onClick={ this.handleEdit }
-                                    color="primary" 
-                                    variant="contained" 
-                                    className={classes.editButton}>
-                                Done
-                            </Button>
+                                <Button onClick={ this.handleEdit }
+                                        color="primary" 
+                                        variant="contained" 
+                                        className={classes.editButton}>
+                                    Done
+                                </Button>
                             :
                             <div>
                                 <Button onClick={ this.handleEdit }
@@ -657,7 +515,6 @@ class Profile extends React.Component {
                             }
                         </div>
                     </Drawer>
-
                    
                     <main className={classes.content}>
                         <Grid container direction="row" className={classes.numberGroup}>
@@ -732,7 +589,6 @@ class Profile extends React.Component {
                                     })
                                 }
                                 </List>
-
                             }
                             
                         </div>
