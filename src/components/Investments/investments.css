@@ -27,8 +27,9 @@
 }
 
 .StockTable{
+    width: 90vw;
     position: relative;
-    margin-top: 10%;
+    margin-top: 12%;
 }
 
 .SortButtons{

@@ -210,7 +210,7 @@ class Investments extends React.Component {
 
 
       <div className = "StockList">
-        <div className="StockTable" width = "100vw">
+        <div className="StockTable">
           <TableComp
             // use the TableContainer class to style the table itself 
             classes={{ TableContainer: 'TableContainer' }}
