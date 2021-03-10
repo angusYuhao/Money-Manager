@@ -56,8 +56,10 @@ const useStyles = theme => ({
     marginRight: 10,
   },
   footer: {
-    position: 'relative',
+    position: 'absolute',
     marginTop: theme.spacing(25),
+    bottom: 0,
+    width: '100%',
   }
 });
 
