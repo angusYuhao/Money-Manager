@@ -1,10 +1,11 @@
-.PieChartTable {
+.PieChartGeneral{
     width: 90vw;
     height: 90vh;
     /* margin: none; */
-    margin-left: 2%;
-    margin-right: 10%;
+    margin-left: 8%;
+    margin-right: 8%;
     display: flex;
+
 }
 
 .Table {
@@ -16,7 +17,7 @@
 }
 
 .PieChart{
-    margin-top: 2%;
+    margin-top: 5%;
     position: relative;
 }
 
@@ -31,22 +32,22 @@
 }
 
 .SortButtons{
+    display: flex; 
     width: 100%; 
-    float: left;
-    display: flex;
-    height: 100%;
-    
+    margin-top: 2%;
+    justify-content: space-between;
 }
 
 .InvestmentSortButton{
-    height: 95px
+    height: 100%;
+    width: 100%;
+    display: flex; 
 }
 
 .StockPieChartTitle{
     height: 20px;
     /* color: #673ab7; */
     color: #5423a8;
-
     font-weight: bold;
     font-size: 180%;
     width: 100%;
@@ -62,3 +63,19 @@
     margin-left: 5%;
     margin-right: 5%;
 }
+
+
+.GeneralInfo{
+    margin-top: 15%;
+    margin-left: 4%;
+    margin-bottom: 10%;
+    margin-right: 4%;
+}
+
+.StockList{
+    margin-top: 10%;
+    margin-left: 5%;
+    margin-bottom: 5%;
+    margin-right: 5%;
+}
+

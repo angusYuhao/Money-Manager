@@ -38,20 +38,19 @@ class PieChart extends React.Component {
     drawSlices = () => {
         //!!!Ian: bookCost is the total amount spend on that stock/in that category
        
-        const {listToDisplay} = this.props
-        console.log(listToDisplay);
+        const { listToDisplay} = this.props
+        //console.log(listToDisplay);
 
         let startAngle = 0; 
         let radius = this.state.radius;
         let cx = this.state.canvasWidth/2;
         let cy = this.state.canvasHeight/2;
         let total = listToDisplay.reduce( (ttl, stock) => {
-            console.log(stock)
+            //console.log(stock)
             //return ttl + (stock.bookCost)
             return ttl + Math.round( (parseFloat(stock["Book Cost"])  * 100)/ 100 )
         }, 0);
-        
-        console.log(total)
+        //console.log(total)
 
         listToDisplay.forEach(element => {
             //here the slices are draw backwards...(clockwise) so makesure to push into the list properly
@@ -100,7 +99,7 @@ class PieChart extends React.Component {
             //this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
-            console.log(actualBookCost)
+            //console.log(actualBookCost)
             //store the slice information
             this.state.slices.push({ 
                     "name" : element.Name,
@@ -109,7 +108,6 @@ class PieChart extends React.Component {
                     "endAngle": (2.0*Math.PI) - startAngle,
                     "drawStartAngle": startAngle,
                     "drawEndAngle": endAngle,
-                    "total": total,
                     "bookCost": actualBookCost
             });
             startAngle = endAngle;
@@ -118,6 +116,7 @@ class PieChart extends React.Component {
     }
 
     drawAccentedSlice = (slice, accented) => {
+        const { listToDisplay} = this.props
         let radius = parseFloat(this.state.radius);
         let cx = parseFloat(this.state.canvasWidth/2);
         let cy = parseFloat(this.state.canvasHeight/2);
@@ -144,9 +143,14 @@ class PieChart extends React.Component {
         let deltaY = parseFloat(Math.sin(theta) * 1.5 * radius);
         let deltaX = parseFloat(Math.cos(theta) * 1.5 * radius);
         
+        let total = listToDisplay.reduce( (ttl, stock) => {
+            //console.log(stock)
+            //return ttl + (stock.bookCost)
+            return ttl + Math.round( (parseFloat(stock["Book Cost"])  * 100)/ 100 )
+        }, 0);
+      
 
-
-        let percentage = Math.round(+((slice.bookCost*100)/slice.total));
+        let percentage = Math.round(+((slice.bookCost*100)/total));
         this.context.fillText(slice.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
         this.context.stroke();
         this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
@@ -173,14 +177,6 @@ class PieChart extends React.Component {
     }
 
     redraw = () => {
-        this.context = this.pieChartRef.current.getContext('2d');
-        let elem = document.getElementById('pieChartCanvas');
-        let rect = elem.getBoundingClientRect();
-        
-        const context = this.context;
-        context.clearRect(0, 0, rect.width, rect.height);
-
-        context.beginPath();
         // this.context = this.pieChartRef.current.getContext('2d');
         // let elem = document.getElementById('pieChartCanvas');
         // let rect = elem.getBoundingClientRect();
@@ -191,6 +187,8 @@ class PieChart extends React.Component {
         // //context.clearRect(0, 0, elem.width, elem.height);
         // context.clearRect(0, 0, rect.width, rect.height);
 
+        // context.beginPath();
+
         for(let i = 0; i < this.state.slices.length; i++){
             this.drawAccentedSlice(this.state.slices[i],0);
         }
@@ -198,12 +196,12 @@ class PieChart extends React.Component {
 
     componentDidMount() {
 
-        console.log("Did mount!")
+        //console.log("Did mount!")
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
 
         const {listToDisplay} = this.props
-        console.log(listToDisplay)
+        //console.log(listToDisplay)
         this.drawSlices();
 
         //NOTE!!!!!! get bounding client rect gets the positions according to the window not the document!!!
