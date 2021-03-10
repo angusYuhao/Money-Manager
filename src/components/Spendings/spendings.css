@@ -13,10 +13,12 @@
     width: 50%;
     display: inline-block;
     margin-top: 5%;
+    left: 5%;
 }
 
 .Chart {
     width: 50%;
+    left: 2%;
     display: inline-block;
     align-items: stretch;
     position: relative;

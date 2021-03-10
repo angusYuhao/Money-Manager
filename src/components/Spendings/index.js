@@ -41,11 +41,23 @@ const useStyles = () => ({
   },
   menu_list: {
     width: "15vw",
-    marginTop: "5%"
+    marginTop: "5%",
+    marginLeft: "1vw",
+    marginRight: "1vw"
+  },
+  menu_item: {
+    width: "15vw",
+    marginTop: "5%",
   },
   formControl_root: {
     outline: "none",
     minWidth: "15vw"
+  },
+  listItem_buttonSelected: {
+    backgroundColor: deepPurple[100]
+  },
+  listItem_button: {
+    backgroundColor: ""
   }
 })
 
@@ -75,7 +87,7 @@ class Spendings extends React.Component {
       // the headings to appear in the header bar 
       transactions_headings: ["Date", "Amount", "Description", "Category"],
       // the options for each transaction for the table to know which kind of cell to display
-      transactions_options: ["Date", "Number", "Any", "Select"],
+      transactions_options: ["Date", "Dollar", "Any", "Select"],
       // a list of the categories that the transaction falls under 
       transactions_categories: ["Food", "Personal", "Transportation", "Home"],
       // the data to appear in each rows of the table, the transactions for a specific year and month
@@ -102,6 +114,7 @@ class Spendings extends React.Component {
       newSpendings: { month: "", year: "", projectedSpendings: "" },
       // the projected balance on the selected year and month 
       projectedSpendings: 0,
+      currentlySelectedMonth: {}
     }
 
     // initialize transactions_data
@@ -323,6 +336,13 @@ class Spendings extends React.Component {
     this.sortEntireData()
     this.setState({ entire_data: this.state.entire_data })
 
+    // resetting form and closing menu 
+    Object.keys(this.state.newSpendings).map(heading => {
+      this.state.newSpendings[heading] = ""
+    })
+    this.state.menuPosition = null
+    this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
+
   }
 
   // sorting the entire dataset for transactions of all months and years 
@@ -472,7 +492,7 @@ class Spendings extends React.Component {
                   <TextField onKeyDown={e => e.stopPropagation()}
                     id="standard-basic"
                     label="Year"
-                    classes={{ root: classes.menu_list }}
+                    classes={{ root: classes.menu_item }}
                     value={this.state.newSpendings.year}
                     onChange={(e) => this.updateSpendingsYear(e)}
                   />
@@ -480,7 +500,7 @@ class Spendings extends React.Component {
                   <TextField onKeyDown={e => e.stopPropagation()}
                     id="standard-basic"
                     label="Projected Spendings"
-                    classes={{ root: classes.menu_list }}
+                    classes={{ root: classes.menu_item }}
                     value={this.state.newSpendings.projectedSpendings}
                     onChange={(e) => this.updateSpendingsProjected(e)}
                   />
@@ -488,7 +508,7 @@ class Spendings extends React.Component {
                   <Button
                     variant="outlined"
                     color="primary"
-                    classes={{ root: classes.menu_list }}
+                    classes={{ root: classes.menu_item }}
                     size="small"
                     onClick={() => this.createNewSpendings()}
                   >
@@ -519,7 +539,7 @@ class Spendings extends React.Component {
 
                       <List>
                         {this.renderMonths(yearObj, yearIndex).map((month, monthIndex) => (
-                          <ListItem button key={month} onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
+                          <ListItem classes={{ button: classes.listItem_button }} button key={month} onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
                             <ListItemText primary={month} />
                           </ListItem>
                         ))}
@@ -580,6 +600,7 @@ class Spendings extends React.Component {
                         <Button
                           className="SortButton"
                           variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                          color="primary"
                           onClick={() => this.changeSort("Date")}>
                           Sort By Date
                           {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
@@ -592,6 +613,7 @@ class Spendings extends React.Component {
                         <Button
                           className="SortButton"
                           variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                          color="primary"
                           onClick={() => this.changeSort("Amount")}>
                           Sort By Amount
                           {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
@@ -604,6 +626,7 @@ class Spendings extends React.Component {
                         <Button
                           className="SortButton"
                           variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                          color="primary"
                           onClick={() => this.changeSort("Category")}>
                           Sort By Category
                           {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}

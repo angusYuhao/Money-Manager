@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core'
 
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -16,6 +17,12 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import InputAdornment from '@material-ui/core/InputAdornment';
+
+const useStyles = () => ({
+    formControl_root: {
+        minWidth: "10vw",
+    }
+})
 
 class TableRowComp extends React.Component {
 
@@ -76,6 +83,10 @@ class TableRowComp extends React.Component {
                 case "Percentage":
                     // error if input not a number, or less than 0 
                     if (!isNaN(e.target.value) && parseFloat(e.target.value) >= 0) this.state.error[index] = false
+                    else this.state.error[index] = true
+                    break
+                case "Dollar":
+                    if (!isNaN(e.target.value)) this.state.error[index] = false
                     else this.state.error[index] = true
                     break
                 case "Any":
@@ -168,7 +179,7 @@ class TableRowComp extends React.Component {
                 </MuiPickersUtilsProvider>
 
             case "Select":
-                return <FormControl style={{ minWidth: "10vw" }}>
+                return <FormControl classes={{ root: this.props.classes.formControl_root }}>
                     <InputLabel id="simple-select-label">Category</InputLabel>
                     <Select
                         error={this.state.error[index]}
@@ -215,8 +226,9 @@ class TableRowComp extends React.Component {
         switch (option) {
             case "Percentage":
                 return value + '%'
-            case "Number":
-                return '$' + value;
+            case "Dollar":
+                if (value > 0) return '$' + value
+                else return '-' + '$' + value.slice(1)
             default:
                 return value
         }
@@ -332,4 +344,4 @@ class TableRowComp extends React.Component {
 
 }
 
-export default TableRowComp;
+export default withStyles(useStyles)(TableRowComp);
