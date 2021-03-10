@@ -35,8 +35,8 @@ class Calculator extends React.Component{
         menuPosition: null,
         initialInvestment: 0,
         interestRate: 0,
-        yrsToGrow: 0,
-        compound: 0,
+        yrsToGrow: 1,
+        compound: 1,
         amount: 0,
         error: 0,
     }
@@ -110,12 +110,20 @@ class Calculator extends React.Component{
     calculateAmount(){
         let insideBrackets = ((this.state.interestRate/100)/(this.state.compound)) + 1;
         console.log(insideBrackets);
-        let appliedPower = Math.pow(insideBrackets,this.state.compound * this.state.yrsToGrow);
+        let exponentVal = this.state.compound * this.state.yrsToGrow;
+        console.log(exponentVal);
+        let appliedPower = Math.pow(insideBrackets,exponentVal);
         console.log(appliedPower);
         let finalAmount = appliedPower* this.state.initialInvestment;
         console.log(finalAmount)
         this.setState({
             amount: finalAmount.toFixed(2)
+        })
+        this.setState({
+            interestRate: 0,
+            yrsToGrow: 0,
+            compound: 0,
+            initialInvestment: 0,
         })
     }
 
@@ -130,13 +138,13 @@ class Calculator extends React.Component{
                 </Typography>
                 <br/>
                 <form noValidate autoComplete="off">
-                    <TextField id="standard-basic" label = "Intial investment($):" defaultValue = "0" 
+                    <TextField value = {this.state.initialInvestment} id="standard-basic" label = "Intial investment($):" defaultValue = "0" 
                      margin="normal"  onChange = {(e) => this.handleInitInvestment(e)}/>
                     <br/>
-                    <TextField id="standard-basic" label="Interest rate(%):" defaultValue = "0" 
+                    <TextField value = {this.state.interestRate} id="standard-basic" label="Interest rate(%):" defaultValue = "0" 
                     margin="normal" onChange = {(e) => this.handleInterestRate(e)}/>
                     <br/>
-                    <TextField id="standard-basic" label="Years to grow(yrs):" defaultValue = "1" 
+                    <TextField value = {this.state.yrsToGrow} id="standard-basic" label="Years to grow(yrs):" defaultValue = "1" 
                     margin="normal" onChange = {(e) => this.handleYrsToGrow(e)}/>
                     <br/>
                     <br/>

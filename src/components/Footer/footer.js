@@ -34,7 +34,9 @@ const useStyles = theme => ({
         position: 'relative',
         marginTop: theme.spacing(1),
         top: '50%',
-        marginLeft: theme.spacing(45),
+        marginLeft: 'auto',
+        marginRight: theme.spacing(10),
+
     },
     removeLine: {
         textDecoration: 'none',
