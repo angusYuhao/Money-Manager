@@ -1,25 +1,19 @@
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { deepPurple, grey, green } from '@material-ui/core/colors';
+import { deepPurple } from '@material-ui/core/colors';
 
 // define styles
 const styles =  theme => ({
@@ -36,28 +30,31 @@ const styles =  theme => ({
       overflow: 'auto',
     }
   });
-  
-  const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: deepPurple[800],
-        },
-        secondary: {
-            main: deepPurple[100],
-        }
-    },
-    typography: {
-        fontFamily: [
-            'Poppins',
-            'sans-serif',
-        ].join(','),
-    },
-  });
 
+// define theme
+const theme = createMuiTheme({
+  palette: {
+      primary: {
+          main: deepPurple[800],
+      },
+      secondary: {
+          main: deepPurple[100],
+      }
+  },
+  typography: {
+      fontFamily: [
+          'Poppins',
+          'sans-serif',
+      ].join(','),
+  },
+});
+
+// class definition
 class Sidebar extends React.Component {
 
   render() {
 
+    // save props
     const { classes, openSidebar, closeSidebar, handleSidebarToggle, open } = this.props
 
     return (
@@ -65,55 +62,66 @@ class Sidebar extends React.Component {
         className={classes.drawer}
         open={ this.props.open }
         variant="persistent"
-        // onClose={ this.toggleOpen }
       >
         <Toolbar />
         <div className={classes.drawerContainer}>
+
+          {/* {close button} */}
           <List>
+
             <ListItem button color="secondary" onClick={ closeSidebar } >
               <ListItemIcon>
                <ArrowBackIosIcon />
               </ListItemIcon>
               <ListItemText primary="Close" />
             </ListItem>
+
           </List>
 
           <Divider />
 
+          {/* {all posts and followed posts toggles} */}
           <List>
+
             <ListItem button onClick={ () => handleSidebarToggle("Home") }>
               <ListItemIcon>
                 <BarChartIcon />
               </ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
+
             <ListItem button onClick={ () => handleSidebarToggle("Followed Posts") }>
               <ListItemIcon>
                 <PermIdentityIcon />
               </ListItemIcon>
               <ListItemText primary="Followed Posts" />
             </ListItem>
+
           </List>
 
           <Divider />
 
+          {/* {liked posts and saved posts toggles} */}
           <List>
+
             <ListItem button onClick={ () => handleSidebarToggle("Liked Posts") }>
               <ListItemIcon>
                 <ThumbUpAltIcon />
               </ListItemIcon>
               <ListItemText primary="Liked Posts" />
             </ListItem>
+
             <ListItem button onClick={ () => handleSidebarToggle("Saved Posts") }>
               <ListItemIcon>
                 <SaveAltIcon />
               </ListItemIcon>
               <ListItemText primary="Saved Posts" />
             </ListItem>
+
           </List>
-          {/* <Divider /> */}
           
         </div>
+
       </Drawer>
     )
   }

@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
@@ -13,26 +11,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
-
+import ForumListItem from "./forumListItem.js"
 
 import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { deepPurple, grey } from '@material-ui/core/colors';
+import { deepPurple } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 
-import ForumListItem from "./forumListItem.js"
-import { ArrowRight } from '@material-ui/icons';
-
-import IconButton from '@material-ui/core/IconButton';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
 // define styles
 const styles =  theme => ({
@@ -70,6 +60,7 @@ const styles =  theme => ({
   }
 });
 
+// define theme
 const theme = createMuiTheme({
   palette: {
       primary: {
@@ -87,8 +78,34 @@ const theme = createMuiTheme({
   },
 });
 
+// class defintion
 class ForumList extends React.Component {
 
+  // ===state===
+  // openNewPost: determines if the newPost drop down is opened
+  // openManagePost: determines if user is managing posts
+  // author: holds the username of the current user if they decide to create a new post
+  // title: holds the new post's title
+  // authorAvatar: the user avatar of the user, currently set to null to display default user icon, later will be fetched from a database
+  // content: holds the new post's content
+  // category: holds the new post's category
+  // postFilter: decides which category of post to display on screen
+  // sortOrder: determines which order the posts are displayed
+  // commenter: holds the username of the current user if they decide to comment on a post
+  // commentContent: holds the new comment's content
+  // posts: stores information about all the posts posted on the website, will be fetched from a database
+  //    author: holds the post's author
+  //    authorUsertype: holds the post's author's user type (regular for financial advisor)
+  //    title: holds the title of the post
+  //    content: holds the content of the post
+  //    authorAvatar: holds the avatar of the post's author, currently null, will be fetched from a database
+  //    category: holds the category of the post
+  //    postID: unique id for the post, used to identify post (IMPORTANT)
+  //    numUpvotes: holds the number of upvotes of the post
+  //    numDownvotes: holds the number of downvotes of the post
+  //    comments: holds the list of comments in the post
+  //        commenter: the username of the commenter
+  //        commentContent: the content of the comment
   state = {
     openNewPost: false,
     openManagePost: false,
@@ -183,33 +200,15 @@ class ForumList extends React.Component {
     ]
   }
 
-  componentDidMount() {
-    this.setState({
-      username: this.props.username,
-      usertype: "RU",
-      // later include the upvotes and downvotes of the user
-    })
-  }
-
+  // called when opening write new post
   handleClickOpen = () => {
-    this.setState({
-      openNewPost: true
-    })
+
+    this.setState({ openNewPost: true })
   }
 
-  handleClickManage = () => {
-    this.setState({
-      openManagePost: true
-    })
-  }
-
-  handleClickManageDone = () => {
-    this.setState({
-      openManagePost: false
-    })
-  }
-
+  // called when closing write new post
   handleClose = () => {
+
     this.setState({
       openNewPost: false,
       openManagePost: false,
@@ -223,29 +222,46 @@ class ForumList extends React.Component {
     })
   }
 
+  // called when opening manage post
+  handleClickManage = () => {
+
+    this.setState({ openManagePost: true })
+  }
+
+  // called when finished manage post
+  handleClickManageDone = () => {
+
+    this.setState({ openManagePost: false })
+  }
+
+  // called when user types into a textbox
   handleInputChange = (event) => {
+
     const value = event.target.value
     const name = event.target.name
 
-    this.setState({
-      [name]: value
-    })
+    this.setState({ [name]: value })
   }
 
+  // called when user chooses a post filter
   handleFilterInputChange = (event) => {
+
     const value = event.target.value
 
-    this.setState({
-      postFilter: value
-    })
+    this.setState({ postFilter: value })
   }
 
+  // called when user chooses a sort by option
   handleSortInputChange = (event) => {
+
     const value = event.target.value
+
     this.setState({ sortOrder: value }, () => this.sortPosts(value))
   }
 
+  // helper that sort the list of posts
   sortPosts = (order) => {
+
     const posts = this.state.posts
 
     switch(order) {
@@ -265,7 +281,9 @@ class ForumList extends React.Component {
     this.setState({ posts: posts })
   }
 
+  // called when a new post is created
   addPost = (username) => {
+
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
     const newID = (postList.length === 0) ? 1 : maxValue + 1
@@ -300,17 +318,17 @@ class ForumList extends React.Component {
     this.sortPosts(this.state.sortOrder)
   }
 
+  // called when user chooses a category for new post
   changeCategory = (_category) => {
-    this.setState({
-      category: _category
-    })
+
+    this.setState({ category: _category })
   }
 
+  // called when user adds a comment to a post
   postComment = (target) => {
+
     const targetPostID = target.postID
-    console.log(targetPostID)
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
-    
     const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
     const targetPostComments = targetPost[0].comments
 
@@ -321,25 +339,24 @@ class ForumList extends React.Component {
 
     targetPostComments.push(newComment)
     targetPost[0].comments = targetPostComments
-    
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
-
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
 
     this.setState({ posts: otherPosts })
   }
 
+  // called when user deletes a post
   deletePosts = (target) => {
-    console.log("deleting post")
+
     const targetPostID = target.postID
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
-    console.log("posts length: ", otherPosts.length)
     this.setState({ posts: otherPosts })
 
     const userInfo = this.props.userInfo
     const indexu = userInfo.userUpvotedPosts.indexOf(targetPostID)
     const indexd = userInfo.userDownvotedPosts.indexOf(targetPostID)
     const indexs = userInfo.userSavedPosts.indexOf(targetPostID)
+
     if (indexu !== -1) {
       userInfo.userUpvotedPosts.splice(indexu, 1)
       this.props.userInfoUpdater(userInfo)
@@ -354,8 +371,9 @@ class ForumList extends React.Component {
     }
   }
 
+  // called when user upvotes a post
   addUpvote = (target) => {
-    console.log("adding upvotes")
+
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
     const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -366,12 +384,12 @@ class ForumList extends React.Component {
 
     const userInfo = this.props.userInfo
     userInfo.userUpvotedPosts.push(targetPostID)
-    // this.setState({ userInfo: userInfo })
     this.props.userInfoUpdater(userInfo)
   }
 
+  // called when user deletes their upvote from a post
   minusUpvote = (target) => {
-    console.log("subtracting upvotes")
+
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
     const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -383,12 +401,12 @@ class ForumList extends React.Component {
     const userInfo = this.props.userInfo
     const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
-    // this.setState({ userInfo: userInfo })
     this.props.userInfoUpdater(userInfo)
   }
 
+  // called when user downvotes a post
   addDownvote = (target) => {
-    console.log("adding downvotes")
+
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
     const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -399,12 +417,12 @@ class ForumList extends React.Component {
 
     const userInfo = this.props.userInfo
     userInfo.userDownvotedPosts.push(targetPostID)
-    // this.setState({ userInfo: userInfo })
     this.props.userInfoUpdater(userInfo)
   }
 
+  // called when user deletes a downvote from a post
   minusDownvote = (target) => {
-    console.log("subtracting downvotes")
+
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
     const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -416,19 +434,21 @@ class ForumList extends React.Component {
     const userInfo = this.props.userInfo
     const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
-    // this.setState({ userInfo: userInfo })
     this.props.userInfoUpdater(userInfo)
   }
 
+  // main render function
   render() {
 
+    // pass in props
     const { userInfo, FAInfo, userInfoUpdater, sidebarToggle } = this.props
     const { classes } = this.props
 
+    // mainList is the list of posts to display, here we display different versions of the list based on some parameters
     let mainList;
 
+    // case when the side bar is set to home
     if (sidebarToggle === "Home") {
-
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
             if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === "" : this.state.postFilter === "" && thread.author === userInfo.username) : this.state.postFilter === "") {
@@ -489,6 +509,8 @@ class ForumList extends React.Component {
         }
       </List>
     }
+
+    // case when the side bar is set to Followed Posts
     else if (sidebarToggle === "Followed Posts") {
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
@@ -550,6 +572,8 @@ class ForumList extends React.Component {
         }
       </List>
     }
+
+    // case when the side bar is set to Liked Posts
     else if (sidebarToggle === "Liked Posts") {
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
@@ -611,6 +635,8 @@ class ForumList extends React.Component {
         }
       </List>
     }
+
+    // case when the side bar is set to Saved Posts
     else if (sidebarToggle === "Saved Posts") {
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
@@ -676,12 +702,18 @@ class ForumList extends React.Component {
     return (
         <div className={ classes.root }>
           <Container maxWidth="xl">
+
+            {/* {top bar of forum list} */}
             <Card className={ classes.forumTopChunk }>
+
               <CardActions className={ classes.forumTopBar }>
+
+                {/* {page title} */}
                 <CardContent>
                   <span className={ classes.purpleText } > { sidebarToggle } </span>
                 </CardContent>
 
+                {/* {drop down to filter posts based on category} */}
                 <FormControl className={ classes.filter }> 
                   <InputLabel>Filter Posts</InputLabel>
                   <Select onChange={ this.handleFilterInputChange }>
@@ -692,6 +724,7 @@ class ForumList extends React.Component {
                   </Select>
                 </FormControl>
 
+                {/* {drop down to reorder posts} */}
                 <FormControl className={ classes.filter }>
                   <InputLabel>Sort By</InputLabel>
                   <Select onChange={ this.handleSortInputChange }>
@@ -703,6 +736,8 @@ class ForumList extends React.Component {
                 </FormControl>
 
                 <Grid Container justify="flex-end">
+
+                  {/* {add post button} */}
                   { this.state.openManagePost === true || this.state.openNewPost === true || sidebarToggle !== "Home" ? 
                     <Tooltip title="Add Post">
                       <Fab color="primary" size="small" onClick={ this.handleClickOpen } disabled>
@@ -716,6 +751,8 @@ class ForumList extends React.Component {
                       </Fab>
                     </Tooltip>
                   }
+
+                  {/* {manage post button} */}
                   { this.state.openManagePost ? 
                     <Button className={ classes.forumBarButton } color="primary" variant="contained" onClick={ this.handleClickManageDone }>
                       Done
@@ -726,15 +763,19 @@ class ForumList extends React.Component {
                     <Button className={ classes.forumBarButton } color="primary" variant="contained" disabled>
                       Manage Posts
                     </Button> )
-                    
                   }
+
                 </Grid>
                 
               </CardActions>
               
+              {/* {new post drop down entries} */}
               { this.state.openNewPost ? 
               <React.Fragment>
+
                 <CardContent>
+
+                  {/* {enter post title} */}
                   <TextField
                     value={ this.state.title }
                     onChange={ this.handleInputChange }
@@ -745,18 +786,23 @@ class ForumList extends React.Component {
                     label="Post Title"
                     fullWidth
                   />
+
                   <br></br>
                   <br></br>
                   <Typography>Category:</Typography>
                   <br></br>
                   
+                  {/* {enter post category} */}
                   <ButtonGroup color="primary" aria-label="outlined primary button group" fullWidth>
                     <Button variant={ this.state.category === "Announcement" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Announcement") }>Announcement</Button>
                     <Button variant={ this.state.category === "Question" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Question") }>Question</Button>
                     <Button variant={ this.state.category === "Opinion" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Opinion") }>Opinion</Button>
                   </ButtonGroup>
+
                   <br></br>
                   <br></br>
+
+                  {/* {enter post contents} */}
                   <TextField
                     value={ this.state.content }
                     onChange={ this.handleInputChange }
@@ -768,21 +814,28 @@ class ForumList extends React.Component {
                     label="Say something here..."
                     fullWidth
                   />
+
                 </CardContent>
 
+                {/* {cancel and post buttons} */}
                 <CardActions>
+
                   <Button onClick={ this.handleClose } color="primary">
                     Cancel
                   </Button>
+
                   <Button onClick={ () => this.addPost(userInfo.username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
+
                 </CardActions>
+
               </React.Fragment>
               : null }
               
             </Card>
 
+            {/* {list of posts as defined above} */}
             {mainList}
               
           </Container>

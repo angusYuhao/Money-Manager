@@ -1,24 +1,27 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { deepPurple, grey } from '@material-ui/core/colors';
-import { withStyles } from "@material-ui/core/styles";
 
+// class definition
 class Comment extends React.Component {
+
     render() {
+      
+      // save props
       const { commenter, commentContent } = this.props
   
       return(
         <div>
           <ListItem alignItems="flex-start">
+
+            {/* {commenter avatar (set to null now)} */}
             <ListItemAvatar>
               <Avatar></Avatar>
             </ListItemAvatar>
+
+            {/* {commenter username and comment content} */}
             <ListItemText
               primary={
                 <React.Fragment>
@@ -31,6 +34,7 @@ class Comment extends React.Component {
                 </React.Fragment>
               }
             />
+
           </ListItem>
         </div>
       )
