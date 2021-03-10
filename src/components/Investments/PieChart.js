@@ -36,10 +36,9 @@ class PieChart extends React.Component {
     }
 
     drawSlices = () => {
-        //!!!Ian: bookCost is the total amount spend on that stock/in that category
+        //BookCost is the total amount spend on that stock/in that category
        
         const { listToDisplay} = this.props
-        //console.log(listToDisplay);
 
         let startAngle = 0; 
         let radius = this.state.radius;
@@ -133,24 +132,11 @@ class PieChart extends React.Component {
         let deltaX = parseFloat(Math.cos(theta) * 1.5 * radius);
         
         let total = listToDisplay.reduce( (ttl, stock) => {
-            //console.log(stock)
-            //return ttl + (stock.bookCost)
             return ttl + Math.round( (parseFloat(stock["Book Cost"])  * 100)/ 100 )
         }, 0);
-      
-
-        // let percentage = Math.round(+((slice.bookCost*100)/total));
-        // this.context.fillText(slice.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
-        // this.context.stroke();
-        // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
-        // this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
-        // this.context.stroke();
 
         // add the labels
         if(accented == 1){
-            // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
-            // this.context.lineTo((4.0*deltaX/5)+cx, (4.0*deltaY/5)+cy);
-            // this.context.stroke();
             this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy); 
             this.context.closePath();
         }else{
@@ -163,26 +149,12 @@ class PieChart extends React.Component {
     }
 
     redraw = () => {
-        // this.context = this.pieChartRef.current.getContext('2d');
-        // let elem = document.getElementById('pieChartCanvas');
-        // let rect = elem.getBoundingClientRect();
-        
-        // const context = this.context;
-
-        // //clear canvas
-        // //context.clearRect(0, 0, elem.width, elem.height);
-        // context.clearRect(0, 0, rect.width, rect.height);
-
-        // context.beginPath();
-
         for(let i = 0; i < this.state.slices.length; i++){
             this.drawAccentedSlice(this.state.slices[i],0);
         }
     }
 
     componentDidMount() {
-
-        //console.log("Did mount!")
         this.context = this.pieChartRef.current.getContext('2d');
         let elem = document.getElementById('pieChartCanvas');
 
@@ -192,7 +164,7 @@ class PieChart extends React.Component {
         //NOTE!!!!!! get bounding client rect gets the positions according to the window not the document!!!
         let rect = elem.getBoundingClientRect();
         
-        //add event listeners...I had to add it to a component so I used this one
+        //add event listeners
         document.addEventListener('mousewheel', (e) => {
             rect = elem.getBoundingClientRect();
         })
@@ -210,7 +182,6 @@ class PieChart extends React.Component {
             let angle;
       
             //Find the mouse positions relative to the center of the pie chart
-
             // quadrant I & II:
             if(mouseY > rect.y && mouseY < (rect.y + cy)){
                 relativeY = (cy + rect.y ) - mouseY;
@@ -243,10 +214,7 @@ class PieChart extends React.Component {
             let distance = Math.sqrt( (relativeX * relativeX ) +  ( relativeY * relativeY));
             if(distance < this.state.radius){
                 distanceOk = true;
-                // console.log(distance)
-                // console.log("Distance ok")
             }
-            //console.log(this.state.slices)
             for(let i=0;i<this.state.slices.length;i++){
                 let s=this.state.slices[i];
                 //check if the mouse angle matches with this slice

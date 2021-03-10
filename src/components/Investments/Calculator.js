@@ -95,7 +95,7 @@ class Calculator extends React.Component{
     clickedAnnually(event){
         this.setState({
             compound: 1,
-            buttonText: "Annualy",
+            buttonText: "Annually",
         })
         this.anchorEl = null;
         this.state.menuPosition = null;
@@ -122,25 +122,21 @@ class Calculator extends React.Component{
     //Calculate the final amount and do error checking:
     calculateAmount(){
         let insideBrackets = ((this.state.interestRate/100)/(this.state.compound)) + 1;
-        console.log(insideBrackets);
         let exponentVal = this.state.compound * this.state.yrsToGrow;
-        console.log(exponentVal);
         let appliedPower = Math.pow(insideBrackets,exponentVal);
-        console.log(appliedPower);
         let finalAmount = appliedPower* this.state.initialInvestment;
-        console.log(finalAmount)
         let compoundStr = "";
-        if(this.compound == 1){
+        if(this.state.compound == 1){
             compoundStr = "annually";
-        }else if (this.compound == 2){
+        }else if (this.state.compound == 2){
             compoundStr = "semi-annually";
-        }else if (this.compound == 4){
+        }else if (this.state.compound == 4){
             compoundStr = "quarterly";
-        }else{
+        }else if (this.state.compound ==12){
             compoundStr = "monthly";
         }
         let finalStr =  "Your initial investment of $"+String(this.state.initialInvestment)+" at interest rate of " + String(this.state.interestRate)+ "% will be worth $" + String(finalAmount.toFixed(2))
-        + " after " + String(this.state.yrsToGrow)+ " year(s) when compounded " +compoundStr;
+        + " after " + String(this.state.yrsToGrow)+ " year(s) when compounded " +compoundStr + ".";
        
         if(isNaN(insideBrackets) || isNaN(exponentVal) || isNaN(appliedPower) || isNaN(finalAmount)
         || insideBrackets<0 || exponentVal < 0 || appliedPower < 0 || finalAmount < 0){
@@ -176,7 +172,6 @@ class Calculator extends React.Component{
                 </Typography>
                 <br/>
                 <form noValidate autoComplete="off">
-             
                     <TextField value = {this.state.initialInvestment} label = "Intial investment($):" placeholder="ie. 5000" 
                      margin="normal"  onChange = {(e) => this.handleInitInvestment(e)}/>
                     <br/>
