@@ -151,6 +151,9 @@ This page contains general information about the developers and the website.
   --The hover detection is based on the mouse's position relative to the surface area of the wedges(by comparing the angle with respect to the center of the piechart and the absolute distance between the cursor and the center of the pie chart)
  --If the angle is within the start and end angles of a wedge and the absolute distance between the mouse and the center of the pie is less than the radius, than it will detect this as a hover
 
- # Views 
+ # Views:
 -- If regular users log in to the website, they will be able to see 3 tabs on the navigation bar: "Spendings", "Investments", and "Community". 
 -- If financial advisors log in to the website, they will only be able to see the "Community" tab on the navigation bar, as that is the purpose for them (to provide advice to regular users and to manage posts on the forum) 
+
+# Use of Third Party Libraries:
+-- For the project, we used Material UI and React.
