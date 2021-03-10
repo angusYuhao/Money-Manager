@@ -54,10 +54,28 @@ const useStyles = () => ({
     minWidth: "15vw"
   },
   listItem_buttonSelected: {
-    backgroundColor: deepPurple[100]
+    backgroundColor: deepPurple[100],
+    '&:hover': {
+      backgroundColor: deepPurple[100]
+    }
   },
   listItem_button: {
     backgroundColor: ""
+  },
+  accountBalance: {
+    backgroundColor: deepPurple[100],
+  },
+  accountBalanceDiv: {
+    marginTop: "11%",
+    textAlign: "center",
+    position: "absolute",
+    top: "75%",
+    minWidth: "30vw",
+    display: "inline-block",
+    borderRadius: "25px",
+    padding: "20px",
+    backgroundColor: deepPurple[100],
+    zIndex: "-1",
   }
 })
 
@@ -114,17 +132,32 @@ class Spendings extends React.Component {
       newSpendings: { month: "", year: "", projectedSpendings: "" },
       // the projected balance on the selected year and month 
       projectedSpendings: 0,
-      currentlySelectedMonth: {}
+      // used for changing the colours of the items in the drawer 
+      currentlySelectedMonth: { monthIndex: "", yearIndex: "" }
     }
+
+    /***************************************************************************************************************************
+    for phase 2, you would be populating "entire_data" in the state and get all the transaction history from the server
+    currently, it's just importing from another js file, but we would need to make a server call here to populate that dynamically 
+    you would also need to get the transactions_categories from the server since the user can have their own customized categories 
+    which would need to be stored in a database 
+    ****************************************************************************************************************************/
 
     // initialize transactions_data
     this.sortEntireData()
     const year = this.getYearFromIndex("0")
     const month = this.getMonthFromIndex("0", "0", year)
+
     this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
-    this.setState({ transactions_data: this.state.transactions_data })
     this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
-    this.setState({ projectedSpendings: this.state.projectedSpendings })
+    this.state.currentlySelectedMonth["monthIndex"] = "0"
+    this.state.currentlySelectedMonth["yearIndex"] = "0"
+
+    this.setState({
+      transactions_data: this.state.transactions_data,
+      projectedSpendings: this.state.projectedSpendings,
+      currentlySelectedMonth: this.state.currentlySelectedMonth
+    })
 
     this.sumCategoriesAmount()
     this.sumAccountBalance()
@@ -225,6 +258,9 @@ class Spendings extends React.Component {
   addTransaction = (newTransaction) => {
     this.state.transactions_data.unshift(newTransaction)
     this.setState({ transactions_data: this.state.transactions_data })
+    /********************************************************************************
+    for phase 2, you would be making a server call to add this transaction to the data
+    *********************************************************************************/
     this.sumAccountBalance()
     this.sumCategoriesAmount()
   }
@@ -234,6 +270,9 @@ class Spendings extends React.Component {
     const index = this.state.transactions_data.findIndex(t => t === oldTransaction)
     this.state.transactions_data[index] = newTransaction
     this.setState({ transactions_data: this.state.transactions_data })
+    /********************************************************************************
+    for phase 2, you would be making a server call to edit this transaction to the data
+    *********************************************************************************/
     this.sumAccountBalance()
     this.sumCategoriesAmount()
   }
@@ -242,6 +281,9 @@ class Spendings extends React.Component {
   deleteTransaction = (transaction) => {
     const keepTransactions = this.state.transactions_data.filter(t => t !== transaction)
     this.setState({ transactions_data: keepTransactions })
+    /********************************************************************************
+    for phase 2, you would be making a server call to delete this transaction to the data
+    *********************************************************************************/
   }
 
   // adds a user defined category 
@@ -249,12 +291,18 @@ class Spendings extends React.Component {
     if (!this.state.transactions_categories.includes(newCategory))
       this.state.transactions_categories.push(newCategory)
     this.setState({ transactions_categories: this.state.transactions_categories })
+    /********************************************************************************
+    for phase 2, you would be making a server call to add a customized category to the data
+    *********************************************************************************/
   }
 
   // deletes a user defined category (the default cannot be deleted)
   deleteCategory = (category) => {
     const keepCategories = this.state.transactions_categories.filter(c => c !== category)
     this.setState({ transactions_categories: keepCategories })
+    /********************************************************************************
+    for phase 2, you would be making a server call to delete a customized category to the data
+    *********************************************************************************/
   }
 
   changeSort(sortBy) {
@@ -302,7 +350,7 @@ class Spendings extends React.Component {
 
     const year = this.state.newSpendings.year
     const month = this.numbersToMonth[this.state.newSpendings.month.substr(0, 3)]
-    const projectedSpendings = this.state.newSpendings.projectedSpendings
+    const projectedSpendings = parseFloat(this.state.newSpendings.projectedSpendings).toFixed(2)
     let yearIndex = this.getIndexFromYear(year)
 
     // create new object for the year if the year doesn't exist
@@ -342,7 +390,9 @@ class Spendings extends React.Component {
     })
     this.state.menuPosition = null
     this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
-
+    /********************************************************************************
+    for phase 2, you would be making a server call to add a new spendings page for a new month and year 
+    *********************************************************************************/
   }
 
   // sorting the entire dataset for transactions of all months and years 
@@ -365,8 +415,13 @@ class Spendings extends React.Component {
   // when clicking the months on the drawer, need to update the transactions_data in state for the table 
   monthsOnClickHandler(e, yearIndex, monthIndex, year, month) {
     this.state.transactions_data = this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Transactions"]
-    this.setState({ transactions_data: this.state.transactions_data })
-    this.setState({ projectedSpendings: this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Projected Spendings"] })
+    this.state.currentlySelectedMonth["yearIndex"] = yearIndex
+    this.state.currentlySelectedMonth["monthIndex"] = monthIndex
+    this.setState({
+      transactions_data: this.state.transactions_data,
+      projectedSpendings: this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Projected Spendings"],
+      currentlySelectedMonth: this.state.currentlySelectedMonth
+    })
     this.sumAccountBalance()
     this.sumCategoriesAmount()
   }
@@ -539,7 +594,11 @@ class Spendings extends React.Component {
 
                       <List>
                         {this.renderMonths(yearObj, yearIndex).map((month, monthIndex) => (
-                          <ListItem classes={{ button: classes.listItem_button }} button key={month} onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
+                          <ListItem
+                            className={(this.state.currentlySelectedMonth["yearIndex"] == yearIndex && this.state.currentlySelectedMonth["monthIndex"] == monthIndex) ? classes.listItem_buttonSelected : classes.listItem_button}
+                            button
+                            key={month}
+                            onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
                             <ListItemText primary={month} />
                           </ListItem>
                         ))}
@@ -565,8 +624,8 @@ class Spendings extends React.Component {
 
                 </PieChart>
 
-                <div className="AccountBalance">
-                  <Typography variant="h5">
+                <div className={classes.accountBalanceDiv}>
+                  <Typography variant="h5" className={classes.accountBalance}>
                     Total Amount: ${this.state.accountBalance}
                     <br></br>
                     Projected Spendings: ${this.state.projectedSpendings}
@@ -644,7 +703,7 @@ class Spendings extends React.Component {
 
           </div >
 
-        </ThemeProvider>
+        </ThemeProvider >
 
         : <Redirect to="/login" />
 

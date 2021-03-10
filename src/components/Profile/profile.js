@@ -115,6 +115,10 @@ const useStyles = theme => ({
         borderRadius: 5,
         margin: theme.spacing(3),
     },
+    removeLine: {
+        textDecoration: 'none',
+        color: 'black'
+    },
     followersButton: {
         marginLeft: theme.spacing(3),
         fontSize: '1.2em',
@@ -564,15 +568,15 @@ class Profile extends React.Component {
 
                             <Tabs inkBarStyle={{background: 'black'}} centered>
                 
-                                <Link to={'/spendings'} style={{ textDecoration: 'none', color: 'black' }} className={classes.tabs}>
+                                <Link to={'/spendings'} className={classes.tabs, classes.removeLine}>
                                     <Tab label="Spendings"/>
                                 </Link>
 
-                                <Link to={'/investments'} style={{ textDecoration: 'none', color: 'black' }} className={classes.tabs}>
+                                <Link to={'/investments'}  className={classes.tabs, classes.removeLine}>
                                     <Tab label="Investments"/>
                                 </Link>
                                 
-                                <Link to={'/community'} style={{ textDecoration: 'none', color: 'black' }} className={classes.tabs}>
+                                <Link to={'/community'} className={classes.tabs, classes.removeLine}>
                                     <Tab label="Community"/>
                                 </Link>
 

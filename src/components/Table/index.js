@@ -1,5 +1,7 @@
 import React from 'react';
 import TableRowComp from '../TableRow'
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core'
 
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -22,6 +24,12 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import TextField from '@material-ui/core/TextField';
 
 import "./table.css"
+
+const useStyles = () => ({
+  emptyMessage: {
+    textAlign: "center"
+  }
+})
 
 class TableComp extends React.Component {
 
@@ -195,7 +203,6 @@ class TableComp extends React.Component {
 
                           <AddIcon
                             onClick={() => {
-                              console.log("Went")
                               addCategory(this.state.newCategory)
                               this.state.newCategory = ""
                               this.setState({ newCategory: this.state.newCategory })
@@ -257,6 +264,20 @@ class TableComp extends React.Component {
                   />
                 )}
 
+                {/* if there are currently no entries in table right now, display message */}
+                {data.length == 0 ?
+                  <TableRow>
+                    <TableCell
+                      className={this.props.classes.emptyMessage}
+                      colspan={headings.length + 1}>
+                      <Typography variant="h5" >
+                        You have no entry so far! <br></br>Add an entry by clicking on the add icon above!
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                  : null
+                }
+
                 <Snackbar
                   open={this.state.displaySnack}
                   autoHideDuration={2000}
@@ -288,4 +309,4 @@ class TableComp extends React.Component {
 
 }
 
-export default TableComp;
+export default withStyles(useStyles)(TableComp);
