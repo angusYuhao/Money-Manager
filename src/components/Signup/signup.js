@@ -107,6 +107,7 @@ class SignUp extends React.Component {
     })
   };
 
+  // check the length of the password and see if its 8 characters and above
   checkLength = (event) => {
     // get the value we type in 
     const target = event.target;
@@ -126,6 +127,8 @@ class SignUp extends React.Component {
     }
   }
 
+  // check if the confirmed password is input correctly as the created 
+  // password
   handleConfirmPassword = (event) => {
     const target = event.target;
     const value = target.value;
@@ -146,6 +149,10 @@ class SignUp extends React.Component {
     }
   }
 
+  /********************************************************************************
+  for phase 2, you would be making a server call to add the form information and 
+  store it in the database
+  *********************************************************************************/
   submitValidation = (event) => {
     event.preventDefault();
     console.log("inside validation!")

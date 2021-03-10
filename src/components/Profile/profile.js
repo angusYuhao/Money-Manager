@@ -70,6 +70,12 @@ const useStyles = theme => ({
         marginTop: theme.spacing(10),
         marginRight: theme.spacing(10),
     },
+    doneButton: {
+        float: 'right',
+        marginTop: theme.spacing(2),
+        marginRight: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+    },
     logoutButton: {
         float: 'right',
         marginTop: theme.spacing(10),
@@ -172,6 +178,7 @@ const theme = createMuiTheme({
     },
 });
 
+// Code taken from the material-ui website, under draggable dialog
 function PaperComponent(props) {
     return (
       <Draggable handle="#draggable" cancel={'[class*="MuiDialogContent-root"]'}>
@@ -222,12 +229,15 @@ class Profile extends React.Component {
         posts:  "",
     }
 
+    // Check the state of the edit, and changes UI accordingly
     handleEdit = () => {
         this.setState({
             edit: !this.state.edit,
         })
     }
 
+    // Change the state of openFollowers, this is for opening 
+    // the dialog
     handleFollowersOpen = () => {
         this.state.openFollowers = true;
         this.setState({
@@ -235,6 +245,8 @@ class Profile extends React.Component {
         })
     }
 
+    // Change the state of openFollowers, this is for closing 
+    // the dialog
     handleFollowersClose = () => {
         this.state.openFollowers = false;
 
@@ -243,6 +255,8 @@ class Profile extends React.Component {
         })
     }
 
+    // Change the state of openFollowing, this is for opening 
+    // the dialog
     handleFollowingOpen = () => {
         this.state.openFollowing = true;
         this.setState({
@@ -250,6 +264,8 @@ class Profile extends React.Component {
         })
     }
 
+    // Change the state of openFollowing, this is for closing 
+    // the dialog
     handleFollowingClose = () => {
         this.state.openFollowing = false;
         this.setState({
@@ -257,15 +273,23 @@ class Profile extends React.Component {
         })
     }
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to check the list of followers
+    and its following state
+    *********************************************************************************/
     handleFollow = (wantToFollow) => {
-        const index = this.state.followerData.indexOf(wantToFollow)
-        console.log(index)
+        const index = this.state.followerData.indexOf(wantToFollow);
+        
         this.state.followerData[index]["following"] = true;
         this.setState({
             followerData: this.state.followerData,
         })
     }
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to check the list of followers
+    and its following state
+    *********************************************************************************/
     handleUnfollow = (wantToUnfollow) => {
         const index = this.state.followerData.indexOf(wantToUnfollow)
         console.log(index)
@@ -275,6 +299,10 @@ class Profile extends React.Component {
         })
     }
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to check the list of following users
+    and its following state
+    *********************************************************************************/
     handleFollowing = (wantToFollow) => {
         const index = this.state.followingData.indexOf(wantToFollow)
         console.log(index)
@@ -284,6 +312,10 @@ class Profile extends React.Component {
         })
     }
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to check the list of following users
+    and its following state
+    *********************************************************************************/
     handleUnfollowing = (wantToUnfollow) => {
         const index = this.state.followingData.indexOf(wantToUnfollow)
         console.log(index)
@@ -302,6 +334,10 @@ class Profile extends React.Component {
         const name = target.name;
         console.log(value);
         
+        /********************************************************************************
+        for phase 2, you would be making a server call to get the username of the post
+        author, and update the avatar, author, or commenter accordingly
+        *********************************************************************************/
         if(name == "username") {
             for(let i = 0; i < this.state.posts.length; i++) {
                 this.state.posts[i].author = value;
@@ -318,6 +354,7 @@ class Profile extends React.Component {
         })
     };
 
+    // These code are taken from ForumList, check ForumList for more details
     postComment = (target) => {
         const targetPostID = target.postID
         console.log(targetPostID)
@@ -341,6 +378,7 @@ class Profile extends React.Component {
         this.setState({ posts: otherPosts })
     }
 
+    // These code are taken from ForumList, check forumList for more details
     deletePosts = (target) => {
         console.log("deleting post")
         const targetPostID = target.postID
@@ -353,9 +391,10 @@ class Profile extends React.Component {
         if (index !== -1) {
             userInfo.userUpvotedPosts.splice(index, 1)
             this.setState({ userInfo: userInfo })
-    }
+        }
     }
 
+    // These code are taken from ForumList, check forumList for more details
     addUpvote = (target) => {
         console.log("adding upvotes")
         const targetPostID = target.postID
@@ -371,6 +410,7 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
+    // These code are taken from ForumList, check forumList for more details
     minusUpvote = (target) => {
         console.log("subtracting upvotes")
         const targetPostID = target.postID
@@ -387,6 +427,7 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
+    // These code are taken from ForumList, check forumList for more details
     addDownvote = (target) => {
         console.log("adding downvotes")
         const targetPostID = target.postID
@@ -402,6 +443,7 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
+    // These code are taken from ForumList, check forumList for more details
     minusDownvote = (target) => {
         console.log("subtracting downvotes")
         const targetPostID = target.postID
@@ -418,24 +460,16 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
-    // constructor
-    constructor(props) {
-        super(props)
-
-        this.userInfoUpdater = this.userInfoUpdater.bind(this)
-    }
-
-    // called in children components to update the userInfo state in this component
-    userInfoUpdater(newUserInfo) {
-
-        this.setState({ userInfo: newUserInfo })
-    }
-
+    // Mount the current user state passed in from the app.js
     componentDidMount() {
         this.changeUserState();
     }
 
     // All of these data will not be hardcoded and will be fetched from a database
+    /********************************************************************************
+    for phase 2, you would be making a server call to get the user information and 
+    update the state accordingly, will also fetch its corresponded posts
+    *********************************************************************************/
     changeUserState = () => {
         if(this.state.userLevel === "User") {
             this.state.avatar = "U";
@@ -561,29 +595,45 @@ class Profile extends React.Component {
         return ( 
             <ThemeProvider theme={theme}>
                 <div className={classes.root}>
-                    <AppBar color="secondary" position="fixed" className={classes.appBar}>
-                        <Toolbar>
-                            <Typography variant='h6' noWrap>
-                                Profile
-                            </Typography>
+                    { this.state.userLevel === "User" ? 
+                        <AppBar color="secondary" position="fixed" className={classes.appBar}>
+                            <Toolbar>
+                                <Typography variant='h6' noWrap>
+                                    Profile
+                                </Typography>
 
-                            <Tabs inkBarStyle={{background: 'black'}} centered>
-                
-                                <Link to={'/spendings'} className={classes.tabs, classes.removeLine}>
-                                    <Tab label="Spendings"/>
-                                </Link>
+                                <Tabs inkBarStyle={{background: 'black'}} centered>
+                    
+                                    <Link to={'/spendings'} className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Spendings"/>
+                                    </Link>
 
-                                <Link to={'/investments'}  className={classes.tabs, classes.removeLine}>
-                                    <Tab label="Investments"/>
-                                </Link>
-                                
-                                <Link to={'/community'} className={classes.tabs, classes.removeLine}>
-                                    <Tab label="Community"/>
-                                </Link>
+                                    <Link to={'/investments'}  className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Investments"/>
+                                    </Link>
+                                    
+                                    <Link to={'/community'} className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Community"/>
+                                    </Link>
 
-                            </Tabs>
-                        </Toolbar>
-                    </AppBar>
+                                </Tabs>
+                            </Toolbar>
+                        </AppBar>
+                        :
+                        <AppBar color="secondary" position="fixed" className={classes.appBar}>
+                            <Toolbar>
+                                <Typography variant='h6' noWrap>
+                                    Profile
+                                </Typography>
+
+                                <Tabs inkBarStyle={{background: 'black'}} centered>
+                                    <Link to={'/community'} className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Community"/>
+                                    </Link>
+                                </Tabs>
+                            </Toolbar>
+                        </AppBar>
+                    }
                     <Drawer className={classes.drawer} 
                             variant="permanent"
                             anchor="left"
@@ -623,7 +673,7 @@ class Profile extends React.Component {
                                 <Button onClick={ this.handleEdit }
                                         color="primary" 
                                         variant="contained" 
-                                        className={classes.editButton}>
+                                        className={classes.doneButton}>
                                     Done
                                 </Button>
                             :

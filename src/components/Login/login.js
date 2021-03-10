@@ -85,8 +85,10 @@ class Login extends React.Component {
   state = {
     userName: "",
     password: "",
+    userLevel: "",
   };
 
+  // set state for all the state variables
   handleInputChange = (event) => {
     console.log(event)
 
@@ -95,16 +97,25 @@ class Login extends React.Component {
     const value = target.value;
     const name = target.name;
 
+    /********************************************************************************
+    for phase 2, you would be making a server call to check the user level of the user
+    *********************************************************************************/
+    if(value === "user") {
+      this.state.userLevel = "User"
+    } else if(value === "admin") {
+      this.state.userLevel = "Financial Advisor"
+    }
     // state is updated and value is also updated in JSX
     // the square bracket dynamically changes the name 
     this.setState({
-      [name]: value
+      [name]: value,
+      userLevel: this.state.userLevel
     })
   }
 
   render() {
     
-    const { classes, loginHandler, signedUp } = this.props;
+    const { classes, loginHandler } = this.props;
 
     return (
 
@@ -126,15 +137,9 @@ class Login extends React.Component {
 
                 <Grid container className={classes.grid} >
                   <Paper elevation={3} className={classes.paper}>
-                    { signedUp ? 
-                      <FormTitle firstTitle="You have successfully signed up!"
-                                subTitle="Login to continue"
-                      />
-                      :
                       <FormTitle firstTitle="Welcome back!"
                                 subTitle="Login to continue"
                       />
-                    }
 
                     <form className={classes.form}>
                       <Grid container direction="column" spacing={2}>
@@ -156,15 +161,27 @@ class Login extends React.Component {
                                    variant="outlined" 
                                    className={classes.text}/>
                         
-                        <Link to={"/spendings"}>
-                          <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
-                                  variant="contained" 
-                                  color="primary" 
-                                  type="submit" 
-                                  className={classes.logInButton}>
-                            Log in
-                          </Button>
-                        </Link>
+                        { this.state.userLevel === "Financial Advisor" ? 
+                          <Link to={"/community"}>
+                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
+                                    variant="contained" 
+                                    color="primary" 
+                                    type="submit" 
+                                    className={classes.logInButton}>
+                              Log in
+                            </Button>
+                          </Link>
+                          :
+                          <Link to={"/spendings"}>
+                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
+                                    variant="contained" 
+                                    color="primary" 
+                                    type="submit" 
+                                    className={classes.logInButton}>
+                              Log in
+                            </Button>
+                          </Link>
+                        }
                       </Grid>
 
                     </form>
