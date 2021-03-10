@@ -12,6 +12,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
+import Grid from '@material-ui/core/Grid';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 
@@ -23,6 +25,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import GeneralCard from './GeneralCard';
 // import Title from './Title'
 
 
@@ -77,8 +80,9 @@ class Investments extends React.Component {
     openDrawer: false,
 
     //Pie chart values
-    pieChartSize: 650,
-    pieChartRadius: 175,
+    pieChartSize: 700,
+    pieChartRadius: 200,
+    total: 0,
   }
 
   // componentDidUpdate(undefined, prevState) {
@@ -89,6 +93,7 @@ class Investments extends React.Component {
   constructor(props) {
     super(props);
     this.changeSort = this.changeSort.bind(this);
+    this.totalMoneyInvested();
   }
 
   sortObj = (a, b) => {
@@ -143,6 +148,27 @@ class Investments extends React.Component {
   }
 
 
+  componentDidUpdate(undefined, prevState) {
+    // only update the account balance if any transaction has been modified
+    if (prevState.stocklist_data != this.state.stocklist_data) {
+      this.totalMoneyInvested();
+      
+    }
+  }
+
+  totalMoneyInvested = () => {
+
+    this.state.total = this.state.stocklist_data.reduce( (ttl, stock) => {
+      //console.log(stock)
+      //return ttl + (stock.bookCost)
+      return ttl +  parseFloat(stock["Book Cost"]) 
+    }, 0);
+    this.setState({total: this.state.total})
+    console.log(this.state.total)
+  }
+
+
+
 
   // sorting the transactions based on the currently selected element 
   sortStocks = () => {
@@ -158,7 +184,7 @@ class Investments extends React.Component {
 
   // finds the index of the oldTransaction data and replace it with the newTransaction data
   editStock = (oldStock, newStock) => {
-    console.log("Edit")
+    //console.log("Edit")
     const index = this.state.stocklist_data.findIndex(t => t === oldStock)
     this.state.stocklist_data[index] = newStock
     this.setState({ stocklist_data: this.state.stocklist_data })
@@ -171,7 +197,7 @@ class Investments extends React.Component {
   }
 
   changeSort(sortBy) {
-    console.log("Sorting!")
+    //console.log("Sorting!")
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
     this.state.sortDes[sortBy] = !this.state.sortDes[sortBy]
@@ -183,63 +209,56 @@ class Investments extends React.Component {
     return (
 
     <ThemeProvider theme={ theme }>
-    <div className = "InvestmentPage"> 
-      <div className = "PieChartTable">
+    <div className = "InvestmentPage">
+
+      <div className = "PieChartGeneral">
           <div className = "TitleAndPieChart">
             <div className = "StockPieChartTitle">
                 Stock Portfolio
             </div>
             <div className = "PieChart">
-              <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
+              <PieChart totalAmountInvested = {this.state.total} listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
             </div>
           </div>
-
-          <div className = "StockList">
-            <div className="StockTable" width = "100vw">
-              <TableComp 
-                
-                // use the TableContainer class to style the table itself 
-                classes={{ TableContainer: 'TableContainer' }}
-                headings={this.state.stockList_headings}
-                data={this.state.stocklist_data}
-                options={this.state.stockList_options}
-                categories={this.state.stockList_categories}
-                addRow={this.addStock}
-                editRow={this.editStock}
-                removeRow={this.deleteStock}
-              />
+          <div className = "GeneralInfo">
+            <GeneralCard total = {this.state.total}/>
+            
           </div>
+      </div>
 
-          <div className="SortButtons">
-            <SortButton categoryName = "Name" callBackFunction = {this.changeSort} 
-            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
-            <SortButton categoryName = "Quantity" callBackFunction = {this.changeSort} 
-            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
-            <SortButton categoryName = "Market Value" callBackFunction = {this.changeSort} 
-            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
-            <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
-            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
-            <SortButton categoryName = "Percentage of portfolio" callBackFunction = {this.changeSort} 
-            sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
-          </div>
+
+      <div className = "StockList">
+        <div className="StockTable" width = "100vw">
+          <TableComp 
+            
+            // use the TableContainer class to style the table itself 
+            classes={{ TableContainer: 'TableContainer' }}
+            headings={this.state.stockList_headings}
+            data={this.state.stocklist_data}
+            options={this.state.stockList_options}
+            categories={this.state.stockList_categories}
+            addRow={this.addStock}
+            editRow={this.editStock}
+            removeRow={this.deleteStock}
+          />
+        </div>
+
+        <div className="SortButtons">
+        {/* <Grid container spacing={4}> */}
+          <SortButton categoryName = "Name" callBackFunction = {this.changeSort} 
+          sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+          <SortButton categoryName = "Quantity" callBackFunction = {this.changeSort} 
+          sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+          <SortButton categoryName = "Market Value" callBackFunction = {this.changeSort} 
+          sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+          <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
+          sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
+        {/* </Grid> */}
         </div>
       </div>
 
-      <div>
+      <div className = "Calculator">
       <Calculator/>
-      </div>
-
-
-      <div className = "BarChart">
-          {/* <Input stockList={this.state.stockList} 
-          handleInputStock = {this.handleInputStock} 
-          handleInputChange = {this.handleInputChange}
-          />
-          <StockList stockList={this.state.stockList} deleteStock = {this.deleteStock} editStock = {this.editStock}/> */}
-          
-      
-          {/* <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/> */}
-        <BarChart listToDisplay = {this.state.stocklist_data} col = "Gain/Loss"/>
       </div>
     </div>
 

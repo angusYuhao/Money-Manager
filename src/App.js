@@ -97,7 +97,7 @@ class App extends React.Component {
             <Route exact path='/community'
               render={() => (<Community
                 username={this.state.username}
-                userLevel={this.state.userLevel} />)} />
+                usertype={this.state.userLevel}/>)} />
 
             <Route exact path='/contact'
               render={() => (<Contact

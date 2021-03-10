@@ -10,7 +10,7 @@ class SortButton extends React.Component{
        const {categoryName,callBackFunction, sortDes, sortBy} = this.props;
        return(
 
-        <Grid item xs={4}>
+        // <Grid item xs={5}>
             <Paper>
             <Button color="primary" 
                 className="InvestmentSortButton"
@@ -21,7 +21,7 @@ class SortButton extends React.Component{
                 {sortDes[categoryName] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
             </Button>
             </Paper>
-        </Grid>
+        // </Grid>
 
        )
    }

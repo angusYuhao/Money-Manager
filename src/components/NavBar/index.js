@@ -40,6 +40,9 @@ const useStyles = theme => ({
   removeLine: {
     textDecoration: 'none',
     color: 'black'
+  },
+  appbar: {
+    zIndex: theme.zIndex.drawer + 1,
   }
 })
 
@@ -69,7 +72,7 @@ class NavBar extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
-          <AppBar position="sticky" color="secondary">
+          <AppBar position="sticky" color="secondary" className={ classes.appbar }>
             <Toolbar>
               <Link to={'/'} className={classes.removeLine}>
                 <Typography variant="h6" className={classes.title}>
