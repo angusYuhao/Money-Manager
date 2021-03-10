@@ -50,7 +50,7 @@ class GeneralCard extends React.Component {
             <ThemeProvider theme={ theme }>
             <Card variant="outlined" className = {classes.generalCard}>
             <CardContent>
-              <Typography variant="h4">
+              <Typography variant="h3">
                 Account overview
               </Typography>
               <br/>

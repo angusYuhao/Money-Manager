@@ -66,7 +66,7 @@ class Investments extends React.Component {
     //These sizes were chosen to have a good ratio between the account 
     //overview card and the pie chart itself
     pieChartSize: 700,
-    pieChartRadius: 200,
+    pieChartRadius: 190,
     total: 0,
   }
 
