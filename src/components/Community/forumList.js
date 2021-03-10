@@ -333,7 +333,7 @@ class ForumList extends React.Component {
     const targetPostComments = targetPost[0].comments
 
     const newComment = {
-      commenter: this.props.username,
+      commenter: this.props.userInfo.username,
       commentContent: target.comment
     }
 
