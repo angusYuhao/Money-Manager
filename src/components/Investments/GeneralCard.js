@@ -15,6 +15,10 @@ const useStyles = () => ({
   generalCard: {
     backgroundColor: deepPurple[100],
   },
+  removeLine: {
+    textDecoration: 'none',
+    color: 'black'
+  }
 });
 
 
@@ -46,26 +50,26 @@ class GeneralCard extends React.Component {
             <ThemeProvider theme={ theme }>
             <Card variant="outlined" className = {classes.generalCard}>
             <CardContent>
-              <Typography variant="h4">
+              <Typography variant="h3">
                 Account overview
               </Typography>
               <br/>
               <Typography variant="h5" display="block"gutterBottom>
                 Account name: <br/>
                 <Typography variant="h5" gutterBottom>
-                RRSP
+                  RRSP
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>
                 Account number: <br/>
                 <Typography variant="h5" gutterBottom>
-                12345A6
+                  12345A6
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>
-                Currency: <br/>
+                  Currency: <br/>
                 <Typography variant="h5" gutterBottom>
-                CAD$
+                  CAD$
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>
@@ -78,12 +82,12 @@ class GeneralCard extends React.Component {
               <br/>
               <Typography variant="h6" display="block">
                 If you'd like to learn more about saving and investing, visit our community page
-                <Link to={'/community'} >
-                <Button color="primary" >
+                <Link to={'/community'} className = {classes.removeLine}>
+                  <Button color="primary" >
                     <Typography variant="h6" >
                       here.
                     </Typography>
-                </Button>
+                  </Button>
                 </Link>
               </Typography>
             </CardContent>

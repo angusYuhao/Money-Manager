@@ -66,7 +66,7 @@ class Investments extends React.Component {
     //These sizes were chosen to have a good ratio between the account 
     //overview card and the pie chart itself
     pieChartSize: 700,
-    pieChartRadius: 200,
+    pieChartRadius: 190,
     total: 0,
   }
 
@@ -131,7 +131,6 @@ class Investments extends React.Component {
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
     if (prevState.stocklist_data != this.state.stocklist_data) {
-      console.log("componenet updated");
       this.totalMoneyInvested();
       
     }
@@ -142,7 +141,6 @@ class Investments extends React.Component {
       return ttl +  parseFloat(stock["Book Cost"]) 
     }, 0);
     this.setState({total: this.state.total})
-    console.log(this.state.total)
   }
 
 
@@ -161,7 +159,6 @@ class Investments extends React.Component {
 
   // finds the index of the stock data and replace it with the new stock data
   editStock = (oldStock, newStock) => {
-    //console.log("Edit")
     const index = this.state.stocklist_data.findIndex(t => t === oldStock)
     this.state.stocklist_data[index] = newStock
     this.setState({ stocklist_data: this.state.stocklist_data })
@@ -189,6 +186,7 @@ class Investments extends React.Component {
     <div className = "InvestmentPage">
 
       <div className = "PieChartGeneral">
+
           <div className = "TitleAndPieChart">
             <div className = "StockPieChartTitle">
                 Stock Portfolio
@@ -197,9 +195,11 @@ class Investments extends React.Component {
               <PieChart totalAmountInvested = {this.state.total} listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
             </div>
           </div>
+
           <div className = "GeneralInfo">
             <GeneralCard total = {this.state.total}/>
           </div>
+
       </div>
 
 
@@ -233,13 +233,11 @@ class Investments extends React.Component {
       <div className = "Calculator">
       <Calculator/>
       </div>
-    </div>
 
+    </div>
     </ThemeProvider>
     )
-
   }
-
 }
 
 export default withStyles(useStyles)(Investments);
