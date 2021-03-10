@@ -66,7 +66,8 @@ const useStyles = () => ({
     backgroundColor: deepPurple[100],
   },
   accountBalanceDiv: {
-    marginTop: "11%",
+    marginTop: "5%",
+    right: "10%",
     textAlign: "center",
     position: "absolute",
     top: "75%",

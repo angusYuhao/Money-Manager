@@ -150,12 +150,12 @@ class PieChart extends React.Component {
         }, 0);
       
 
-        let percentage = Math.round(+((slice.bookCost*100)/total));
-        this.context.fillText(slice.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
-        this.context.stroke();
-        this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
-        this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
-        this.context.stroke();
+        // let percentage = Math.round(+((slice.bookCost*100)/total));
+        // this.context.fillText(slice.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
+        // this.context.stroke();
+        // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
+        // this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
+        // this.context.stroke();
 
         // add the labels
         if(accented == 1){
@@ -169,7 +169,7 @@ class PieChart extends React.Component {
             this.context.closePath();
         }else{
             this.context.moveTo(parseFloat(cx+deltaX/1.65), parseFloat(cy+deltaY/1.65));
-            this.context.lineTo(parseFloat((4.0*deltaX/5)+cx), parseFloat((4.0*deltaY/5)+cy));
+            this.context.lineTo(parseFloat((4*deltaX/5)+cx), parseFloat((4*deltaY/5)+cy));
             this.context.lineWidth = 3;
             this.context.stroke();
             this.context.closePath();
@@ -297,8 +297,8 @@ class PieChart extends React.Component {
 
                         this.drawAccentedSlice(s, 1);
                         
-                        //setTimeout(this.drawAccentedSlice, 500, s, 0);
-                        setTimeout(this.redraw, 500);
+                        setTimeout(this.drawAccentedSlice, 500, s, 0);
+                        // setTimeout(this.redraw, 500);
 
                         //this.drawAccentedSlice(s, 0);
                         distanceOk = false;
