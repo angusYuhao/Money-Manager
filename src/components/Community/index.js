@@ -3,6 +3,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
+import { Redirect } from 'react-router';
 
 import ForumList from "./forumList.js"
 import Sidebar from "./sidebar.js"
@@ -143,9 +144,11 @@ class Community extends React.Component {
   render() {
 
     // pass in relevant information as props
-    const { classes, username, usertype } = this.props
+    const { classes, username, usertype, loggedIn } = this.props
 
     return (
+
+      loggedIn ? 
       <ThemeProvider theme={ theme } className={ classes.root }>
 
         {/* {side bar component} */}
@@ -170,7 +173,7 @@ class Community extends React.Component {
                     userInfoUpdater={ this.userInfoUpdater }/>
         </Grid>
 
-      </ThemeProvider>
+      </ThemeProvider> : <Redirect to="/login" />
     )
   }
 }

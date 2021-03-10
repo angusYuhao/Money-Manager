@@ -18,6 +18,7 @@ import { Typography,
         Divider} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import ForumListItem from './forumListItemOld.js';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import Edit from './edit.js';
@@ -594,7 +595,7 @@ class Profile extends React.Component {
     }
 
     render() {
-        const { classes, username, handleLogOut, password, userLevel } = this.props;
+        const { classes, username, handleLogOut, password, userLevel, loggedIn } = this.props;
 
         if(userLevel === "User") {
             this.state.userLevel = "User"
@@ -603,6 +604,8 @@ class Profile extends React.Component {
         }
 
         return ( 
+
+            loggedIn ? 
             <ThemeProvider theme={theme}>
                 <div className={classes.root}>
                     { this.state.userLevel === "User" ? 
@@ -817,7 +820,7 @@ class Profile extends React.Component {
                         </div>
                     </main> 
                 </div>
-            </ThemeProvider>
+            </ThemeProvider> : <Redirect to="/login" />
         )
     }
 }

@@ -65,19 +65,19 @@ class App extends React.Component {
       <div>
         <BrowserRouter>
 
-          { this.state.userLevel === "Financial Advisor" ?
+          {this.state.userLevel === "Financial Advisor" ?
             <div>
               <AdminNavBar
                 username={this.state.username}
                 password={this.state.password} />
             </div>
             : this.state.loggedIn ?
-            <div>
-              <NavBar
-                username={this.state.username}
-                password={this.state.password} />
-            </div> 
-            : null
+              <div>
+                <NavBar
+                  username={this.state.username}
+                  password={this.state.password} />
+              </div>
+              : null
           }
 
           <Switch>
@@ -102,12 +102,15 @@ class App extends React.Component {
               />)} />
 
             <Route exact path='/investments'
-              render={() => (<Investments />)} />
+              render={() => (<Investments
+                loggedIn={this.state.loggedIn}
+              />)} />
 
             <Route exact path='/community'
               render={() => (<Community
+                loggedIn={this.state.loggedIn}
                 username={this.state.username}
-                usertype={this.state.userLevel}/>)} />
+                usertype={this.state.userLevel} />)} />
 
             <Route exact path='/contact'
               render={() => (<Contact
@@ -122,8 +125,9 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
-              render={() => (<Profile 
+              render={() => (<Profile
                 handleLogOut={this.handleLogOut}
+                loggedIn={this.state.loggedIn}
                 username={this.state.username}
                 password={this.state.password}
                 userLevel={this.state.userLevel}

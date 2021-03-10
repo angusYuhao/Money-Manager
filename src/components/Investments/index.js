@@ -9,6 +9,7 @@ import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
+import { Redirect } from 'react-router';
 
 const useStyles = theme => ({
   root: {
@@ -181,7 +182,12 @@ class Investments extends React.Component {
   }
 
   render() {
+
+    const { loggedIn } = this.props
+
     return ( 
+
+    loggedIn ? 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
 
@@ -235,7 +241,7 @@ class Investments extends React.Component {
       </div>
 
     </div>
-    </ThemeProvider>
+    </ThemeProvider> : <Redirect to="/login" />
     )
   }
 }
