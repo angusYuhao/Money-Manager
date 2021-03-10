@@ -158,7 +158,9 @@ const useStyles = theme => ({
         width: '80%',
         maxHeight: 435,
     },
-    
+    dialogue_cursor: {
+        cursor: 'move'
+    }
 })
 
 const theme = createMuiTheme({
@@ -722,7 +724,7 @@ class Profile extends React.Component {
                                             paper: classes.paper,
                                         }}
                                         >
-                                    <DialogTitle style={{ cursor: 'move' }} id="draggable">
+                                    <DialogTitle className={classes.dialogue_cursor} id="draggable">
                                         Followers
                                     </DialogTitle>
                                     
@@ -747,7 +749,7 @@ class Profile extends React.Component {
                                             paper: classes.paper,
                                         }}
                                         >
-                                    <DialogTitle style={{ cursor: 'move' }} id="draggable">
+                                    <DialogTitle className={classes.dialogue_cursor} id="draggable">
                                         Following
                                     </DialogTitle>
 
