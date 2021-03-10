@@ -2,6 +2,22 @@
 
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
 
+# Home Page
+The home page consists of three big components, one is the general home page that introduces our website, another one is the user log in page and the third one is the user sign up page. 
+
+### General Home Page
+This page is used to provide users a general feeling of what our website does, on the top header, it shows the name of the website, Login button and Get started button. Below that is an image slider that shows some website related photo that can visually introduce user what our website does. However, right now, these images are obtained online, it is not the actual images of our websites, this is because we would put those photos on after our website is fully functioning and the website frontend can be furture improved. At the bottom, is the footer for the website which has the obtain of Contact Us and About Us as well as copyright information.
+
+> **Note:** Please see the "Contact Us" and "About Us" section for a more general explanation.
+
+### Sign Up Page
+Any button with the name "Get Started" will lead you to the sign up page, where this sign up page is used in the future for actual users to sign up. There are two level of users, one is regular user and one is financial user. The form changes according to the user level. The rest are the general required basic information about the user. If there is a * in the textfield, this indicates those information are required. For the password, it has to be at least 8 characters otherwise it will show the error message. For confirming the password, it will also show error message if the password does not match. After these are done, the user can click "SIGN UP" to sign up, these information will be stored in a database in the future. Then this page will direct you to the Log in page.
+
+### Log In Page
+The "Log in" button on the home page will lead you to the log in page where user inputs their username and password. Currently, there are two options of credentials: 1. username and password are both "user", 2. username and password are both "admin". If the credentials are wrong, the user will not be able to log in to the website. If the credentials are correct, the user will be able to redirected to the Spendings page. In the future, these credentials will be verified in the backend. 
+
+> **Note:** Please see the "Spendings" section for a more general explanation.
+
 # Spendings
 
 ### Pie Chart 
@@ -75,14 +91,21 @@ To open sidebar options, click on the circular "more page options" on the top le
 Close the sidebar menu by clicking "close" at the top of the side bar
 
 > **Note:** When an option other than "All Posts" is selected, the user cannot add or manage posts
-
-# Home Page
-
+ 
 # User Profile 
+The user profile contains information about the user, and retrieves information from the form they filled when they signed up. On the sidebar, the users will be able to see their general information and being able to edit them. If the user changes the username, their corresponding avatar will also be changed. After they are done editing, they can click "Done". 
+
+On the right side of the profile page is where the users can see their followers, who they are following and also their own posts. In the future, all of these information will be stored in a database and not hardcoded. The Followers button is to show who are the people that is following you. If the user clicks the button, they will be able to see a list of users that are following them and whether the user itself is following the followers. If the user is following, it will show the button of unfollow to give them a choice to unfollow that specific person and vice versa. After the user has finished managing their followers, they can click Done button or anywhere on the screen to close the dialog. This dialog is also draggable. Same thing for the Following button. The post button is disabled as it is only meant to show how many posts the user have posted. 
+
+On the bottom, there is a list of the user's own post. This part of the code is retrieved from the Community Part of the code. The user can also go through their own post and upvote or downvote or post a comment. 
+
+In the end, the users have the options to log out of the website and will be redirected to the home page. If the user wants to exit the profile page, they can simply press any tabs on the header (Spendings, Investments, Community) to leave the profile page.
 
 # Contact Us 
+This page is mainly used for those who has questions regarding the website. The request option is not limited to only the ones listed, they can specify their request in the comment box. After they are done filling out this form, they can simply hit "Send" and the request will be sent (this will be done in the future). After they have successfully send their request, they will be prompted with a page of successfully send the request. 
 
 # About Us 
+This page contains general information about the developers. 
 
 # Table 
  The table is used for both the "Spendings" and the "Investments" page. The following are general instructions to handling the table, please see their sections for more specific details on how the table is used in each of the components. 
