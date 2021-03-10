@@ -33,6 +33,49 @@ Each month/year is a seperate spendings page. The user can use the sidebar on th
 
 # Community 
 
+### Filter and Sort Posts
+The top bar of the thread list has drop-down options to filter and sort posts. 
+
+Currently, there are 3 possible categories of posts to filter by: "Announcement", "Opinion" and "Question". Select a filter and only posts with the cooresponding category label will be displayed. 
+
+The sort post drop-down menu contains 4 options: "Oldes", "Newest", "Most Upvotes" and "Best Rated". Select a sorting order and the posts will be sorted accordingly.
+
+### View Post
+To view the full contents of the post, click on the post in the list. This will open a dialog containing all the information about the post. To close the post, click on the "x" button at the top.
+
+### Comment on a Post
+Once a post has been opened in a dialog page, comments can be added to the post by simply typing in the text box labeled "Post a Comment:" and pressing the post button. The comment will then be displayed under the existing list of comments.
+
+### Upvote, Downvote and Save Post
+To upvote or downvote a post, first open the post by clicking on it in the list, then click the thumb up button or the thumb down button to upvote or downvote. Once a post has been upvoted or downvoted by the user, the cooresponding thumb up or thumb down button will be highlighted in the post list.
+
+To save a post, first open the post, then click the save button on the top right of the page (next to the close button). The post can also be unsaved by clicking on the same button again. 
+
+> **Note:** The saved posts can be accessed in the sidebar menu, which is discussed in "Sidebar Options" below.
+
+### Follow a Financial Advisor through a Post
+A post posted by a financial advisor will have a green check mark beside the author name. To follow the financial advisor, first click open the post, and click the "view financial advisor info" button on the top right of the page. This will open a dialog showing some basic information about the financial advisor. Click on the "follow" button to follow the financial advisor. Clicking the button again will unfollow the financial advisor. 
+
+> **Note:** Posts writen by a financial advisor the user is following can be accessed in the sidebar menu, which is discussed in "Sidebar Options" below.
+
+### Add a New Post
+To add a new post, go to forum's home page and click the "+" button in the top bar of the forum, this will open a drop-down section. Enter a valid title, category and content for the new post and press the "post" button. This will add the new post to the list of existing posts.
+
+### Manage Posts
+To manage posts, go to forum's home page and click the "manage post" button in the top bar of the forum. If the user is a regular user, only their own posts will be displayed. If the user is a financial advisor (admin), all the posts will be displayed. They can then choose to delete posts by clicking the delete button at the right side of the posts. To exit managing posts mode, click on the done button in place of the original "manage post" button.
+
+### Sidebar Options
+To open sidebar options, click on the circular "more page options" on the top left of the home forum page. This will open a sidebar with a few options:
+
+1. All Posts: shows all the posts
+2. Followed Posts: shows only the posts by financial advisors the user is following
+3. Liked Posts: shows only the posts the user has upvoted
+4. Saved Posts: shows only the posts the user has saved
+
+Close the sidebar menu by clicking "close" at the top of the side bar
+
+> **Note:** When an option other than "All Posts" is selected, the user cannot add or manage posts
+
 # Home Page
 
 # User Profile 
