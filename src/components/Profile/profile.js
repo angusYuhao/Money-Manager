@@ -13,6 +13,8 @@ import { Typography,
         Avatar,
         ThemeProvider, 
         List,
+        Dialog,
+        DialogTitle,
         Divider} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
@@ -20,6 +22,11 @@ import ForumListItem from '../Community/forumListItem';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import Edit from './edit.js';
 import Done from './done.js';
+import Draggable from 'react-draggable';
+import { followingData, followerData } from './data';
+import Followers from './followers.js';
+import Following from './following.js';
+import HandleClosing from './handleClosing.js';
 
 const drawerWidth = 400;
 
@@ -45,17 +52,7 @@ const useStyles = theme => ({
         marginTop: theme.spacing(3),
     },
     numberGroup: {
-        paddingLeft: theme.spacing(15),
-    },
-    paper: {
-        display: 'flex',
-        flexDirection: 'row',  
-        borderRadius: 10,
-        backgroundColor: deepPurple[100],
-        marginTop:  theme.spacing(3),
-        paddingLeft: 50,
-        paddingRight: 50,
-        marginRight: theme.spacing(20),
+        paddingLeft: theme.spacing(10),
     },
     tabs: {
         marginLeft: theme.spacing(3),
@@ -118,6 +115,39 @@ const useStyles = theme => ({
         borderRadius: 5,
         margin: theme.spacing(3),
     },
+    followersButton: {
+        marginLeft: theme.spacing(3),
+        fontSize: '1.2em',
+        minWidth: 150,
+    },
+    followingButton: {
+        fontSize: '1.2em',
+        minWidth: 150,
+    },
+    postButton: {
+        fontSize: '1.2em',
+        minWidth: 150,
+        marginRight: theme.spacing(5),
+    },
+    follow: {
+        float: 'right',
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        marginBottom: theme.spacing(1),
+    },
+    unfollow: {
+        float: 'right',
+    },
+    followerdata: {
+        float: 'left',
+        marginLeft: theme.spacing(3),
+        marginBottom: theme.spacing(1),
+    },
+    paper: {
+        width: '80%',
+        maxHeight: 435,
+    },
+    
 })
 
 const theme = createMuiTheme({
@@ -137,14 +167,27 @@ const theme = createMuiTheme({
     },
 });
 
+function PaperComponent(props) {
+    return (
+      <Draggable handle="#draggable" cancel={'[class*="MuiDialogContent-root"]'}>
+        <Paper {...props} />
+      </Draggable>
+    );
+}
+
 // All the profile information should be fetched from the database
 // that stores the user information
 class Profile extends React.Component {
 
     state = {
         // if false, display edit; if true, display Done
+        followerData: followerData,
+        followingData: followingData,
         edit: false,
         logout: false,
+        openFollowers: false,
+        openFollowing: false,
+        followed: false,
         userLevel: "",
         avatar: "",
         bio: "An individual that is pursuing one's passions.",
@@ -177,6 +220,71 @@ class Profile extends React.Component {
     handleEdit = () => {
         this.setState({
             edit: !this.state.edit,
+        })
+    }
+
+    handleFollowersOpen = () => {
+        this.state.openFollowers = true;
+        this.setState({
+            openFollowers: this.state.openFollowers,
+        })
+    }
+
+    handleFollowersClose = () => {
+        this.state.openFollowers = false;
+
+        this.setState({
+            openFollowers: this.state.openFollowers,
+        })
+    }
+
+    handleFollowingOpen = () => {
+        this.state.openFollowing = true;
+        this.setState({
+            openFollowing: this.state.openFollowing,
+        })
+    }
+
+    handleFollowingClose = () => {
+        this.state.openFollowing = false;
+        this.setState({
+            openFollowing: this.state.openFollowing,
+        })
+    }
+
+    handleFollow = (wantToFollow) => {
+        const index = this.state.followerData.indexOf(wantToFollow)
+        console.log(index)
+        this.state.followerData[index]["following"] = true;
+        this.setState({
+            followerData: this.state.followerData,
+        })
+    }
+
+    handleUnfollow = (wantToUnfollow) => {
+        const index = this.state.followerData.indexOf(wantToUnfollow)
+        console.log(index)
+        this.state.followerData[index]["following"] = false;
+        this.setState({
+            followerData: this.state.followerData,
+        })
+    }
+
+    handleFollowing = (wantToFollow) => {
+        const index = this.state.followingData.indexOf(wantToFollow)
+        console.log(index)
+        this.state.followingData[index]["following"] = true;
+        this.setState({
+            followingData: this.state.followingData,
+        })
+    }
+
+    handleUnfollowing = (wantToUnfollow) => {
+        const index = this.state.followingData.indexOf(wantToUnfollow)
+        console.log(index)
+        this.state.followingData[index]["following"] = false;
+        this.setState({
+            followingData: this.state.followingData,
         })
     }
 
@@ -309,6 +417,7 @@ class Profile extends React.Component {
         this.changeUserState();
     }
 
+    // All of these data will not be hardcoded and will be fetched from a database
     changeUserState = () => {
         if(this.state.userLevel === "User") {
             this.state.avatar = "U";
@@ -518,32 +627,64 @@ class Profile extends React.Component {
                    
                     <main className={classes.content}>
                         <Grid container direction="row" className={classes.numberGroup}>
-                            <Paper color="primary" elevation={3} className={classes.paper}>
-                                <div className={classes.group}>
-                                    <Typography variant='h6'>
+                            <div className={classes.group}>
+                                <Button variant="contained" color="primary" className={classes.followersButton} onClick={ this.handleFollowersOpen }>
+                                    Followers
+                                    <br></br>
+                                    { this.state.followerData.length }
+                                </Button>
+                                <Dialog open={ this.state.openFollowers } 
+                                        onClose={ this.handleFollowersClose }  
+                                        PaperComponent={PaperComponent}
+                                        aria-labelledby="draggable"
+                                        className={classes.dialog}
+                                        classes={{
+                                            paper: classes.paper,
+                                        }}
+                                        >
+                                    <DialogTitle style={{ cursor: 'move' }} id="draggable">
                                         Followers
-                                    </Typography>
-                                    <Typography variant='h6' className={classes.number1}>
-                                        250
-                                    </Typography>
-                                </div>
-                                <div className={classes.group}>
-                                    <Typography variant='h6'>
+                                    </DialogTitle>
+                                    
+                                    { this.state.followerData.map((followerData) => (
+                                        <Followers followerData={followerData} handleFollow={ this.handleFollow } handleUnfollow={ this.handleUnfollow } />
+                                    ))}
+                                    
+                                    <HandleClosing handleClose={ this.handleFollowersClose } />
+                                </Dialog>
+                            </div>
+                            <div className={classes.group}>
+                                <Button variant="contained" color="primary" className={classes.followingButton} onClick={ this.handleFollowingOpen }>
+                                    Following
+                                    <br></br>
+                                    { this.state.followingData.length }
+                                </Button>
+                                <Dialog open={ this.state.openFollowing } 
+                                        onClose={ this.handleFollowingClose }  
+                                        PaperComponent={ PaperComponent }
+                                        aria-labelledby="draggable"
+                                        classes={{
+                                            paper: classes.paper,
+                                        }}
+                                        >
+                                    <DialogTitle style={{ cursor: 'move' }} id="draggable">
                                         Following
-                                    </Typography>
-                                    <Typography variant='h6' className={classes.number}>
-                                        300
-                                    </Typography>
-                                </div>
-                                <div className={classes.group1}>
-                                    <Typography variant='h6'>
-                                        Posts
-                                    </Typography>
-                                    <Typography variant='h6' className={classes.number}>
-                                        { this.state.posts.length }
-                                    </Typography>
-                                </div>
-                                </Paper>
+                                    </DialogTitle>
+
+                                    { this.state.followingData.map((followingData) => (
+                                        <Following followingData={followingData} handleFollow={ this.handleFollowing } handleUnfollow={ this.handleUnfollowing } />
+                                    ))}
+
+                                    <HandleClosing handleClose={ this.handleFollowingClose } />
+                                </Dialog>
+                            </div>
+                            <div className={classes.group1}>
+                                <Button variant="contained" color="primary" className={classes.postButton}>
+                                    Posts
+                                    <br></br>
+                                    { this.state.posts.length }
+                                </Button>
+                            </div>    
                         </Grid>
 
                         <div>
