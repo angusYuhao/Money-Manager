@@ -130,71 +130,71 @@ class ForumList extends React.Component {
         numDownvotes: 1,
         comments: [
         {commenter: "Angus Wang",
-          commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao"},
-        {commenter: "Angus Wang2",
-          commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao2"}
+          commentContent: "a great start to a great forum!"},
+        {commenter: "Ian Chen",
+          commentContent: "Is there a way to upvote this thread twice? This is honestly the best thing ever"}
         ]
       },
-      {author: 'boogy boy', 
+      {author: 'Winston Churchil', 
         authorUsertype: "RU",
-        title: 'test thread', 
-        content: 'another community thread lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao what do you think lmao ', 
+        title: 'victory is at hand', 
+        content: "We are weeks away from winning the war, thanks to my personal genius and our nation's strength. Brothers and sisters, we will soon be remembered as heros of our time, the greatest generation if I might add!", 
         authorAvatar: null,
-        category: "Opinion",
+        category: "Announcement",
         postID: 2,
         numUpvotes: 4,
         numDownvotes: 2,
         comments: [
-        {commenter: "Angus Wang3",
-          commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao3"},
-        {commenter: "Dude with an attitude",
-          commentContent: "The Communist Manifesto, originally the Manifesto of the Communist Party (German: Manifest der Kommunistischen Partei), is an 1848 political document by German philosophers Karl Marx and Friedrich Engels. Commissioned by the Communist League and originally published in London just as the Revolutions of 1848 began to erupt, the Manifesto was later recognised as one of the world's most influential political documents. It presents an analytical approach to the class struggle (historical and then-present) and the conflicts of capitalism and the capitalist mode of production, rather than a prediction of communism's potential future forms."}
+        {commenter: "Joseph Stalin",
+          commentContent: "The Soviet Union is the reason this war is won! How dare you not include us is this post"},
+        {commenter: "Anne Xie",
+          commentContent: "How are you guys still alive? I thought you guys died decades ago"}
         ]
       },
       {author: 'Angela Merkel', 
         authorUsertype: "FA",
-        title: 'Best thread ever', 
-        content: 'testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again testing again', 
+        title: 'Bitcoin is gonna fail', 
+        content: "There's no way that bitcoin is going to grow much longer. I predict that bitcoin value will collapse by the end of this year!", 
         authorAvatar: null,
-        category: "Question",
+        category: "Opinion",
         postID: 3,
         numUpvotes: 30,
         numDownvotes: 5,
         comments: [
-        {commenter: "Angus Wang4",
-          commentContent: "It is I, Angus Wang, once again! hohohohoh hohohohohooh lmao3"},
-        {commenter: "Dude with an attitude2",
-          commentContent: "The Communist Manifesto, originally the Manifesto of the Communist Party (German: Manifest der Kommunistischen Partei), is an 1848 political document by German philosophers Karl Marx and Friedrich Engels. Commissioned by the Communist League and originally published in London just as the Revolutions of 1848 began to erupt, the Manifesto was later recognised as one of the world's most influential political documents. It presents an analytical approach to the class struggle (historical and then-present) and the conflicts of capitalism and the capitalist mode of production, rather than a prediction of communism's potential future forms."}
+        {commenter: "Emily Huang",
+          commentContent: "Where did you get to this conclusion? In my opinion bitcoin is far from failing, in fact, I think it'll grow another 10 fold!"},
+        {commenter: "Carl Marx",
+          commentContent: "Stop talking about capitalism in the posts. We all know that all nations will eventually become communist as they develop to their final form. Communism is inevitable and most desirable!"}
         ]
       },
-      {author: 'dragonslayer420', 
+      {author: 'Bill Gates', 
         authorUsertype: "FA",
-        title: 'Another awesome thread', 
-        content: 'The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying The art of dragon slaying ', 
+        title: 'What do you think about the future of Microsoft?', 
+        content: "Microsoft has been a great company all these year, but we are running out of steam in the recent years. Does anyone have some suggestions for Windows 10 and Microsoft's other products?", 
         authorAvatar: null,
         category: "Question",
         postID: 4,
         numUpvotes: 40,
         numDownvotes: 20,
         comments: [
-        {commenter: "Lord of the rings",
-          commentContent: "This truly is the greatest post, many thanks!"},
+        {commenter: "Ian Chen",
+          commentContent: "Windows 10 really sucks. Anyone who values productivity should switch to macOS!"},
         {commenter: "Claude Debussy",
-          commentContent: "This thread is pure garbage, please don't ever post again."}
+          commentContent: "I honestly think Microsoft should just focus on Minecraft. The game is awesome and honestly it seems to be the best Microsoft product now"}
         ]
       },
-      {author: 'Random dude', 
+      {author: 'The Queen', 
         authorUsertype: "RU",
-        title: 'Unpopular Opinions are unpopular for a reason', 
-        content: 'The title says it all!', 
+        title: 'How should I get into stocks?', 
+        content: 'I know I am really old, but I am still interested in getting into stocks and other ways of investing? Any experts on this platform willing to help your queen? You rewards will be in the millions!', 
         authorAvatar: null,
-        category: "Opinion",
+        category: "Question",
         postID: 5,
         numUpvotes: 1,
         numDownvotes: 50,
         comments: [
-        {commenter: "Unpopular Opinion",
-          commentContent: "This is an insult, I will have to report this thread"}
+        {commenter: "Prince Charles",
+          commentContent: "How are you still alive and kicking?"}
         ]
       }
     ]
