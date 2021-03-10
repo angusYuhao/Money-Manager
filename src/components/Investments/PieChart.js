@@ -48,7 +48,7 @@ class PieChart extends React.Component {
         let total = listToDisplay.reduce( (ttl, stock) => {
             console.log(stock)
             //return ttl + (stock.bookCost)
-            return ttl + (parseFloat(stock["Book Cost"]))
+            return ttl + Math.round( (parseFloat(stock["Book Cost"])  * 100)/ 100 )
         }, 0);
         
         console.log(total)
@@ -64,7 +64,10 @@ class PieChart extends React.Component {
             
             // draw the pie wedges
             //let endAngle = ((element.bookCost / total) * Math.PI * 2) + startAngle;
-            let endAngle = ((parseFloat(element["Book Cost"])/ total) * Math.PI * 2) + startAngle;
+            let actualBookCost = parseFloat(element["Book Cost"]);
+            actualBookCost = Math.round(actualBookCost * 100) / 100;
+
+            let endAngle = ((actualBookCost/ total) * Math.PI * 2) + startAngle;
             this.context.moveTo(cx, cy);
             this.context.arc(cx, cy, radius, startAngle, endAngle);
             this.context.lineTo(cx, cy);
@@ -74,7 +77,7 @@ class PieChart extends React.Component {
             
             // add the labels
             this.context.beginPath();
-            this.context.font = '20px Helvetica, Calibri';
+            this.context.font = '20px Poppins, sans-serif';
             this.context.textAlign = 'center';
             this.context.fillStyle = 'rebeccapurple';
             // 1.5 * radius is the length of the Hypotenuse
@@ -90,14 +93,14 @@ class PieChart extends React.Component {
 
             //!!!Ian: name is the name of the stock category
             // let percentage = Math.round(+((element.bookCost*100)/total));
-            let percentage = Math.round(+((parseFloat(element["Book Cost"])*100)/total));
+            let percentage = Math.round(+((actualBookCost*100)/total));
 
             this.context.fillText(element.Name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
             
             //this.context.fillText(percentage + "%", (deltaX*1.3)+cx, (deltaY*1.4)+cy);
             this.context.closePath();
             
-            console.log(parseFloat(element["Book Cost"]))
+            console.log(actualBookCost)
             //store the slice information
             this.state.slices.push({ 
                     "name" : element.Name,
@@ -106,8 +109,8 @@ class PieChart extends React.Component {
                     "endAngle": (2.0*Math.PI) - startAngle,
                     "drawStartAngle": startAngle,
                     "drawEndAngle": endAngle,
-                    //"bookCost": element.bookCost
-                    "bookCost": parseFloat(element["Book Cost"])
+                    "total": total,
+                    "bookCost": actualBookCost
             });
             startAngle = endAngle;
         });
@@ -132,7 +135,7 @@ class PieChart extends React.Component {
         this.context.closePath();
 
         this.context.beginPath();  
-        this.context.font = '20px Helvetica, Calibri';
+        this.context.font = '20px Poppins, sans-serif';
         this.context.textAlign = 'center';
         this.context.fillStyle = 'rebeccapurple';
         this.context.strokeStyle = 'rebeccapurple';
@@ -142,14 +145,21 @@ class PieChart extends React.Component {
         let deltaX = parseFloat(Math.cos(theta) * 1.5 * radius);
         
 
-        
+
+        let percentage = Math.round(+((slice.bookCost*100)/slice.total));
+        this.context.fillText(slice.name + " (" + percentage + "%)", deltaX+cx, deltaY+cy);
+        this.context.stroke();
+        this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
+        this.context.lineTo((4*deltaX/5)+cx, (4*deltaY/5)+cy);
+        this.context.stroke();
+
         // add the labels
         if(accented == 1){
             // this.context.moveTo(cx+deltaX/1.65, cy+deltaY/1.65);
             // this.context.lineTo((4.0*deltaX/5)+cx, (4.0*deltaY/5)+cy);
             // this.context.stroke();
 
-            //!!!Ian: name is the name of the stock category            
+
             this.context.fillText("$" + slice.bookCost, deltaX/2+cx, deltaY/2+cy);
 
             this.context.closePath();
@@ -159,8 +169,31 @@ class PieChart extends React.Component {
             this.context.lineWidth = 3;
             this.context.stroke();
             this.context.closePath();
-        }
+        } 
+    }
+
+    redraw = () => {
+        this.context = this.pieChartRef.current.getContext('2d');
+        let elem = document.getElementById('pieChartCanvas');
+        let rect = elem.getBoundingClientRect();
         
+        const context = this.context;
+        context.clearRect(0, 0, rect.width, rect.height);
+
+        context.beginPath();
+        // this.context = this.pieChartRef.current.getContext('2d');
+        // let elem = document.getElementById('pieChartCanvas');
+        // let rect = elem.getBoundingClientRect();
+        
+        // const context = this.context;
+
+        // //clear canvas
+        // //context.clearRect(0, 0, elem.width, elem.height);
+        // context.clearRect(0, 0, rect.width, rect.height);
+
+        for(let i = 0; i < this.state.slices.length; i++){
+            this.drawAccentedSlice(this.state.slices[i],0);
+        }
     }
 
     componentDidMount() {
@@ -255,8 +288,21 @@ class PieChart extends React.Component {
                 if(s.startAngle < angle && angle < s.endAngle){
                     
                     if(distanceOk){
+                        
+                        // const context = this.context;
+                        // context.clearRect(0, 0, rect.width, rect.height);
+
+                        // context.beginPath();
+                        // //clear canvas
+                        //context.clearRect(0, 0, elem.width, elem.height);
+                       
+
                         this.drawAccentedSlice(s, 1);
-                        setTimeout(this.drawAccentedSlice, 1000, s, 0);
+                        
+                        //setTimeout(this.drawAccentedSlice, 500, s, 0);
+                        setTimeout(this.redraw, 500);
+
+                        //this.drawAccentedSlice(s, 0);
                         distanceOk = false;
                     }
                 }else continue;
@@ -272,7 +318,9 @@ class PieChart extends React.Component {
         const context = this.context;
 
         //clear canvas
+        //context.clearRect(0, 0, elem.width, elem.height);
         context.clearRect(0, 0, rect.width, rect.height);
+
         context.beginPath();
 
         //clear slices

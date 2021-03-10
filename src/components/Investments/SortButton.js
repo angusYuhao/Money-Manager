@@ -12,7 +12,7 @@ class SortButton extends React.Component{
 
         <Grid item xs={4}>
             <Paper>
-            <Button
+            <Button color="primary" 
                 className="InvestmentSortButton"
                 variant={sortBy == categoryName ? "contained" : "outlined"}
                 //onClick={() => this.changeSort(categoryName)}>

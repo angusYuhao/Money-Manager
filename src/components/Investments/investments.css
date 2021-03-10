@@ -2,7 +2,7 @@
     width: 90vw;
     height: 90vh;
     /* margin: none; */
-    margin-left: 5%;
+    margin-left: 2%;
     margin-right: 10%;
     display: flex;
 }
@@ -16,9 +16,8 @@
 }
 
 .PieChart{
-    margin-top: 0.6%;
+    margin-top: 2%;
     position: relative;
-    
 }
 
 .BarChart{
@@ -36,7 +35,7 @@
     float: left;
     display: flex;
     height: 100%;
-
+    
 }
 
 .InvestmentSortButton{
@@ -45,7 +44,9 @@
 
 .StockPieChartTitle{
     height: 20px;
-    color: #673ab7;
+    /* color: #673ab7; */
+    color: #5423a8;
+
     font-weight: bold;
     font-size: 180%;
     width: 100%;
@@ -55,4 +56,9 @@
     margin-bottom: 0%;
 	left: 0;
 	right: 0;
+}
+
+.Calculator{
+    margin-left: 5%;
+    margin-right: 5%;
 }
