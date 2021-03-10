@@ -1,0 +1,36 @@
+const followingData = [
+    { "id": "user123",
+      "following": true},
+    { "id": "user456",
+    "following": true},
+    { "id": "user789",
+    "following": true},
+    { "id": "FA3",
+    "following": true},
+    { "id": "FA5",
+    "following": true},
+    { "id": "user111",
+      "following": true},
+    { "id": "user099",
+    "following": true},
+    { "id": "user888",
+    "following": true},
+    { "id": "FA7",
+    "following": true},
+    { "id": "FA3",
+    "following": true},
+]
+
+const followerData = [
+    { "id": "userA",
+      "following": true},
+    { "id": "userB",
+    "following": false},
+    { "id": "userC",
+    "following": true},
+    { "id": "FA1",
+    "following": true},
+    { "id": "FA2",
+    "following": false},
+]
+export { followingData,  followerData };
