@@ -60,14 +60,15 @@
 .Calculator{
     margin-left: 5%;
     margin-right: 5%;
+    margin-bottom: 5%;
 }
 
-
 .GeneralInfo{
-    margin-top: 15%;
+    margin-top: 5%;
     margin-left: 4%;
-    margin-bottom: 10%;
+    margin-bottom: 20%;
     margin-right: 4%;
+    bottom: 10%;
 }
 
 .StockList{
@@ -77,3 +78,11 @@
     margin-right: 5%;
 }
 
+.InvestmentImage{
+    /* margin-top: 5%; */
+    margin-left: 5%;
+    margin-bottom: 5%;
+    margin-right: 5%;
+    width: 90%;
+    height: 180px;
+}

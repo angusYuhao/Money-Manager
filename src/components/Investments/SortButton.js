@@ -5,11 +5,11 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
+//For making a sort button for the stock entries table
 class SortButton extends React.Component{
    render(){
        const {categoryName,callBackFunction, sortDes, sortBy} = this.props;
        return(
-
         <Grid item xs={4}>
             <Paper>
             <Button color="primary" 
