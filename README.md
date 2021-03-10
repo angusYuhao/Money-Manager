@@ -2,6 +2,8 @@
 
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
 
+> **Note:** All "Money Manager" on the header are clickable and will direct you back to the home page.
+
 # Home Page
 The home page consists of three big components, one is the general home page that introduces our website, another one is the user log in page and the third one is the user sign up page. 
 
