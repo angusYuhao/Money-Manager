@@ -35,6 +35,9 @@ const useStyles = theme => ({
     marginLeft: theme.spacing(2),
     backgroundColor: deepPurple[800],
   },
+  appbar: {
+    zIndex: theme.zIndex.drawer + 1,
+  }
 })
 
 const theme = createMuiTheme({
@@ -63,7 +66,7 @@ class NavBar extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
-          <AppBar position="sticky" color="secondary">
+          <AppBar position="sticky" color="secondary" className={ classes.appbar }>
             <Toolbar>
               <Link to={'/'} style={{ textDecoration: 'none', color: 'black' }}>
                 <Typography variant="h6" className={classes.title}>
