@@ -7,11 +7,35 @@ import { withStyles } from "@material-ui/core/styles";
 // import './index.css';
 
 import ForumList from "./forumList.js"
+import Sidebar from "./sidebar.js"
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
+// import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
 import Login from "../Login/login.js"
+import sidebar from './sidebar.js';
+
+import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 
 const useStyles = theme => ({
   root: {
-    backgroundColor: "red"
+    display: 'flex',
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+  sidebar: {
+    flexShrink: 0,
+  },
+  sidebarButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 100,
+    left: 30,
+    margin: '0 auto',
   }
 });
 
@@ -60,6 +84,8 @@ class Community extends React.Component {
       userDownvotedPosts: [],
       userFollows: [],
     },
+    openSidebar: false,
+    sidebarToggle: "Home",
   }
 
   constructor(props) {
@@ -88,15 +114,42 @@ class Community extends React.Component {
     this.setState({ userInfo: newUserInfo }, () => { console.log("new userFollows:", this.state.userInfo.userFollows) })
   }
 
+  openSidebar = () => {
+    this.setState({ openSidebar: true })
+  }
+
+  closeSidebar = () => {
+    this.setState({ openSidebar: false })
+  }
+
+  handleSidebarToggle = (toggle) => {
+    console.log(toggle)
+    this.setState({ sidebarToggle: toggle })
+  }
+
 
   render() {
     const { classes, username, usertype } = this.props
     return (
-      <ThemeProvider theme={ theme }>
-        <ForumList className={ classes.root }
-                   userInfo={ this.state.userInfo }
-                   FAInfo={ this.state.tempFAInfo }
-                   userInfoUpdater={ this.userInfoUpdater }/>
+      <ThemeProvider theme={ theme } className={ classes.root }>
+        <Sidebar classNmae={ classes.sidebar }
+                  openSidebar={ this.openSidebar }
+                  closeSidebar={ this.closeSidebar }
+                  handleSidebarToggle={ this.handleSidebarToggle }
+                  open={ this.state.openSidebar }/>
+        {/* <Grid container justify="flex-start" className={ classes.sidebarButton } > */}
+          <Tooltip title="More Page Options" className={ classes.sidebarButton }>
+            <Fab color="primary" size="medium" onClick={ this.openSidebar }>
+              <MenuOpenIcon fontSize="default" />
+            </Fab>
+          </Tooltip>
+        {/* </Grid> */}
+        <Grid container className={ classes.content }>
+          <ForumList userInfo={ this.state.userInfo }
+                    FAInfo={ this.state.tempFAInfo }
+                    sidebarToggle={ this.state.sidebarToggle }
+                    userInfoUpdater={ this.userInfoUpdater }/>
+        </Grid>
       </ThemeProvider>
     )
   }

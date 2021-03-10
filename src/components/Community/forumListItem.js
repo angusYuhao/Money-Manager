@@ -160,6 +160,13 @@ class ForumListItem extends React.Component {
       this.props.userInfoUpdater(newUserInfo)
     }
 
+    handleUserUnfollowFA = () => {
+      let newUserInfo = this.props.userInfo
+      const newUserFollows = newUserInfo.userFollows.filter((UF) => { return UF !== this.state.authorFAInfo })
+      newUserInfo.userFollows = newUserFollows
+      this.props.userInfoUpdater(newUserInfo)
+    }
+
     toggleUpvote = () => {
 
       // clean up downvote
@@ -350,8 +357,8 @@ class ForumListItem extends React.Component {
 
             <Grid container justify="space-evenly" className={ classes.followButtonGrid }>
               { userInfo.userFollows.includes(this.state.authorFAInfo) ? 
-              <Button color="primary" variant="contained" disabled>
-                Following
+              <Button color="primary" variant="contained" onClick={ this.handleUserUnfollowFA }>
+                Unfollow
               </Button> : 
               <Button color="primary" variant="contained" onClick={ this.handleUserFollowFA }>
                 Follow
