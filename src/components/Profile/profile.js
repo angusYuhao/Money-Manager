@@ -279,10 +279,11 @@ class Profile extends React.Component {
     *********************************************************************************/
     handleFollow = (wantToFollow) => {
         const index = this.state.followerData.indexOf(wantToFollow);
-        
+        this.state.followingData.push(wantToFollow)
         this.state.followerData[index]["following"] = true;
         this.setState({
             followerData: this.state.followerData,
+            followingData: this.state.followingData
         })
     }
 
@@ -293,9 +294,12 @@ class Profile extends React.Component {
     handleUnfollow = (wantToUnfollow) => {
         const index = this.state.followerData.indexOf(wantToUnfollow)
         console.log(index)
+        const keep = this.state.followingData.filter(f => f["id"] != wantToUnfollow["id"])
+        this.state.followingData = keep
         this.state.followerData[index]["following"] = false;
         this.setState({
             followerData: this.state.followerData,
+            followingData: this.state.followingData
         })
     }
 
@@ -319,9 +323,15 @@ class Profile extends React.Component {
     handleUnfollowing = (wantToUnfollow) => {
         const index = this.state.followingData.indexOf(wantToUnfollow)
         console.log(index)
-        this.state.followingData[index]["following"] = false;
+        const keep = this.state.followingData.filter(f => f != wantToUnfollow)
+        this.state.followingData = keep
+        const changeFollowingStatus = this.state.followerData.filter(f => f["id"] == wantToUnfollow["id"])
+        const indexForChangingFollowingStatus = this.state.followerData.indexOf(changeFollowingStatus[0])
+        this.state.followerData[indexForChangingFollowingStatus]["following"] = false
+        // this.state.followingData[index]["following"] = false;
         this.setState({
             followingData: this.state.followingData,
+            followerData: this.state.followerData
         })
     }
 
