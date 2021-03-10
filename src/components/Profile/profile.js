@@ -67,12 +67,12 @@ const useStyles = theme => ({
     },
     editButton: {
         float: 'right',
-        marginTop: theme.spacing(20),
+        marginTop: theme.spacing(10),
         marginRight: theme.spacing(10),
     },
     logoutButton: {
         float: 'right',
-        marginTop: theme.spacing(20),
+        marginTop: theme.spacing(10),
         marginRight: theme.spacing(3),
     },
     group: {

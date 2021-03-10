@@ -36,41 +36,41 @@ class GeneralCard extends React.Component {
             <ThemeProvider theme={ theme }>
             <Card variant="outlined">
             <CardContent>
-              <Typography variant="h3">
+              <Typography variant="h4">
                 Account overview
               </Typography>
               <br/>
-              <Typography variant="h4">
+              <Typography variant="h5" display="block"gutterBottom>
                 Account name: 
-                <Typography variant="h6"  gutterBottom>
+                <Typography variant="h7" gutterBottom>
                 RRSP
                 </Typography>
               </Typography>
-              <Typography variant="h4" display="block">
+              <Typography variant="h5" display="block" gutterBottom>
                 Account number: 
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h7" gutterBottom>
                 12345A6
                 </Typography>
               </Typography>
-              <Typography variant="h4" display="block">
+              <Typography variant="h5" display="block" gutterBottom>
                 Currency: 
-                <Typography variant="h6"  gutterBottom>
+                <Typography variant="h7" gutterBottom>
                 CAD$
                 </Typography>
               </Typography>
-              <Typography variant="h4" display="block">
+              <Typography variant="h5" display="block" gutterBottom>
                 Total amount invested: 
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h7" gutterBottom>
                 ${total}
                 </Typography>
               </Typography>
               <br/>
               <br/>
-              <Typography variant="h6" display="block">
+              <Typography variant="h7" display="block">
                 If you'd like to learn more about saving and investing, visit our community page
                 <Link to={'/community'} >
                 <Button color="primary" >
-                    <Typography variant="h6" >
+                    <Typography variant="h7" >
                       here.
                     </Typography>
                 </Button>
