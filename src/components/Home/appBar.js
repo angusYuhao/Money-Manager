@@ -1,13 +1,12 @@
 import React from 'react';
 import { makeStyles, 
          AppBar,
-         Box, 
          Toolbar, 
          Typography,
          Button,
          createMuiTheme,
          ThemeProvider} from '@material-ui/core';
-import { deepPurple, green } from '@material-ui/core/colors';
+import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -62,8 +61,7 @@ export default function HomeAppBar() {
                                 Money Manager
                             </Typography>
                         </Link>
-                        
-                       
+                         
                         <Link to={'/login'}>
                             <Button className={classes.logInButton}>
                                 Login

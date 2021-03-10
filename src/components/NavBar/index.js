@@ -1,15 +1,13 @@
 import React from 'react';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { withStyles, 
          Toolbar, 
          Typography,
          Avatar,
-         Button,
          createMuiTheme,
          ThemeProvider} from '@material-ui/core';
-import { deepPurple, green } from '@material-ui/core/colors';
+import { deepPurple } from '@material-ui/core/colors';
 
 const useStyles = theme => ({
   root: {
@@ -36,7 +34,7 @@ const useStyles = theme => ({
   avatar: {
     marginLeft: theme.spacing(2),
     backgroundColor: deepPurple[800],
-  }
+  },
 })
 
 const theme = createMuiTheme({
@@ -60,6 +58,7 @@ class NavBar extends React.Component {
 
   render() {
     const { classes, username, password } = this.props;
+    const firstLetter = username.charAt(0).toUpperCase();
   
     return (
       <ThemeProvider theme={theme}>
@@ -93,9 +92,7 @@ class NavBar extends React.Component {
               </Typography>
 
               <Link to={'/profile'}>
-                <Avatar className={classes.avatar}>
-                  <AccountCircleIcon/>
-                </Avatar>
+                <Avatar className={classes.avatar}>{ firstLetter }</Avatar>
               </Link>
 
             </Toolbar>

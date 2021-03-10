@@ -1,5 +1,10 @@
 import React from 'react';
-import { Typography, withStyles, createMuiTheme, Grid, Paper, FormControl, InputLabel, Select, MenuItem, ThemeProvider, TextField } from '@material-ui/core';
+import { Typography, 
+        withStyles, 
+        createMuiTheme, 
+        Grid, 
+        Paper, 
+        ThemeProvider } from '@material-ui/core';
 import HomeAppBar from './../Home/appBar.js';
 import Footer from './../Footer/footer.js';
 import { deepPurple, grey } from '@material-ui/core/colors';
