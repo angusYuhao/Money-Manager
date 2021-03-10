@@ -9,9 +9,9 @@ class HandleClosing extends React.Component {
         return(
             
             <DialogActions>
-                <Button autoFocus onClick={ handleClose } color="primary">
+                {/* <Button autoFocus onClick={ handleClose } color="primary">
                     Cancel
-                </Button>
+                </Button> */}
                 <Button autoFocus onClick={ handleClose } color="primary">
                     Done
                 </Button>

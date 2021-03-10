@@ -83,18 +83,10 @@ class ForumListItem extends React.Component {
     }
 
     componentDidMount() {
-      console.log("updating postID")
-      console.log(this.props.postID)
       this.setState({ postID: this.props.postID }, () => this.prepareOpenPost(), () => this.forceUpdate())
     }
 
-    componentWillUnmount() {
-      console.log("destroyed")
-    }
-
     componentDidUpdate() {
-      console.log("componentDidUpdate")
-      console.log("what is this???", this.props.postID)
       if (this.state.postID !== this.props.postID) this.setState({ postID: this.props.postID }, () => this.prepareOpenPost())      
     }
   
@@ -103,8 +95,6 @@ class ForumListItem extends React.Component {
     }
 
     prepareOpenPost = () => {
-      console.log("state's postID:", this.state.postID)
-      console.log("userUpvotedPosts:", this.props.userInfo.userUpvotedPosts)
       const userInfo = this.props.userInfo
       userInfo.userUpvotedPosts.includes(this.state.postID) ? this.setState({ upvoted: true }) : this.setState({ upvoted: false })
       userInfo.userDownvotedPosts.includes(this.state.postID) ? this.setState({ downvoted: true }) : this.setState({ downvoted: false })

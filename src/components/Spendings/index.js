@@ -108,7 +108,7 @@ class Spendings extends React.Component {
       // the options for each transaction for the table to know which kind of cell to display
       transactions_options: ["Date", "Dollar", "Any", "Select"],
       // a list of the categories that the transaction falls under 
-      transactions_categories: ["Food", "Personal", "Transportation", "Home"],
+      transactions_categories: ["Food", "Personal", "Transit", "Home"],
       // the data to appear in each rows of the table, the transactions for a specific year and month
       transactions_data: [],
       // the entire data for all years and all months
@@ -365,7 +365,7 @@ class Spendings extends React.Component {
 
     // if attempting to create an exisiting month/year combination, return 
     if (this.checkIfInArray(month, this.state.entire_data[yearIndex][year])) {
-      console.log("repeated")
+      console.log("Month/Year already exists!")
       return
     }
 

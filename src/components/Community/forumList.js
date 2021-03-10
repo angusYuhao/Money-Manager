@@ -202,7 +202,6 @@ class ForumList extends React.Component {
 
   // called when opening write new post
   handleClickOpen = () => {
-
     this.setState({ openNewPost: true })
   }
 
@@ -224,38 +223,30 @@ class ForumList extends React.Component {
 
   // called when opening manage post
   handleClickManage = () => {
-
     this.setState({ openManagePost: true })
   }
 
   // called when finished manage post
   handleClickManageDone = () => {
-
     this.setState({ openManagePost: false })
   }
 
   // called when user types into a textbox
   handleInputChange = (event) => {
-
     const value = event.target.value
     const name = event.target.name
-
     this.setState({ [name]: value })
   }
 
   // called when user chooses a post filter
   handleFilterInputChange = (event) => {
-
     const value = event.target.value
-
     this.setState({ postFilter: value })
   }
 
   // called when user chooses a sort by option
   handleSortInputChange = (event) => {
-
     const value = event.target.value
-
     this.setState({ sortOrder: value }, () => this.sortPosts(value))
   }
 
@@ -276,6 +267,7 @@ class ForumList extends React.Component {
         break;
       case "BestRated":
         posts.sort((a, b) => a.numUpvotes-a.numDownvotes < b.numUpvotes-b.numDownvotes ? 1 : -1)
+
     }
 
     this.setState({ posts: posts })
@@ -320,7 +312,6 @@ class ForumList extends React.Component {
 
   // called when user chooses a category for new post
   changeCategory = (_category) => {
-
     this.setState({ category: _category })
   }
 
@@ -369,6 +360,7 @@ class ForumList extends React.Component {
       userInfo.userSavedPosts.splice(indexs, 1)
       this.props.userInfoUpdater(userInfo)
     }
+
   }
 
   // called when user upvotes a post
@@ -385,6 +377,7 @@ class ForumList extends React.Component {
     const userInfo = this.props.userInfo
     userInfo.userUpvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
+
   }
 
   // called when user deletes their upvote from a post
@@ -402,6 +395,7 @@ class ForumList extends React.Component {
     const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
+
   }
 
   // called when user downvotes a post
@@ -418,6 +412,7 @@ class ForumList extends React.Component {
     const userInfo = this.props.userInfo
     userInfo.userDownvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
+
   }
 
   // called when user deletes a downvote from a post
@@ -435,6 +430,7 @@ class ForumList extends React.Component {
     const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
+    
   }
 
   // main render function
@@ -820,9 +816,9 @@ class ForumList extends React.Component {
                 {/* {cancel and post buttons} */}
                 <CardActions>
 
-                  <Button onClick={ this.handleClose } color="primary">
+                  {/* <Button onClick={ this.handleClose } color="primary">
                     Cancel
-                  </Button>
+                  </Button> */}
 
                   <Button onClick={ () => this.addPost(userInfo.username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post

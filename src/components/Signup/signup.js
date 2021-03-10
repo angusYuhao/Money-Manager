@@ -93,7 +93,6 @@ class SignUp extends React.Component {
   };
 
   handleInputChange = (event) => {
-    console.log(event)
 
     // get the value we type in 
     const target = event.target;
@@ -134,8 +133,6 @@ class SignUp extends React.Component {
     const value = target.value;
     const name = target.name;
     
-    console.log(value);
-
     this.setState({
       [name]: value
     })
@@ -155,7 +152,6 @@ class SignUp extends React.Component {
   *********************************************************************************/
   submitValidation = (event) => {
     event.preventDefault();
-    console.log("inside validation!")
     this.state.signedUp = true;
 
     this.setState({

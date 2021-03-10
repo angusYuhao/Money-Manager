@@ -296,7 +296,6 @@ class Profile extends React.Component {
     *********************************************************************************/
     handleUnfollow = (wantToUnfollow) => {
         const index = this.state.followerData.indexOf(wantToUnfollow)
-        console.log(index)
         const keep = this.state.followingData.filter(f => f["id"] != wantToUnfollow["id"])
         this.state.followingData = keep
         this.state.followerData[index]["following"] = false;
@@ -312,7 +311,6 @@ class Profile extends React.Component {
     *********************************************************************************/
     handleFollowing = (wantToFollow) => {
         const index = this.state.followingData.indexOf(wantToFollow)
-        console.log(index)
         this.state.followingData[index]["following"] = true;
         this.setState({
             followingData: this.state.followingData,
@@ -325,7 +323,6 @@ class Profile extends React.Component {
     *********************************************************************************/
     handleUnfollowing = (wantToUnfollow) => {
         const index = this.state.followingData.indexOf(wantToUnfollow)
-        console.log(index)
         const keep = this.state.followingData.filter(f => f != wantToUnfollow)
         this.state.followingData = keep
         const changeFollowingStatus = this.state.followerData.filter(f => f["id"] == wantToUnfollow["id"])
@@ -368,7 +365,6 @@ class Profile extends React.Component {
     // These code are taken from ForumList, check ForumList for more details
     postComment = (target) => {
         const targetPostID = target.postID
-        console.log(targetPostID)
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -391,10 +387,8 @@ class Profile extends React.Component {
 
     // These code are taken from ForumList, check forumList for more details
     deletePosts = (target) => {
-        console.log("deleting post")
         const targetPostID = target.postID
         const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
-        console.log("posts length: ", otherPosts.length)
         this.setState({ posts: otherPosts })
 
         const userInfo = this.state.userInfo
@@ -407,7 +401,6 @@ class Profile extends React.Component {
 
     // These code are taken from ForumList, check forumList for more details
     addUpvote = (target) => {
-        console.log("adding upvotes")
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -423,7 +416,6 @@ class Profile extends React.Component {
 
     // These code are taken from ForumList, check forumList for more details
     minusUpvote = (target) => {
-        console.log("subtracting upvotes")
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -440,7 +432,6 @@ class Profile extends React.Component {
 
     // These code are taken from ForumList, check forumList for more details
     addDownvote = (target) => {
-        console.log("adding downvotes")
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -456,7 +447,6 @@ class Profile extends React.Component {
 
     // These code are taken from ForumList, check forumList for more details
     minusDownvote = (target) => {
-        console.log("subtracting downvotes")
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })

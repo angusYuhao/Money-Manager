@@ -97,7 +97,6 @@ class Sliding extends React.Component {
     };
 
     nextSlide = (event) => {
-        console.log(length);
 
         if(value === length - 1) {
             value = 0;

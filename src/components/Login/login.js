@@ -90,7 +90,6 @@ class Login extends React.Component {
 
   // set state for all the state variables
   handleInputChange = (event) => {
-    console.log(event)
 
     // get the value we type in 
     const target = event.target;

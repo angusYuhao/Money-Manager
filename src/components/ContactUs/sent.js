@@ -47,13 +47,11 @@ class Sent extends React.Component {
     }
 
     handleInputChange = (event) => {
-        console.log(event)
 
         // get the value we type in 
         const target = event.target;
         const value = target.value;
         const name = target.name;
-        console.log(value);
 
         // state is updated and value is also updated in JSX
         // the square bracket dynamically changes the name 
