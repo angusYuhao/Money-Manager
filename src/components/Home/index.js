@@ -7,17 +7,20 @@ import Sliding from './../Sliding/sliding.js';
 import Footer from './../Footer/footer.js';
 
 class Home extends React.Component {
-    
-  render() {
 
+  render() {
+    const { loggedIn } = this.props
     return (
 
-        <Grid className="grid">
-            <HomeAppBar />
-            <Sliding/>
-            <Footer/>   
-        </Grid>
-        
+
+      <Grid className="grid">
+        <HomeAppBar className="appBar"
+          loggedIn={loggedIn} />
+
+        <Sliding />
+        <Footer />
+
+      </Grid>
     )
 
   }

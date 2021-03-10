@@ -87,12 +87,12 @@ class Sent extends React.Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, loggedIn } = this.props;
 
         return (
             <ThemeProvider theme={theme}>
                 <div>
-                    <HomeAppBar />
+                    <HomeAppBar loggedIn={loggedIn} />
                     <Grid container className={classes.grid} >
                         <Paper elevation={3} className={classes.paper}>
                             <Typography variant="h5" className={classes.contact}>

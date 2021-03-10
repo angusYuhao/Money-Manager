@@ -113,12 +113,12 @@ class Contact extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, loggedIn } = this.props;
 
         return (
             <ThemeProvider theme={theme}>
                 <div>
-                    <HomeAppBar />
+                    <HomeAppBar loggedIn={loggedIn} />
                         <Typography variant="h2" className={classes.contact}>
                             Contact us
                         </Typography>
