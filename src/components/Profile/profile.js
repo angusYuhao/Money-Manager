@@ -18,7 +18,7 @@ import { Typography,
         Divider} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
-import ForumListItem from '../Community/forumListItem';
+import ForumListItem from './forumListItemOld.js';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import Edit from './edit.js';
 import Done from './done.js';
@@ -413,6 +413,19 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
+    // constructor
+    constructor(props) {
+        super(props)
+
+        this.userInfoUpdater = this.userInfoUpdater.bind(this)
+    }
+
+    // called in children components to update the userInfo state in this component
+    userInfoUpdater(newUserInfo) {
+
+        this.setState({ userInfo: newUserInfo })
+    }
+
     componentDidMount() {
         this.changeUserState();
     }
@@ -427,6 +440,7 @@ class Profile extends React.Component {
             this.state.email = "user@123.com";
             this.state.occupation = "Student";
             this.state.birthday = "2021-03-08";
+            this.state.commenter = "User";
             this.state.posts = [
                 {author: 'User', 
                 authorUsertype: "RU",
@@ -469,7 +483,8 @@ class Profile extends React.Component {
                 email: this.state.email,
                 occupation: this.state.occupation,
                 birthday: this.state.birthday,
-                posts: this.state.posts
+                posts: this.state.posts,
+                commenter: this.state.commenter,
             })
             
         } else if(this.state.userLevel === "Financial Advisor") {
@@ -480,6 +495,7 @@ class Profile extends React.Component {
             this.state.email = "admin@123.com";
             this.state.occupation = "Financial advisor";
             this.state.birthday = "2021-03-08";
+            this.state.commenter = "Admin";
             this.state.posts = [
                 {author: 'Admin', 
                 authorUsertype: "FA",
@@ -522,7 +538,8 @@ class Profile extends React.Component {
                 email: this.state.email,
                 occupation: this.state.occupation,
                 birthday: this.state.birthday,
-                posts: this.state.posts
+                posts: this.state.posts,
+                commenter: this.state.commenter,
             })
         }
     }
