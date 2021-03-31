@@ -34,6 +34,10 @@ import { data } from './data'
 import TableComp from '../Table'
 import PieChart from '../Investments/PieChart'
 
+// getting the config settings variable 
+import CONFIG from '../../config'
+const API_HOST = CONFIG.api_host
+
 const useStyles = () => ({
   drawer_paper: {
     position: "relative",
@@ -112,7 +116,7 @@ class Spendings extends React.Component {
       // the data to appear in each rows of the table, the transactions for a specific year and month
       transactions_data: [],
       // the entire data for all years and all months
-      entire_data: data,
+      entire_data: [],
       // the net balance on the account 
       accountBalance: 0,
       // current sorting by string, default is sort by date
@@ -145,23 +149,23 @@ class Spendings extends React.Component {
     ****************************************************************************************************************************/
 
     // initialize transactions_data
-    this.sortEntireData()
-    const year = this.getYearFromIndex("0")
-    const month = this.getMonthFromIndex("0", "0", year)
+    // this.sortEntireData()
+    // const year = this.getYearFromIndex("0")
+    // const month = this.getMonthFromIndex("0", "0", year)
 
-    this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
-    this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
-    this.state.currentlySelectedMonth["monthIndex"] = "0"
-    this.state.currentlySelectedMonth["yearIndex"] = "0"
+    // this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
+    // this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
+    // this.state.currentlySelectedMonth["monthIndex"] = "0"
+    // this.state.currentlySelectedMonth["yearIndex"] = "0"
 
-    this.setState({
-      transactions_data: this.state.transactions_data,
-      projectedSpendings: this.state.projectedSpendings,
-      currentlySelectedMonth: this.state.currentlySelectedMonth
-    })
+    // this.setState({
+    //   transactions_data: this.state.transactions_data,
+    //   projectedSpendings: this.state.projectedSpendings,
+    //   currentlySelectedMonth: this.state.currentlySelectedMonth
+    // })
 
-    this.sumCategoriesAmount()
-    this.sumAccountBalance()
+    // this.sumCategoriesAmount()
+    // this.sumAccountBalance()
 
   }
 
@@ -179,6 +183,28 @@ class Spendings extends React.Component {
       this.sumAccountBalance()
       this.sumCategoriesAmount()
     }
+  }
+
+  componentDidMount() {
+
+    // populate the data variable in the state upon mount 
+    const url = `${API_HOST}/spendings/transactions`
+    const request = new Request(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
   }
 
   sumAccountBalance = () => {
@@ -282,6 +308,24 @@ class Spendings extends React.Component {
   deleteTransaction = (transaction) => {
     const keepTransactions = this.state.transactions_data.filter(t => t !== transaction)
     this.setState({ transactions_data: keepTransactions })
+
+    const url = `${API_HOST}/spendings/transaction`
+    const request = new Request(url, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+      
     /********************************************************************************
     for phase 2, you would be making a server call to delete this transaction to the data
     *********************************************************************************/
