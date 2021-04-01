@@ -14,7 +14,7 @@ const TransactionsSchema = new mongoose.Schema({
 
 const SpendingsByMonthSchema = new mongoose.Schema({
     "Month": String,
-    "Data": [TransactionsSchema]
+    "Data": TransactionsSchema
 })
 
 const SpendingsSchema = new mongoose.Schema({

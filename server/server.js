@@ -108,10 +108,12 @@ app.post("/signup", async (req, res) => {
         }
     }
 })
+
 /**************************
  ROUTES FOR SPENDINGS
  *************************/
 
+// gets the entire spendings data as well as user defined categories 
 app.get('/spendings/transactions', async (req, res) => {
 
     const username = "user"
@@ -119,7 +121,33 @@ app.get('/spendings/transactions', async (req, res) => {
 
     try {
         const user = await User.findByUserNamePassword(username, password)
-        res.send(user.spendings)
+        res.send({ spendings: user.spendings, categories: user.spendings_categories })
+    }
+    
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// adds a new user defined category to the database 
+app.post('/spendings/categories', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+    const newCategory = req.body.newCategory
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        // only add to database if it's not a duplicate of existing category
+        if (!user.spendings_categories.includes(newCategory)) {
+            user.spendings_categories.push(newCategory)
+            const updatedCategories = await user.save()
+            res.send(updatedCategories.spendings_categories)
+        }
+        else {
+            res.status(400).send()
+        }
     }
 
     catch (error) {
@@ -128,6 +156,99 @@ app.get('/spendings/transactions', async (req, res) => {
 
 })
 
+// deletes a new user defined category from the database 
+app.delete('/spendings/categories', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+    const deleteCategory = req.body.deleteCategory
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        user.spendings_categories.pull(deleteCategory)
+        const updatedCategories = await user.save()
+        res.send(updatedCategories.spendings_categories)
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// adds a new transaction to a specific year and month sheet 
+app.post('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+
+    const yearIndex = req.params.yearIndex
+    const monthIndex = req.params.monthIndex
+    const newTransaction = req.body
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].unshift(newTransaction)
+        const updatedSpendings = await user.save()
+        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// modifies a transaction from a specific year and month sheet 
+app.patch('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+
+    const yearIndex = req.params.yearIndex
+    const monthIndex = req.params.monthIndex
+    const editTransaction = req.body
+    editTransaction._id = mongoose.Types.ObjectId(editTransaction._id)
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        const index = user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].findIndex(t => parseInt(t._id) == parseInt(editTransaction._id))
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"][index] = editTransaction
+        const updatedSpendings = await user.save()
+        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// deletes a transaction from a specific year and month sheet 
+app.delete('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+
+    const yearIndex = req.params.yearIndex
+    const monthIndex = req.params.monthIndex
+    const deleteTransaction = req.body
+    const _id = mongoose.Types.ObjectId(deleteTransaction._id)
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].pull(_id)
+        const updatedSpendings = await user.save()
+        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// adds a new sheet for the spendings, year and month specified in body 
 app.post('/spendings/sheet', async (req, res) => {
 
     const username = "user"
@@ -178,10 +299,6 @@ app.post('/spendings/sheet', async (req, res) => {
     catch (error) {
         res.status(400).send()
     }
-})
-
-app.delete('/spendings/transaction', async (req, res) => {
-    res.sendStatus(200)
 })
 
 const port = process.env.PORT || 5000

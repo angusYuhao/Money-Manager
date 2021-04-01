@@ -112,7 +112,7 @@ class Spendings extends React.Component {
       // the options for each transaction for the table to know which kind of cell to display
       transactions_options: ["Date", "Dollar", "Any", "Select"],
       // a list of the categories that the transaction falls under 
-      transactions_categories: ["Food", "Personal", "Transit", "Home"],
+      transactions_categories: [],
       // the data to appear in each rows of the table, the transactions for a specific year and month
       transactions_data: [],
       // the entire data for all years and all months
@@ -201,7 +201,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ entire_data: data })
+        this.setState({ entire_data: data.spendings, transactions_categories: data.categories })
       })
       .catch(error => {
         console.log(error)
@@ -285,35 +285,20 @@ class Spendings extends React.Component {
 
   // add newTransaction to the beginning of the transactions_data array 
   addTransaction = (newTransaction) => {
-    this.state.transactions_data.unshift(newTransaction)
-    this.setState({ transactions_data: this.state.transactions_data })
+    // this.state.transactions_data.unshift(newTransaction)
+    // this.setState({ transactions_data: this.state.transactions_data })
     /********************************************************************************
     for phase 2, you would be making a server call to add this transaction to the data
     *********************************************************************************/
-    this.sumAccountBalance()
-    this.sumCategoriesAmount()
-  }
 
-  // finds the index of the oldTransaction data and replace it with the newTransaction data
-  editTransaction = (oldTransaction, newTransaction) => {
-    const index = this.state.transactions_data.findIndex(t => t === oldTransaction)
-    this.state.transactions_data[index] = newTransaction
-    this.setState({ transactions_data: this.state.transactions_data })
-    /********************************************************************************
-    for phase 2, you would be making a server call to edit this transaction to the data
-    *********************************************************************************/
-    this.sumAccountBalance()
-    this.sumCategoriesAmount()
-  }
+    const body = newTransaction
+    const yearIndex = this.state.currentlySelectedMonth.yearIndex
+    const monthIndex = this.state.currentlySelectedMonth.monthIndex
 
-  // deletes transaction from transactions_data array 
-  deleteTransaction = (transaction) => {
-    const keepTransactions = this.state.transactions_data.filter(t => t !== transaction)
-    this.setState({ transactions_data: keepTransactions })
-
-    const url = `${API_HOST}/spendings/transaction`
+    const url = `${API_HOST}/spendings/transaction/${yearIndex}/${monthIndex}`
     const request = new Request(url, {
-      method: "DELETE",
+      method: "POST",
+      body: JSON.stringify(body),
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json"
@@ -321,8 +306,79 @@ class Spendings extends React.Component {
     })
 
     fetch(request)
-      .then(res => {
-        console.log(res)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ transactions_data: data })
+        this.sumAccountBalance()
+        this.sumCategoriesAmount()
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+  }
+
+  // finds the index of the oldTransaction data and replace it with the newTransaction data
+  editTransaction = (oldTransaction, newTransaction) => {
+    // const index = this.state.transactions_data.findIndex(t => t === oldTransaction)
+    // this.state.transactions_data[index] = newTransaction
+    // this.setState({ transactions_data: this.state.transactions_data })
+
+    newTransaction._id = oldTransaction._id
+
+    const body = newTransaction
+    const yearIndex = this.state.currentlySelectedMonth.yearIndex
+    const monthIndex = this.state.currentlySelectedMonth.monthIndex
+
+    const url = `${API_HOST}/spendings/transaction/${yearIndex}/${monthIndex}`
+    const request = new Request(url, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ transactions_data: data })
+        this.sumAccountBalance()
+        this.sumCategoriesAmount()
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    /********************************************************************************
+    for phase 2, you would be making a server call to edit this transaction to the data
+    *********************************************************************************/
+
+  }
+
+  // deletes transaction from transactions_data array 
+  deleteTransaction = (transaction) => {
+    // const keepTransactions = this.state.transactions_data.filter(t => t !== transaction)
+    // this.setState({ transactions_data: keepTransactions })
+
+    const body = transaction
+    const yearIndex = this.state.currentlySelectedMonth.yearIndex
+    const monthIndex = this.state.currentlySelectedMonth.monthIndex
+
+    const url = `${API_HOST}/spendings/transaction/${yearIndex}/${monthIndex}`
+    const request = new Request(url, {
+      method: "DELETE",
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ transactions_data: data })
       })
       .catch(error => {
         console.log(error)
@@ -335,9 +391,29 @@ class Spendings extends React.Component {
 
   // adds a user defined category 
   addCategory = (newCategory) => {
-    if (!this.state.transactions_categories.includes(newCategory))
-      this.state.transactions_categories.push(newCategory)
-    this.setState({ transactions_categories: this.state.transactions_categories })
+
+    const body = {
+      newCategory: newCategory
+    }
+
+    const url = `${API_HOST}/spendings/categories`
+    const request = new Request(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ transactions_categories: data })
+      })
+      .catch(error => {
+        console.log(error)
+      })
     /********************************************************************************
     for phase 2, you would be making a server call to add a customized category to the data
     *********************************************************************************/
@@ -345,8 +421,32 @@ class Spendings extends React.Component {
 
   // deletes a user defined category (the default cannot be deleted)
   deleteCategory = (category) => {
-    const keepCategories = this.state.transactions_categories.filter(c => c !== category)
-    this.setState({ transactions_categories: keepCategories })
+    // const keepCategories = this.state.transactions_categories.filter(c => c !== category)
+    // this.setState({ transactions_categories: keepCategories })
+
+    const body = {
+      deleteCategory: category
+    }
+
+    const url = `${API_HOST}/spendings/categories`
+    const request = new Request(url, {
+      method: "DELETE",
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ transactions_categories: data })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
     /********************************************************************************
     for phase 2, you would be making a server call to delete a customized category to the data
     *********************************************************************************/

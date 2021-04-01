@@ -18,7 +18,11 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 		minlength: 8
 	},
-	spendings: [SpendingsSchema]
+	spendings: [SpendingsSchema],
+	spendings_categories: {
+		type: [String],
+		default: ["Food", "Personal", "Transit", "Home"]
+	}
 })
 
 // An example of Mongoose middleware.
