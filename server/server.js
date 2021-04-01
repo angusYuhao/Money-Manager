@@ -24,6 +24,14 @@ function isMongoError(error) { // checks for first error returned by promise rej
     return typeof error === 'object' && error !== null && error.name === "MongoNetworkError"
 }
 
+function checkIfInArray(key, arr, type) {
+    let exists = false
+    arr.map(obj => {
+      if (obj[type] == key) exists = true
+    })
+    return exists
+}
+
 // middleware for mongo connection error for routes that need it
 const mongoChecker = (req, res, next) => {
     // check mongoose connection established.
@@ -32,13 +40,13 @@ const mongoChecker = (req, res, next) => {
         res.status(500).send('Internal server error')
         return;
     } else {
-        next()  
-    }   
+        next()
+    }
 }
 
 /**************************
  ROUTES FOR USERS
- *************************/ 
+ *************************/
 
 app.post("/login", (req, res) => {
     const username = req.body.username;
@@ -55,9 +63,9 @@ app.post("/login", (req, res) => {
         .catch(error => {
             res.status(400).send()
         });
- });
+});
 
- // User API Route
+// User API Route
 app.post("/signup", async (req, res) => {
     log(req.body)
 
@@ -82,14 +90,74 @@ app.post("/signup", async (req, res) => {
 })
 /**************************
  ROUTES FOR SPENDINGS
- *************************/ 
+ *************************/
 
 app.get('/spendings/transactions', async (req, res) => {
-	res.sendStatus(200)
+
+    const username = "user"
+    const password = "user"
+
+    try {
+        const user = await User.findByUserNamePassword(username, password)
+        res.send(user.spendings)
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+app.post('/spendings/sheet', async (req, res) => {
+
+    const username = "user"
+    const password = "user"
+
+    const month = req.body.month
+    const year = req.body.year
+    const projectedSpendings = req.body.projectedSpendings
+
+    try {
+
+        const user = await User.findByUserNamePassword(username, password)
+        
+        // create new object for the year if the year doesn't exist
+        if (!checkIfInArray(year, user.spendings, "Year")) {
+            let newObj = new Object()
+            newObj["Year"] = year
+            newObj["Data"] = []
+            user.spendings.unshift(newObj)
+        }    
+
+        // if attempting to create an exisiting month/year combination, return 
+        if (checkIfInArray(month, user.spendings[0]["Data"], "Month")) {
+            console.log("Month/Year already exists!")
+            res.status(201).send(user.spendings)
+        }
+
+        // create new object for the month 
+        else {
+            let newObj = new Object()
+            newObj["Month"] = month
+            newObj["Data"] = new Object()
+            user.spendings[0]["Data"].unshift(newObj)
+        }
+
+        user.spendings[0]["Data"][0]["Data"]["Transactions"] = []
+        user.spendings[0]["Data"][0]["Data"]["Projected Spendings"] = projectedSpendings
+    
+        const updatedSpendings = await user.save()
+        res.send(updatedSpendings.spendings)
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
 })
 
 app.delete('/spendings/transaction', async (req, res) => {
-   res.sendStatus(200)
+    res.sendStatus(200)
 })
 
 const port = process.env.PORT || 5000

@@ -29,7 +29,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
 import './spendings.css'
-import { data } from './data'
+// import { data } from './data'
 
 import TableComp from '../Table'
 import PieChart from '../Investments/PieChart'
@@ -149,23 +149,24 @@ class Spendings extends React.Component {
     ****************************************************************************************************************************/
 
     // initialize transactions_data
-    // this.sortEntireData()
-    // const year = this.getYearFromIndex("0")
-    // const month = this.getMonthFromIndex("0", "0", year)
+    this.sortEntireData()
 
-    // this.state.transactions_data = this.state.entire_data["0"][year]["0"][month]["Transactions"]
-    // this.state.projectedSpendings = this.state.entire_data["0"][year]["0"][month]["Projected Spendings"]
-    // this.state.currentlySelectedMonth["monthIndex"] = "0"
-    // this.state.currentlySelectedMonth["yearIndex"] = "0"
+    // only initialize if there is any spendings sheet in the database 
+    if (this.state.entire_data.length != 0) {
+      this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
+      this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+      this.state.currentlySelectedMonth["monthIndex"] = "0"
+      this.state.currentlySelectedMonth["yearIndex"] = "0"
 
-    // this.setState({
-    //   transactions_data: this.state.transactions_data,
-    //   projectedSpendings: this.state.projectedSpendings,
-    //   currentlySelectedMonth: this.state.currentlySelectedMonth
-    // })
+      this.setState({
+        transactions_data: this.state.transactions_data,
+        projectedSpendings: this.state.projectedSpendings,
+        currentlySelectedMonth: this.state.currentlySelectedMonth
+      })
+    }
 
-    // this.sumCategoriesAmount()
-    // this.sumAccountBalance()
+    this.sumCategoriesAmount()
+    this.sumAccountBalance()
 
   }
 
@@ -198,8 +199,9 @@ class Spendings extends React.Component {
     })
 
     fetch(request)
-      .then(res => {
-        console.log(res)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ entire_data: data })
       })
       .catch(error => {
         console.log(error)
@@ -325,7 +327,7 @@ class Spendings extends React.Component {
       .catch(error => {
         console.log(error)
       })
-      
+
     /********************************************************************************
     for phase 2, you would be making a server call to delete this transaction to the data
     *********************************************************************************/
@@ -396,45 +398,44 @@ class Spendings extends React.Component {
     const year = this.state.newSpendings.year
     const month = this.numbersToMonth[this.state.newSpendings.month.substr(0, 3)]
     const projectedSpendings = parseFloat(this.state.newSpendings.projectedSpendings).toFixed(2)
-    let yearIndex = this.getIndexFromYear(year)
 
-    // create new object for the year if the year doesn't exist
-    if (!this.checkIfInArray(year, this.state.entire_data)) {
-      let newObj = new Object()
-      newObj[year] = []
-      this.state.entire_data.push(newObj)
+    const body = {
+      year: year,
+      month: month,
+      projectedSpendings: projectedSpendings
     }
 
-    yearIndex = this.getIndexFromYear(year)
-
-    // if attempting to create an exisiting month/year combination, return 
-    if (this.checkIfInArray(month, this.state.entire_data[yearIndex][year])) {
-      console.log("Month/Year already exists!")
-      return
-    }
-
-    // create new object for the month 
-    else {
-      let newObj = new Object()
-      newObj[month] = new Object()
-      this.state.entire_data[yearIndex][year].push(newObj)
-    }
-
-    const monthIndex = this.getIndexFromMonth(month, this.state.entire_data[yearIndex][year])
-
-    this.state.entire_data[yearIndex][year][monthIndex][month]["Transactions"] = []
-    this.state.entire_data[yearIndex][year][monthIndex][month]["Projected Spendings"] = projectedSpendings
-
-    // sorting data again so it's in order 
-    this.sortEntireData()
-    this.setState({ entire_data: this.state.entire_data })
-
-    // resetting form and closing menu 
-    Object.keys(this.state.newSpendings).map(heading => {
-      this.state.newSpendings[heading] = ""
+    const url = `${API_HOST}/spendings/sheet`
+    const request = new Request(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
     })
-    this.state.menuPosition = null
-    this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+
+        this.state.entire_data = data
+
+        // sorting data again so it's in order 
+        this.sortEntireData()
+        this.setState({ entire_data: this.state.entire_data })
+
+        // resetting form and closing menu 
+        Object.keys(this.state.newSpendings).map(heading => {
+          this.state.newSpendings[heading] = ""
+        })
+        this.state.menuPosition = null
+        this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
     /********************************************************************************
     for phase 2, you would be making a server call to add a new spendings page for a new month and year 
     *********************************************************************************/
@@ -443,28 +444,27 @@ class Spendings extends React.Component {
   // sorting the entire dataset for transactions of all months and years 
   sortEntireData() {
     this.state.entire_data.map((yearObj, index) => {
-      const year = Object.keys(yearObj)[0]
-      this.state.entire_data[index][year].sort(this.sortDataByKey)
+      this.state.entire_data[index]["Data"].sort(this.sortDataByKey)
     })
     this.state.entire_data.sort(this.sortDataByKey)
   }
 
   sortDataByKey(a, b) {
     // keys can be either month or year, want the latest to be on top 
-    const keyA = parseInt(Object.keys(a)[0])
-    const keyB = parseInt(Object.keys(b)[0])
+    const keyA = "Year" in a ? parseInt(a["Year"]) : parseInt(a["Month"])
+    const keyB = "Year" in b ? parseInt(b["Year"]) : parseInt(b["Month"])
     if (keyA > keyB) return -1
     else return 1
   }
 
   // when clicking the months on the drawer, need to update the transactions_data in state for the table 
   monthsOnClickHandler(e, yearIndex, monthIndex, year, month) {
-    this.state.transactions_data = this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Transactions"]
+    this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
     this.state.currentlySelectedMonth["yearIndex"] = yearIndex
     this.state.currentlySelectedMonth["monthIndex"] = monthIndex
     this.setState({
       transactions_data: this.state.transactions_data,
-      projectedSpendings: this.state.entire_data[yearIndex][year][monthIndex][this.numbersToMonth[month]]["Projected Spendings"],
+      projectedSpendings: this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"],
       currentlySelectedMonth: this.state.currentlySelectedMonth
     })
     this.sumAccountBalance()
@@ -474,12 +474,8 @@ class Spendings extends React.Component {
   // renders the months for a specific year in the drawer
   renderMonths(yearObj, index) {
     let months = []
-    Object.keys(yearObj).map(yearArr => {
-      this.state.entire_data[index][yearArr].map(monthObj => {
-        Object.keys(monthObj).map(month => {
-          months.push(this.numbersToMonth[month])
-        })
-      })
+    this.state.entire_data[index]["Data"].map(monthObj => {
+      months.push(this.numbersToMonth[monthObj["Month"]])
     })
     return months
   }
@@ -487,16 +483,15 @@ class Spendings extends React.Component {
   // get the year from the year index 
   getYearFromIndex(yearIndex) {
     // there will always be only one key, which is the year
-    const objKeys = Object.keys(this.state.entire_data[yearIndex])
-    return objKeys[0]
+    return this.state.entire_data[yearIndex]["Year"]
   }
 
   // get the year index from the year 
   getIndexFromYear(year) {
     let index = undefined
     this.state.entire_data.map((yearObj, i) => {
-      const objKeys = Object.keys(yearObj)
-      if (objKeys[0] == year) index = i
+      const yearFromObj = yearObj["Year"]
+      if (yearFromObj == year) index = i
     })
     return index
   }
@@ -504,26 +499,24 @@ class Spendings extends React.Component {
   // get the month from the month index 
   getMonthFromIndex(monthIndex, yearIndex, year) {
     // there will always be only one key, which is the month
-    const objKeys = Object.keys(this.state.entire_data[yearIndex][year][monthIndex])
-    return objKeys[0]
+    return this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]
   }
 
   // get the month index from the month
   getIndexFromMonth(month, arr) {
     let index = undefined
     arr.map((yearObj, i) => {
-      const objKeys = Object.keys(yearObj)
-      if (objKeys[0] == month) index = i
+      const monthFromObj = yearObj["Month"]
+      if (monthFromObj == month) index = i
     })
     return index
   }
 
   // check if a key exists in any objects in an array of objects 
-  checkIfInArray(key, arr) {
+  checkIfInArray(key, arr, type) {
     let exists = false
     arr.map(obj => {
-      const keys = Object.keys(obj)
-      if (keys.includes(key)) exists = true
+      if (obj[type] == key) exists = true
     })
     return exists
   }
@@ -634,7 +627,7 @@ class Spendings extends React.Component {
                         variant="caption"
                         align="center"
                       >
-                        {Object.keys(yearObj).map(year => <p>{year}</p>)}
+                        {<p>{yearObj["Year"]}</p>}
                       </Typography>
 
                       <List>

@@ -1,8 +1,10 @@
 const data = [
     {
-        "2021": [
+        "Year": "2021",
+        "Data": [
             {
-                "2": {
+                "Month": "2",
+                "Data": {
                     "Transactions": [
                         { "Date": "02/01/2021", "Amount": "35.23", "Description": "McDonalds", "Category": "Food" },
                         { "Date": "02/03/2021", "Amount": "26.38", "Description": "Starbucks", "Category": "Food" },
@@ -17,7 +19,8 @@ const data = [
                 }
             },
             {
-                "9": {
+                "Month": "9",
+                "Data": {
                     "Transactions": [
                         { "Date": "09/01/2021", "Amount": "85.23", "Description": "The Keg", "Category": "Food" },
                         { "Date": "09/03/2021", "Amount": "56.38", "Description": "Starbucks", "Category": "Food" },
@@ -32,7 +35,8 @@ const data = [
                 }
             },
             {
-                "1": {
+                "Month": "1",
+                "Data": {
                     "Transactions": [
                         { "Date": "01/03/2021", "Amount": "66.38", "Description": "Starbucks", "Category": "Food" },
                         { "Date": "01/05/2021", "Amount": "111.83", "Description": "Glasses", "Category": "Personal" },
@@ -47,9 +51,11 @@ const data = [
         ]
     },
     {
-        "2020": [
+        "Year": "2020",
+        "Data": [
             {
-                "3": {
+                "Month": "3",
+                "Data": {
                     "Transactions": [
                         { "Date": "03/01/2020", "Amount": "55.23", "Description": "McDonalds", "Category": "Food" },
                         { "Date": "03/03/2020", "Amount": "36.38", "Description": "Starbucks", "Category": "Food" },
@@ -64,7 +70,8 @@ const data = [
                 },
             },
             {
-                "12": {
+                "Month":"12",
+                "Data": {
                     "Transactions": [
                         { "Date": "12/01/2020", "Amount": "92.23", "Description": "Clothes", "Category": "Personal" },
                         { "Date": "12/03/2020", "Amount": "6.38", "Description": "Starbucks", "Category": "Food" },
@@ -82,9 +89,11 @@ const data = [
         ]
     },
     {
-        "2022": [
+        "Year": "2022",
+        "Data": [
             {
-                "6": {
+                "Month": "6",
+                "Data": {
                     "Transactions": [
                         { "Date": "06/01/2022", "Amount": "35.23", "Description": "McDonalds", "Category": "Food" },
                         { "Date": "06/03/2022", "Amount": "26.38", "Description": "Starbucks", "Category": "Food" },
