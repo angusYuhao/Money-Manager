@@ -16,6 +16,38 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		minlength: 4,
+	},
+	userLevel: {
+		type: String,
+		required: true,
+	},
+	firstName: {
+		type: String,
+		required: true,
+	},
+	lastName: {
+		type: String,
+		required: true,
+	},
+	occupation: {
+		type: String,
+		required: true,
+	},
+	gender: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+	},
+	birthday: {
+		type: String,
+		required: true,
+	},
+	salary: {
+		type: Number,
+		required: false,
 	}
 })
 

@@ -84,13 +84,21 @@ app.post("/users/login", (req, res) => {
  });
 
  // User API Route
-app.post("/signup", mongoChecker, async (req, res) => {
+app.post("/users/signup", mongoChecker, async (req, res) => {
     log(req.body)
 
     // Create a new user
     const user = new User({
-        username: req.body.username,
-        password: req.body.password
+        username: req.body.userName,
+        password: req.body.confirmPassword,
+        userLevel: req.body.userLevel,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        occupation: req.body.occupation,
+        gender: req.body.gender,
+        email: req.body.email,
+        birthday: req.body.birthday,
+        salary: req.body.salary,
     })
 
     try {
