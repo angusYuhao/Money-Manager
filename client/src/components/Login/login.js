@@ -171,7 +171,7 @@ class Login extends React.Component {
                         <Button onClick={ () => login(this, app) }
                                     variant="contained" 
                                     color="primary" 
-                                    type="submit" 
+                                    
                                     className={classes.logInButton}>
                               Log in
                             </Button>

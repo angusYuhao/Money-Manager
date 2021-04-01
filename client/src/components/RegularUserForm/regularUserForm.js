@@ -9,7 +9,7 @@ import { withStyles,
         createMuiTheme,
         InputAdornment} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
-
+import { updateSignupForm, addUser, updateConfirmPassword } from '../../actions/user.js';
 const useStyles = theme => ({
     formControl: {
       margin: theme.spacing(1),
@@ -40,7 +40,7 @@ const theme = createMuiTheme({
 class RegularUserForm extends React.Component {
 
     render() {
-        const { classes, firstName, lastName, userName, birthday, gender, occupation, salary, email, 
+        const { classes, signup, firstName, lastName, userName, birthday, gender, occupation, salary, email, 
                 createdPassword, checkLength, passwordLengthError, passwordConfirmError, 
                 confirmPassword, handleConfirmPassword, handleInputChange } = this.props;
         return (
@@ -49,7 +49,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField required 
                             value={ firstName } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="First Name" 
                             name="firstName"
@@ -59,7 +59,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField required
                             value={ lastName } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="Last Name" 
                             name="lastName"
@@ -72,7 +72,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField required
                             value={ userName } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="User Name" 
                             name="userName"
@@ -82,7 +82,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField 
                             value={ birthday } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="date" 
                             label="Birthday" 
                             type="date"
@@ -95,7 +95,7 @@ class RegularUserForm extends React.Component {
                 </FormControl>
                 </Grid>
                 
-                <RadioGroup aria-label="gender" value={ gender } onChange={ handleInputChange } name="gender" row >
+                <RadioGroup aria-label="gender" value={ gender } onChange={ e => updateSignupForm(signup, e.target) } name="gender" row >
                 <FormControlLabel value="female" control={<Radio color="primary" />} label="Female" className={classes.radio}/>
                 <FormControlLabel value="male" control={<Radio color="primary" />} label="Male" className={classes.radio}/>
                 <FormControlLabel value="other" control={<Radio color="primary" />} label="Other" className={classes.radio}/>
@@ -105,7 +105,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField required 
                             value={ occupation } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="Occupation" 
                             name="occupation"
@@ -114,7 +114,7 @@ class RegularUserForm extends React.Component {
                     </FormControl>
                     <FormControl variant="outlined" className={classes.formControl}>
                     <TextField value={ salary } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="Monthly salary ($)" 
                             name="salary"
@@ -130,7 +130,7 @@ class RegularUserForm extends React.Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <TextField required 
                             value={ email } 
-                            onChange={ handleInputChange }
+                            onChange={ e => updateSignupForm(signup, e.target) }
                             id="outlined-required" 
                             label="Email@example.com" 
                             name="email"
@@ -172,7 +172,7 @@ class RegularUserForm extends React.Component {
                                 fullWidth
                                 helperText="The password does not match!"
                                 value={ confirmPassword } 
-                                onChange={ handleConfirmPassword }
+                                onChange={ e => updateConfirmPassword(signup, e.target) }
                                 id="outlined-error" 
                                 label="Error" 
                                 type="password"
@@ -185,7 +185,7 @@ class RegularUserForm extends React.Component {
                     <TextField required 
                             fullWidth
                             value={ confirmPassword } 
-                            onChange={ handleConfirmPassword }
+                            onChange={ e => updateConfirmPassword(signup, e.target) }
                             id="outlined-required" 
                             label="Confirm password" 
                             type="password"

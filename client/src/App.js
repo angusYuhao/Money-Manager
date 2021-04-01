@@ -29,6 +29,7 @@ class App extends React.Component {
     password: "",
     userLevel: "",
     currentUser: null,
+    message: { type: "", body: "" }
   }
 
   loginHandler = (username, password) => {
@@ -67,40 +68,51 @@ class App extends React.Component {
   render() {
 
     const { currentUser } = this.state;
-    console.log(currentUser);
+    if(currentUser != null) {
+      this.state.loggedIn = true;
+    } else {
+      this.state.loggedIn = false;
+    }
 
     return (
 
       <div>
         <BrowserRouter>
 
-          {this.state.userLevel === "Financial Advisor" ?
-            <div>
-              <AdminNavBar
-                username={this.state.username}
-                password={this.state.password} />
-            </div>
-            : this.state.loggedIn ?
+          {currentUser != null ? 
+            currentUser.userLevel === "Financial Advisor" ?
               <div>
-                <NavBar
-                  username={this.state.username}
-                  password={this.state.password} />
+                <AdminNavBar
+                  username={currentUser.username}
+                />
               </div>
-              : null
+              : this.state.loggedIn ?
+                <div>
+                  <NavBar
+                    username={currentUser.username}
+                  />
+                </div>
+                : null
+            :
+            null
           }
 
           <Switch>
 
-            {/* <Route exact path='/'
+            <Route exact path='/'
               render={() => (<Home
-                loggedIn={this.state.loggedIn} />)} /> */}
+                loggedIn={this.state.loggedIn} />)} />
 
             <Route
-                exact path={["/", "/login", "/spendings"] /* any of these URLs are accepted. */ }
+                exact path={["/login", "/spendings", "/investments", "/community", "/profile"]}
                 render={ props => (
                     <div className="app">
                         { /* Different componenets rendered depending on if someone is logged in. */}
-                        {!currentUser ? <Login {...props} app={this} /> : <Home {...props} app={this} />}
+                        {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Spendings loggedIn={this.state.loggedIn} {...props} app={this} />
+                          }
                     </div>                   // ... spread operator - provides all of the props in the props object
                     
                 )}
@@ -111,14 +123,14 @@ class App extends React.Component {
                />)} /> */}
 
             <Route exact path='/signup'
-              render={() => (<SignUp />)} />
+              render={props => (<SignUp {...props} app={this}/>)} />
 
-            <Route exact path='/spendings'
+            {/* <Route exact path='/spendings'
               render={() => (<Spendings
                 loggedIn={this.state.loggedIn}
                 username={this.state.username}
                 password={this.state.password}
-              />)} />
+              />)} /> */}
 
             <Route exact path='/investments'
               render={() => (<Investments
@@ -128,8 +140,8 @@ class App extends React.Component {
             <Route exact path='/community'
               render={() => (<Community
                 loggedIn={this.state.loggedIn}
-                username={this.state.username}
-                usertype={this.state.userLevel} />)} />
+                username={currentUser.username}
+                usertype={currentUser.userLevel} />)} />
 
             <Route exact path='/contact'
               render={() => (<Contact
@@ -147,9 +159,8 @@ class App extends React.Component {
               render={() => (<Profile
                 handleLogOut={this.handleLogOut}
                 loggedIn={this.state.loggedIn}
-                username={this.state.username}
-                password={this.state.password}
-                userLevel={this.state.userLevel}
+                username={currentUser.username}
+                userLevel={currentUser.userLevel}
               />)} />
 
           </Switch>
