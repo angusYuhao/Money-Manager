@@ -27,9 +27,29 @@ function isMongoError(error) { // checks for first error returned by promise rej
 function checkIfInArray(key, arr, type) {
     let exists = false
     arr.map(obj => {
-      if (obj[type] == key) exists = true
+        if (obj[type] == key) exists = true
     })
     return exists
+}
+
+// get the year index from the year 
+function getIndexFromYear(year, arr) {
+    let index = undefined
+    arr.map((yearObj, i) => {
+        const yearFromObj = yearObj["Year"]
+        if (yearFromObj == year) index = i
+    })
+    return index
+}
+
+// get the month index from the month
+function getIndexFromMonth(month, arr) {
+    let index = undefined
+    arr.map((yearObj, i) => {
+        const monthFromObj = yearObj["Month"]
+        if (monthFromObj == month) index = i
+    })
+    return index
 }
 
 // middleware for mongo connection error for routes that need it
@@ -120,17 +140,19 @@ app.post('/spendings/sheet', async (req, res) => {
     try {
 
         const user = await User.findByUserNamePassword(username, password)
-        
+
         // create new object for the year if the year doesn't exist
         if (!checkIfInArray(year, user.spendings, "Year")) {
             let newObj = new Object()
             newObj["Year"] = year
             newObj["Data"] = []
-            user.spendings.unshift(newObj)
-        }    
+            user.spendings.push(newObj)
+        }
+
+        const yearIndex = getIndexFromYear(year, user.spendings)
 
         // if attempting to create an exisiting month/year combination, return 
-        if (checkIfInArray(month, user.spendings[0]["Data"], "Month")) {
+        if (checkIfInArray(month, user.spendings[yearIndex]["Data"], "Month")) {
             console.log("Month/Year already exists!")
             res.status(201).send(user.spendings)
         }
@@ -140,12 +162,14 @@ app.post('/spendings/sheet', async (req, res) => {
             let newObj = new Object()
             newObj["Month"] = month
             newObj["Data"] = new Object()
-            user.spendings[0]["Data"].unshift(newObj)
+            user.spendings[yearIndex]["Data"].push(newObj)
         }
 
-        user.spendings[0]["Data"][0]["Data"]["Transactions"] = []
-        user.spendings[0]["Data"][0]["Data"]["Projected Spendings"] = projectedSpendings
-    
+        const monthIndex = getIndexFromMonth(month, user.spendings[yearIndex]["Data"])
+
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"] = []
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"] = projectedSpendings
+
         const updatedSpendings = await user.save()
         res.send(updatedSpendings.spendings)
 
