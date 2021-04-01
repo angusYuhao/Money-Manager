@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: true,
-		minlength: 8
+		minlength: 4,
 	}
 })
 
@@ -44,7 +44,7 @@ UserSchema.pre('save', function(next) {
 //  to a given one, for example when logging in.
 UserSchema.statics.findByUserNamePassword = function(username, password) {
 	const User = this // binds this to the User model
-
+	
 	// First find the user by their email
 	return User.findOne({ username: username }).then((user) => {
 		if (!user) {

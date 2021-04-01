@@ -15,14 +15,20 @@ import Contact from './components/ContactUs/contact.js';
 import Sent from './components/ContactUs/sent.js';
 import About from './components/AboutUs/about.js';
 import Profile from './components/Profile/profile.js';
+import { checkSession } from "./actions/user.js";
 
 class App extends React.Component {
+
+  componentDidMount() {
+    checkSession(this); // sees if a user is logged in
+  }
 
   state = {
     loggedIn: false,
     username: "",
     password: "",
     userLevel: "",
+    currentUser: null,
   }
 
   loginHandler = (username, password) => {
@@ -60,6 +66,9 @@ class App extends React.Component {
 
   render() {
 
+    const { currentUser } = this.state;
+    console.log(currentUser);
+
     return (
 
       <div>
@@ -82,14 +91,24 @@ class App extends React.Component {
 
           <Switch>
 
-            <Route exact path='/'
+            {/* <Route exact path='/'
               render={() => (<Home
-                loggedIn={this.state.loggedIn} />)} />
+                loggedIn={this.state.loggedIn} />)} /> */}
 
-            <Route exact path='/login'
-              render={() => (<Login
-                loginHandler={this.loginHandler}
-              />)} />
+            <Route
+                exact path={["/", "/login", "/spendings"] /* any of these URLs are accepted. */ }
+                render={ props => (
+                    <div className="app">
+                        { /* Different componenets rendered depending on if someone is logged in. */}
+                        {!currentUser ? <Login {...props} app={this} /> : <Home {...props} app={this} />}
+                    </div>                   // ... spread operator - provides all of the props in the props object
+                    
+                )}
+            />
+             {/* <Route exact path='/login'
+               render={() => (<Login
+                 loginHandler={this.loginHandler}
+               />)} /> */}
 
             <Route exact path='/signup'
               render={() => (<SignUp />)} />
