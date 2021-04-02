@@ -19,7 +19,7 @@ import FinancialAdvisorForm from '../FinancialAdvisorForm/financialAdvisorForm.j
 import LinkButton from './linkButton.js';
 import LogoButton from './logoButton.js';
 import FormTitle from './formTitle.js';
-
+import { updateSignupForm, addUser } from '../../actions/user.js';
 const useStyles = theme => ({
   root: {
     flexGrow: 1,
@@ -74,6 +74,11 @@ const theme = createMuiTheme({
 // by the people who manages the website
 
 class SignUp extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.props.history.push("/signup");
+  }
 
   state = {
     userLevel: "Regular User",
@@ -163,7 +168,7 @@ class SignUp extends React.Component {
 
   render() {
     
-    const { classes } = this.props;
+    const { classes, app } = this.props;
 
     return (
 
@@ -184,7 +189,7 @@ class SignUp extends React.Component {
                          subTitle="Please fill out the rest of the information"
               />
 
-              <form onSubmit={ this.submitValidation } className={classes.form}>
+              <form className={classes.form}>
 
                 <Grid container direction="row" spacing={1}>
                   <FormControl variant="outlined" className={classes.formControl}>
@@ -193,7 +198,7 @@ class SignUp extends React.Component {
                             id="user"
                             value={this.state.userLevel}
                             name="userLevel"
-                            onChange={this.handleInputChange}
+                            onChange={e => updateSignupForm(this, e.target)}
                             label="Sign up as:"
                     >
                       <MenuItem value={"Regular User"}>Regular user</MenuItem>
@@ -205,6 +210,7 @@ class SignUp extends React.Component {
                 { this.state.userLevel === "Regular User" ? 
                 
                   <RegularUserForm 
+                    signup={ this }
                     firstName={ this.state.firstName }
                     lastName={ this.state.lastName }
                     userName={ this.state.userName }
@@ -223,6 +229,7 @@ class SignUp extends React.Component {
                   />
                 :
                   <FinancialAdvisorForm
+                    signup={ this }
                     firstName={ this.state.firstName }
                     handleInputChange={ this.handleInputChange }
                     lastName={ this.state.lastName }
@@ -241,8 +248,8 @@ class SignUp extends React.Component {
                 }
                 
                 <Button variant="contained" 
-                        color="primary" 
-                        type="submit" 
+                        color="primary"  
+                        onClick={() => addUser(this, app)}
                         className={classes.signInButton}>
                   Sign up
                 </Button>

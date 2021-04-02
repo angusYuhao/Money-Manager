@@ -15,6 +15,9 @@ import Footer from '../Footer/footer.js';
 import LogoButton from './../Signup/logoButton.js';
 import FormTitle from './../Signup/formTitle.js';
 
+// Importing actions/required methods
+import { updateLoginForm, login } from "../../actions/user";
+
 const useStyles = theme => ({
   root: {
     flexGrow: 1,
@@ -82,6 +85,11 @@ const theme = createMuiTheme({
 
 class Login extends React.Component {
 
+  constructor(props) {
+    super(props);
+    //this.props.history.push("/login");
+  }
+
   state = {
     userName: "",
     password: "",
@@ -114,7 +122,7 @@ class Login extends React.Component {
 
   render() {
     
-    const { classes, loginHandler } = this.props;
+    const { classes, loginHandler, app } = this.props;
 
     return (
 
@@ -143,7 +151,7 @@ class Login extends React.Component {
                     <form className={classes.form}>
                       <Grid container direction="column" spacing={2}>
                         <TextField required 
-                                  onChange={ this.handleInputChange }
+                                  onChange={ e => updateLoginForm(this, e.target) }
                                   value={ this.state.userName }
                                   id="outlined-required" 
                                   label="username" 
@@ -152,7 +160,7 @@ class Login extends React.Component {
                                   className={classes.text}/>
                         <TextField required
                                    value={ this.state.password }
-                                   onChange={ this.handleInputChange }
+                                   onChange={ e => updateLoginForm(this, e.target) }
                                    id="outlined-basic" 
                                    label="password" 
                                    name="password"
@@ -160,7 +168,14 @@ class Login extends React.Component {
                                    variant="outlined" 
                                    className={classes.text}/>
                         
-                        { this.state.userLevel === "Financial Advisor" ? 
+                        <Button onClick={ () => login(this, app) }
+                                    variant="contained" 
+                                    color="primary" 
+                                    
+                                    className={classes.logInButton}>
+                              Log in
+                            </Button>
+                        {/* { this.state.userLevel === "Financial Advisor" ? 
                           <Link to={"/community"}>
                             <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
                                     variant="contained" 
@@ -180,7 +195,7 @@ class Login extends React.Component {
                               Log in
                             </Button>
                           </Link>
-                        }
+                        } */}
                       </Grid>
 
                     </form>
