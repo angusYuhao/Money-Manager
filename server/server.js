@@ -116,7 +116,7 @@ app.get('/investments',async (req, res) => {
             res.status(400).send('User not found')
         }else{
             //just send the entire list of stocks
-		    res.send({"This user's investments:":user.investments})
+		    res.send(user.investments)
         }
 	})
 	.catch((error) => {
@@ -161,10 +161,10 @@ app.post('/investments', async (req, res) => {
     stock_entry["Name"]= req.body.Name,
     stock_entry["Quantity"]= req.body.Quantity,
     stock_entry["Price"]= req.body.Price,
-    stock_entry["Average Cost"]= req.body.AverageCost,
-    stock_entry["Market Value"]= req.body.MarketValue,
-    stock_entry["Book Cost"]= req.body.BookCost,
-    stock_entry["Gain/Loss"]= req.body.GainLoss,
+    stock_entry["Average Cost"]= req.body["Average Cost"],
+    stock_entry["Market Value"]= req.body["Market Value"],
+    stock_entry["Book Cost"]= req.body["Book Cost"],
+    stock_entry["Gain/Loss"]= req.body["Gain/Loss"],
     
 
 
@@ -175,7 +175,7 @@ app.post('/investments', async (req, res) => {
             //just send the entire list of stocks
 		    user.investments.unshift(stock_entry);
             user.save().then((result) => {
-				res.send({"Newly added stock entry":user.investments[0],"All stock entries": user.investments });
+				res.send(user.investments);
 			}).catch((error) => {
 				log(error) // log server error to the console, not to the client.
 				if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
@@ -211,7 +211,7 @@ app.delete('/investments/:name', async (req, res) => {
                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                     user.investments = newStocksList;
                     user.save().then((result) => {
-                        res.send({"deleted stock":user.investments[i],"All stock entries": user.investments  })
+                        res.send(user.investments)
                     }).catch((error) => {
                         log(error) // log server error to the console, not to the client.
                         if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
@@ -232,7 +232,7 @@ app.delete('/investments/:name', async (req, res) => {
 	})		
 })
 
-//PATCH investments/<stock name>/
+//PATCH investments/<old stock name>/
 app.patch('/investments/:name', async (req, res) => {
     if (mongoose.connection.readyState != 1) {  
         log('Issue with mongoose connection')  
@@ -243,6 +243,8 @@ app.patch('/investments/:name', async (req, res) => {
     const username = "user";
     const pw = "user";
     const newStockEntry = req.body;
+    newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
+    console.log(newStockEntry);
     User.findByUserNamePassword(username, pw).then((user) => {
 		if (!user) {
 			res.status(404).send('User not found')  // could not find this restaurant
@@ -251,10 +253,21 @@ app.patch('/investments/:name', async (req, res) => {
 			
             for(let i = 0; i< user.investments.length;i++){
                 if(user.investments[i]["Name"] == stockNameToEdit){
-                    
-                    user.investments[i] = newStockEntry;
+                    let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
+                    newStocksList.splice(i, 0, newStockEntry);
+                    user.investments = newStocksList;
+                    console.log(user.investments);
+
+                    // user.investments[i]["Name"]= newStockEntry["Name"];
+                    // user.investments[i]["Quantity"]= newStockEntry["Quantity"];
+                    // user.investments[i]["Price"]= newStockEntry["Price"];
+                    // user.investments[i]["Average Cost"]= newStockEntry["Average Cost"];
+                    // user.investments[i]["Market Value"]= newStockEntry["Market Value"];
+                    // user.investments[i]["Book Cost"]= newStockEntry["Book Cost"];
+                    // user.investments[i]["Gain/Loss"]= newStockEntry["Gain/Loss"];
+
                     user.save().then((result) => {
-                        res.send({"new stock":user.investments[i],"All stock entries": user.investments  })
+                        res.send(user.investments)
                     }).catch((error) => {
                         log(error) // log server error to the console, not to the client.
                         if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.

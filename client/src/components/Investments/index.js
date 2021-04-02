@@ -56,7 +56,7 @@ class Investments extends React.Component {
     // {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
     // {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
 
-    //table values
+    //table values  
     sortBy: "Market Value",
     sortDes: {
       "Name": false,
@@ -77,25 +77,25 @@ class Investments extends React.Component {
   
   constructor(props) {
     super(props);
-    const url = `${API_HOST}/investments`
-    const request = new Request(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json"
-      }
-    })
+    // const url = `${API_HOST}/investments`
+    // const request = new Request(url, {
+    //   method: "GET",
+    //   headers: {
+    //     Accept: "application/json, text/plain, */*",
+    //     "Content-Type": "application/json"
+    //   }
+    // })
 
+    // fetch(request)
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     this.setState({ stocklist_data: data })
+    //     this.totalMoneyInvested();
 
-    fetch(request)
-    .then(res => res.json())
-    .then(data => {
-      this.setState({stocklist_data : data})
-      this.totalMoneyInvested();
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
 
     this.changeSort = this.changeSort.bind(this);
     
@@ -152,6 +152,31 @@ class Investments extends React.Component {
 
   }
 
+  componentDidMount() {
+
+    // populate the data variable in the state upon mount 
+
+    const url = `${API_HOST}/investments`
+    const request = new Request(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   //For re-ensuring the sum is up to date:
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
@@ -177,6 +202,7 @@ class Investments extends React.Component {
 
   // add newTransaction to the beginning of the stocklist array 
   addStock = (newStock) => {
+    console.log(newStock);
     //const stockname = newStock.Name
     const url = `${API_HOST}/investments/`
     const request = new Request(url, {
@@ -212,7 +238,7 @@ class Investments extends React.Component {
     // this.setState({ stocklist_data: this.state.stocklist_data })
     // this.totalMoneyInvested();
     newStock._id = oldStock._id
-    const stockname = newStock.Name
+    const stockname = oldStock.Name
 
     const url = `${API_HOST}/investments/${stockname}/`
     const request = new Request(url, {
