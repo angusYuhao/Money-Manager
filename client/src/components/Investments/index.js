@@ -217,6 +217,10 @@ class Investments extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
+        if(data == "duplicate"){
+          console.log("You already have a stock with the same name in your stock table!");
+          return;
+        }
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
 
@@ -253,6 +257,10 @@ class Investments extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
+        if(data == "duplicate"){
+          console.log("You already have a stock with the same name in your stock table!");
+          return;
+        }
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
       })

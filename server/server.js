@@ -125,24 +125,6 @@ app.get('/investments',async (req, res) => {
 	})
 })
 
-// app.get('/investments', async (req, res) => {
-//     if (mongoose.connection.readyState != 1) {  
-//         log('Issue with mongoose connection')  
-//         res.status(500).send('Internal server error')  
-//         return;  
-//     }   
-    
-//     const username = "user";
-//     const pw = "user";
-//     User.findByUserNamePassword(username, pw).then((user) => {
-// 		if(!user){
-//             res.status(400).send('User not found')
-//         }else{
-//             res.send(user.investments)
-//         }
-//     })
-// })
-
 // adds a stock entry
 // POST /investments
 app.post('/investments', async (req, res) => {
@@ -173,6 +155,10 @@ app.post('/investments', async (req, res) => {
             res.status(400).send('User not found')
         }else{
             //just send the entire list of stocks
+            if( user.investments.some(item => item["Name"] === req.body.Name)){
+                res.send("duplicate");
+                return;
+            }
 		    user.investments.unshift(stock_entry);
             user.save().then((result) => {
 				res.send(user.investments);
@@ -249,23 +235,15 @@ app.patch('/investments/:name', async (req, res) => {
 		if (!user) {
 			res.status(404).send('User not found')  // could not find this restaurant
 		} else {
-			//save the one to delete such that you can return it later...or else it'll be gone!
-			
+            if( user.investments.some(item => item["Name"] === req.body.Name)){
+                res.send("duplicate");
+                return;
+            }
             for(let i = 0; i< user.investments.length;i++){
                 if(user.investments[i]["Name"] == stockNameToEdit){
                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                     newStocksList.splice(i, 0, newStockEntry);
                     user.investments = newStocksList;
-                    console.log(user.investments);
-
-                    // user.investments[i]["Name"]= newStockEntry["Name"];
-                    // user.investments[i]["Quantity"]= newStockEntry["Quantity"];
-                    // user.investments[i]["Price"]= newStockEntry["Price"];
-                    // user.investments[i]["Average Cost"]= newStockEntry["Average Cost"];
-                    // user.investments[i]["Market Value"]= newStockEntry["Market Value"];
-                    // user.investments[i]["Book Cost"]= newStockEntry["Book Cost"];
-                    // user.investments[i]["Gain/Loss"]= newStockEntry["Gain/Loss"];
-
                     user.save().then((result) => {
                         res.send(user.investments)
                     }).catch((error) => {
