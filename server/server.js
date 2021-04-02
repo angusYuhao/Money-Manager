@@ -233,7 +233,7 @@ app.delete('/investments/:name', async (req, res) => {
 })
 
 //PATCH investments/<stock name>/
-app.patch('/investments/:id', async (req, res) => {
+app.patch('/investments/:name', async (req, res) => {
     if (mongoose.connection.readyState != 1) {  
         log('Issue with mongoose connection')  
         res.status(500).send('Internal server error')  
