@@ -134,3 +134,28 @@ export const addUser = (formComp, app) => {
             console.log(error);
         });
 };
+
+// A function to update the signup form state
+export const updateProfile = (profileComp, field) => {
+    const value = field.value;
+    const name = field.name;
+
+    profileComp.setState({
+        [name]: value
+    });
+};
+
+// A function to send a GET request to logout the current user
+export const logout = (app) => {
+    const url = `${API_HOST}/users/logout`;
+
+    fetch(url)
+        .then(res => {
+            app.setState({
+                currentUser: null,
+            });
+        })
+        .catch(error => {
+            console.log(error);
+        });
+};

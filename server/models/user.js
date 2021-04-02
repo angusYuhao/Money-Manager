@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
 	},
 	occupation: {
 		type: String,
-		required: true,
+		required: false,
 	},
 	gender: {
 		type: String,
@@ -48,6 +48,22 @@ const UserSchema = new mongoose.Schema({
 	salary: {
 		type: Number,
 		required: false,
+	},
+	bio: {
+		type: String,
+		required: false,
+	},
+	FAName: {
+		type: String
+	},
+	FAIntro: {
+		type: String
+	},
+	FAFields: {
+		type: [String]
+	},
+	FAPoints: {
+		type: Number
 	}
 })
 

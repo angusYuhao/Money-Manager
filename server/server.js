@@ -7,6 +7,7 @@ const env = process.env.NODE_ENV // read the environment variable (will be 'prod
 const { localMongoURI } = require('./db/config.js');
 const express = require("express")
 const app = express()
+
 const MongoStore = require('connect-mongo') // to store session information on the database in production
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());
@@ -83,6 +84,17 @@ app.post("/users/login", (req, res) => {
         });
  });
 
+ // A route to logout a user
+app.get("/users/logout", (req, res) => {
+    // Remove the session
+    req.session.destroy(error => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send()
+        }
+    });
+});
  // User API Route
 app.post("/users/signup", mongoChecker, async (req, res) => {
     log(req.body)
@@ -99,6 +111,11 @@ app.post("/users/signup", mongoChecker, async (req, res) => {
         email: req.body.email,
         birthday: req.body.birthday,
         salary: req.body.salary,
+        bio: req.body.bio,
+        FAName: req.body.userName,
+        FAIntro: req.body.FAIntro,
+        FAFields: req.body.FAFields,
+        FAPoints: req.body.FAPoints
     })
 
     try {

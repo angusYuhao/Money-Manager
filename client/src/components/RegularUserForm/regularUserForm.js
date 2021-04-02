@@ -9,7 +9,7 @@ import { withStyles,
         createMuiTheme,
         InputAdornment} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
-import { updateSignupForm, addUser, updateConfirmPassword } from '../../actions/user.js';
+import { updateSignupForm, updateConfirmPassword } from '../../actions/user.js';
 const useStyles = theme => ({
     formControl: {
       margin: theme.spacing(1),

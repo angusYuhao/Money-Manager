@@ -104,7 +104,7 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route
-                exact path={["/login", "/spendings", "/investments", "/community", "/profile"]}
+                exact path={["/login", "/spendings"]}
                 render={ props => (
                     <div className="app">
                         { /* Different componenets rendered depending on if someone is logged in. */}
@@ -156,11 +156,12 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
-              render={() => (<Profile
+              render={props => (<Profile
                 handleLogOut={this.handleLogOut}
                 loggedIn={this.state.loggedIn}
-                username={currentUser.username}
-                userLevel={currentUser.userLevel}
+                user={currentUser}
+                app={this}
+                {...props}
               />)} />
 
           </Switch>
