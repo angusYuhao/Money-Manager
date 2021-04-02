@@ -33,6 +33,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import Comment from "./comment.js"
 
+import { addCommentdb, deletePostdb, UpdatePostVotesdb } from './actions.js'
+
 // define styles
 const styles =  theme => ({
   closePostButton: {
@@ -158,7 +160,7 @@ class ForumListItem extends React.Component {
   // called when a comment is posted
   handlePostComment = () => {
 
-    this.props.postComment(this.state)
+    this.props.postComment(this.state, addCommentdb)
     this.setState({ comment: "" })
   }
 
@@ -219,16 +221,16 @@ class ForumListItem extends React.Component {
     // clean up downvote
     if (this.state.downvoted === true) {
       this.setState({ downvoted: false })
-      this.props.minusDownvote(this.state)
+      this.props.minusDownvote(this.state, UpdatePostVotesdb)
     }
 
     if (this.state.upvoted === false) {
       this.setState({ upvoted: true })
-      this.props.addUpvote(this.state)
+      this.props.addUpvote(this.state, UpdatePostVotesdb)
     }
     else {
       this.setState({ upvoted: false })
-      this.props.minusUpvote(this.state)
+      this.props.minusUpvote(this.state, UpdatePostVotesdb)
     }
   }
 
@@ -238,16 +240,16 @@ class ForumListItem extends React.Component {
     // clean up upvote
     if (this.state.upvoted === true) {
       this.setState({ upvoted: false })
-      this.props.minusUpvote(this.state)
+      this.props.minusUpvote(this.state, UpdatePostVotesdb)
     }
 
     if (this.state.downvoted === false) {
       this.setState({ downvoted: true })
-      this.props.addDownvote(this.state)
+      this.props.addDownvote(this.state, UpdatePostVotesdb)
     }
     else {
       this.setState({ downvoted: false })
-      this.props.minusDownvote(this.state)
+      this.props.minusDownvote(this.state, UpdatePostVotesdb)
     }
     
   }
@@ -256,7 +258,7 @@ class ForumListItem extends React.Component {
   render() {
 
     // save props
-    const { classes, avatar, postTitle, postAuthor, postTextContent, category, comments, postComment, 
+    const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, 
             deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
 
     return (
@@ -267,7 +269,7 @@ class ForumListItem extends React.Component {
 
           {/* {the avatar of the post author (currently null)} */}
           <ListItemAvatar>
-            <Avatar>{ avatar }</Avatar>
+            <Avatar></Avatar>
           </ListItemAvatar>
 
           <ListItemText
@@ -322,7 +324,7 @@ class ForumListItem extends React.Component {
           {/* {display the delete button if in manage post mode} */}
           { openManagePost ? 
             <Tooltip title="Delete">
-              <IconButton color="primary" size="medium" onClick={ () => deletePosts(this.state) }>
+              <IconButton color="primary" size="medium" onClick={ () => deletePosts(this.state, deletePostdb) }>
                 <DeleteIcon fontSize="default" />
               </IconButton>
             </Tooltip> 
