@@ -28,6 +28,7 @@ import { followingData, followerData } from './data';
 import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
+import { logout } from '../../actions/user.js';
 
 const drawerWidth = 400;
 
@@ -193,6 +194,12 @@ function PaperComponent(props) {
 // All the profile information should be fetched from the database
 // that stores the user information
 class Profile extends React.Component {
+
+    // logs out the user
+    logoutUser = (app) => {
+        this.props.history.push("/");
+        logout(app);
+    };
 
     state = {
         // if false, display edit; if true, display Done
@@ -585,20 +592,15 @@ class Profile extends React.Component {
     }
 
     render() {
-        const { classes, username, handleLogOut, password, userLevel, loggedIn } = this.props;
-
-        if(userLevel === "User") {
-            this.state.userLevel = "User"
-        } else if(userLevel === "Financial Advisor") {
-            this.state.userLevel = "Financial Advisor"
-        }
-
+        const { classes, handleLogOut, loggedIn, user, app } = this.props;
+        const name = user.firstName + ' ' + user.lastName;
+        this.state.avatar = user.username[0];
         return ( 
 
             loggedIn ? 
             <ThemeProvider theme={theme}>
                 <div className={classes.root}>
-                    { this.state.userLevel === "User" ? 
+                    { user.userLevel === "Regular User" ? 
                         <AppBar color="secondary" position="fixed" className={classes.appBar}>
                             <Toolbar>
                                 <Typography variant='h6' noWrap>
@@ -654,21 +656,22 @@ class Profile extends React.Component {
                             { this.state.edit ? 
                                 <Edit 
                                     handleInputChange={ this.handleInputChange }
-                                    username={ this.state.username }
-                                    name={ this.state.name }
-                                    email={ this.state.email }
-                                    occupation={ this.state.occupation }
-                                    birthday={ this.state.birthday }
-                                    bio={ this.state.bio }
+                                    username={ user.username }
+                                    name={ name }
+                                    email={ user.email }
+                                    occupation={ user.occupation }
+                                    birthday={ user.birthday }
+                                    bio={ user.bio }
+                                    profile={this}
                                 />
                                 :
                                 <Done  
-                                    username={ this.state.username }
-                                    name={ this.state.name }
-                                    email={ this.state.email }
-                                    occupation={ this.state.occupation }
-                                    birthday={ this.state.birthday }
-                                    bio={ this.state.bio } 
+                                    username={ user.username }
+                                    name={ name }
+                                    email={ user.email }
+                                    occupation={ user.occupation }
+                                    birthday={ user.birthday }
+                                    bio={ user.bio } 
                                 />    
                             }
                             
@@ -688,7 +691,7 @@ class Profile extends React.Component {
                                     Edit Profile
                                 </Button>
                                 <Link to={"/"}>
-                                    <Button onClick={ () => handleLogOut() }
+                                    <Button onClick={() => this.logoutUser(app)}
                                             color="primary" 
                                             variant="contained" 
                                             className={classes.logoutButton}>
@@ -777,7 +780,7 @@ class Profile extends React.Component {
                                 :
                                 <List className={ classes.forumList }>
                                     { this.state.posts.map((thread) => {
-                                        if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === username : this.state.postFilter === "") {
+                                        if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === user.username : this.state.postFilter === "") {
                                             return (
                                             <div>
                                                 <ForumListItem postTitle={ thread.title }

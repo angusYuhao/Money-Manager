@@ -24,6 +24,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 import AddIcon from '@material-ui/icons/Add';
 
+import { addPostdb, getPostsdb } from './actions.js';
+
 // define styles
 const styles =  theme => ({
   root: {
@@ -111,7 +113,7 @@ class ForumList extends React.Component {
     openManagePost: false,
     author: "",
     title: "",
-    authorAvatar: "",
+    // authorAvatar: "",
     content: "",
     category: "",
     postFilter: "",
@@ -123,7 +125,7 @@ class ForumList extends React.Component {
         authorUsertype: "FA",
         title: 'welcome to communtiy', 
         content: 'this is the first community thread', 
-        authorAvatar: null,
+        // authorAvatar: null,
         category: "Announcement",
         postID: 1,
         numUpvotes: 5,
@@ -139,7 +141,7 @@ class ForumList extends React.Component {
         authorUsertype: "RU",
         title: 'victory is at hand', 
         content: "We are weeks away from winning the war, thanks to my personal genius and our nation's strength. Brothers and sisters, we will soon be remembered as heros of our time, the greatest generation if I might add!", 
-        authorAvatar: null,
+        // authorAvatar: null,
         category: "Announcement",
         postID: 2,
         numUpvotes: 4,
@@ -155,7 +157,7 @@ class ForumList extends React.Component {
         authorUsertype: "FA",
         title: 'Bitcoin is gonna fail', 
         content: "There's no way that bitcoin is going to grow much longer. I predict that bitcoin value will collapse by the end of this year!", 
-        authorAvatar: null,
+        // authorAvatar: null,
         category: "Opinion",
         postID: 3,
         numUpvotes: 30,
@@ -171,7 +173,7 @@ class ForumList extends React.Component {
         authorUsertype: "FA",
         title: 'What do you think about the future of Microsoft?', 
         content: "Microsoft has been a great company all these year, but we are running out of steam in the recent years. Does anyone have some suggestions for Windows 10 and Microsoft's other products?", 
-        authorAvatar: null,
+        // authorAvatar: null,
         category: "Question",
         postID: 4,
         numUpvotes: 40,
@@ -187,7 +189,7 @@ class ForumList extends React.Component {
         authorUsertype: "RU",
         title: 'How should I get into stocks?', 
         content: 'I know I am really old, but I am still interested in getting into stocks and other ways of investing? Any experts on this platform willing to help your queen? You rewards will be in the millions!', 
-        authorAvatar: null,
+        // authorAvatar: null,
         category: "Question",
         postID: 5,
         numUpvotes: 1,
@@ -198,6 +200,10 @@ class ForumList extends React.Component {
         ]
       }
     ]
+  }
+
+  componentDidMount() {
+    getPostsdb(this)
   }
 
   // called when opening write new post
@@ -214,7 +220,7 @@ class ForumList extends React.Component {
 
       author: "",
       title: "",
-      authorAvatar: "",
+      // authorAvatar: "",
       content: "",
       category: "",
       postID: null
@@ -274,7 +280,7 @@ class ForumList extends React.Component {
   }
 
   // called when a new post is created
-  addPost = (username) => {
+  addPost = (username, callback) => {
 
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
@@ -284,7 +290,7 @@ class ForumList extends React.Component {
       author: username,
       authorUsertype: this.props.userInfo.usertype,
       title: this.state.title,
-      authorAvatar: null,
+      // authorAvatar: null,
       content: this.state.content,
       category: this.state.category,
       postID: newID,
@@ -293,14 +299,14 @@ class ForumList extends React.Component {
       comments: []
     }
 
-    postList.push(newPost)
+    postList.unshift(newPost)
 
     this.setState({
       posts: postList,
 
       author: "",
       title: "",
-      authorAvatar: "",
+      // authorAvatar: "",
       content: "",
       category: "",
       postID: null
@@ -308,6 +314,7 @@ class ForumList extends React.Component {
 
     this.handleClose()
     this.sortPosts(this.state.sortOrder)
+    callback(this.state.posts[0])
   }
 
   // called when user chooses a category for new post
@@ -316,7 +323,7 @@ class ForumList extends React.Component {
   }
 
   // called when user adds a comment to a post
-  postComment = (target) => {
+  postComment = (target, callback) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -328,16 +335,17 @@ class ForumList extends React.Component {
       commentContent: target.comment
     }
 
-    targetPostComments.push(newComment)
+    targetPostComments.unshift(newComment)
     targetPost[0].comments = targetPostComments
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
 
     this.setState({ posts: otherPosts })
+    callback({targetPostID, newComment})
   }
 
   // called when user deletes a post
-  deletePosts = (target) => {
+  deletePosts = (target, callback) => {
 
     const targetPostID = target.postID
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
@@ -361,10 +369,11 @@ class ForumList extends React.Component {
       this.props.userInfoUpdater(userInfo)
     }
 
+    callback(targetPostID)
   }
 
   // called when user upvotes a post
-  addUpvote = (target) => {
+  addUpvote = (target, callback) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -378,10 +387,11 @@ class ForumList extends React.Component {
     userInfo.userUpvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
+    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
   }
 
   // called when user deletes their upvote from a post
-  minusUpvote = (target) => {
+  minusUpvote = (target, callback) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -396,10 +406,11 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
 
+    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
   }
 
   // called when user downvotes a post
-  addDownvote = (target) => {
+  addDownvote = (target, callback) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -413,10 +424,11 @@ class ForumList extends React.Component {
     userInfo.userDownvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
+    callback({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
   }
 
   // called when user deletes a downvote from a post
-  minusDownvote = (target) => {
+  minusDownvote = (target, callback) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -431,6 +443,7 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
     
+    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numDownvotes})
   }
 
   // main render function
@@ -454,7 +467,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -481,7 +494,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -517,7 +530,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -544,7 +557,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -580,7 +593,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -607,7 +620,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -643,7 +656,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -670,7 +683,7 @@ class ForumList extends React.Component {
                                 postAuthor={ thread.author }
                                 postAuthorUsertype={ thread.authorUsertype}
                                 postTextContent={ thread.content }
-                                avatar={ thread.authorAvatar }
+                                // avatar={ thread.authorAvatar }
                                 category={ thread.category }
                                 comments={ thread.comments }
                                 postID={ thread.postID }
@@ -816,11 +829,11 @@ class ForumList extends React.Component {
                 {/* {cancel and post buttons} */}
                 <CardActions>
 
-                  {/* <Button onClick={ this.handleClose } color="primary">
+                  <Button onClick={ this.handleClose } color="primary">
                     Cancel
-                  </Button> */}
+                  </Button>
 
-                  <Button onClick={ () => this.addPost(userInfo.username) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
 

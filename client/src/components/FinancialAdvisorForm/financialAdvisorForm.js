@@ -8,7 +8,7 @@ import { withStyles,
         Grid,
         createMuiTheme} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
-
+import { updateSignupForm, updateConfirmPassword } from '../../actions/user.js';
 const useStyles = theme => ({
     formControl: {
       margin: theme.spacing(1),
@@ -40,7 +40,7 @@ const useStyles = theme => ({
 class FinancialAdvisorForm extends React.Component {
 
     render() {
-        const { classes, firstName, lastName, userName, birthday, gender, adminPasscode, email, 
+        const { classes, signup, firstName, lastName, userName, birthday, gender, adminPasscode, email, 
                 createdPassword, checkLength, passwordLengthError, passwordConfirmError, 
                 confirmPassword, handleConfirmPassword, handleInputChange } = this.props;
         return (
@@ -49,7 +49,7 @@ class FinancialAdvisorForm extends React.Component {
                     <FormControl variant="outlined" className={classes.formControl}>
                         <TextField required 
                                 value={ firstName } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="outlined-required" 
                                 label="First Name" 
                                 name="firstName"
@@ -59,7 +59,7 @@ class FinancialAdvisorForm extends React.Component {
                         <FormControl variant="outlined" className={classes.formControl}>
                         <TextField required
                                 value={ lastName } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="outlined-required" 
                                 label="Last Name" 
                                 name="lastName"
@@ -72,7 +72,7 @@ class FinancialAdvisorForm extends React.Component {
                     <FormControl variant="outlined" className={classes.formControl}>
                         <TextField required
                                 value={ userName } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="outlined-required" 
                                 label="User Name" 
                                 name="userName"
@@ -82,11 +82,11 @@ class FinancialAdvisorForm extends React.Component {
                     <FormControl variant="outlined" className={classes.formControl}>
                         <TextField 
                                 value={ birthday } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="date" 
                                 label="Birthday" 
                                 type="date"
-                                name="date"
+                                name="birthday"
                                 variant="outlined" 
                                 InputLabelProps={{
                                     shrink: true,
@@ -95,7 +95,7 @@ class FinancialAdvisorForm extends React.Component {
                     </FormControl>
                     </Grid>
                     
-                    <RadioGroup aria-label="gender" value={ gender } onChange={ handleInputChange } name="gender" row >
+                    <RadioGroup aria-label="gender" value={ gender } onChange={ e => updateSignupForm(signup, e.target) } name="gender" row >
                     <FormControlLabel value="female" control={<Radio color="primary" />} label="Female" className={classes.radio}/>
                     <FormControlLabel value="male" control={<Radio color="primary" />} label="Male" className={classes.radio}/>
                     <FormControlLabel value="other" control={<Radio color="primary" />} label="Other" className={classes.radio}/>
@@ -106,7 +106,7 @@ class FinancialAdvisorForm extends React.Component {
                         <TextField required 
                                 fullWidth
                                 value={ email } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="outlined-required" 
                                 label="Email@example.com" 
                                 name="email"
@@ -145,7 +145,7 @@ class FinancialAdvisorForm extends React.Component {
                         <TextField error
                                     helperText="The password does not match!"
                                     value={ confirmPassword } 
-                                    onChange={ handleConfirmPassword }
+                                    onChange={ e => updateConfirmPassword(signup, e.target) }
                                     id="outlined-error" 
                                     label="Error" 
                                     type="password"
@@ -157,7 +157,7 @@ class FinancialAdvisorForm extends React.Component {
                         <FormControl variant="outlined" className={classes.formControl}>
                         <TextField required 
                                 value={ confirmPassword } 
-                                onChange={ handleConfirmPassword }
+                                onChange={ e => updateConfirmPassword(signup, e.target) }
                                 id="outlined-required" 
                                 label="Confirm password" 
                                 type="password"
@@ -170,9 +170,9 @@ class FinancialAdvisorForm extends React.Component {
 
                     <Grid container direction="row" spacing={1}>
                     <FormControl variant="outlined" className={classes.formControl}>
-                        <TextField required 
+                        <TextField 
                                 value={ adminPasscode } 
-                                onChange={ handleInputChange }
+                                onChange={ e => updateSignupForm(signup, e.target) }
                                 id="outlined-required" 
                                 label="Admin Passcode" 
                                 name="adminPasscode"

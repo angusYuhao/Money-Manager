@@ -16,13 +16,61 @@ const UserSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: true,
-		minlength: 8
+		minlength: 4,
+	},
+	userLevel: {
+		type: String,
+		required: true,
+	},
+	firstName: {
+		type: String,
+		required: true,
+	},
+	lastName: {
+		type: String,
+		required: true,
+	},
+	occupation: {
+		type: String,
+		required: false,
+	},
+	gender: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+	},
+	birthday: {
+		type: String,
+		required: true,
+	},
+	salary: {
+		type: Number,
+		required: false,
+	},
+	bio: {
+		type: String,
+		required: false,
+	},
+	FAName: {
+		type: String
+	},
+	FAIntro: {
+		type: String
+	},
+	FAFields: {
+		type: [String]
+	},
+	FAPoints: {
+		type: Number
 	},
 	spendings: [SpendingsSchema],
 	spendings_categories: {
 		type: [String],
 		default: ["Food", "Personal", "Transit", "Home"]
-	}
+  }
 })
 
 // An example of Mongoose middleware.
@@ -50,7 +98,7 @@ UserSchema.pre('save', function (next) {
 //  to a given one, for example when logging in.
 UserSchema.statics.findByUserNamePassword = function (username, password) {
 	const User = this // binds this to the User model
-
+	
 	// First find the user by their email
 	return User.findOne({ username: username }).then((user) => {
 		if (!user) {
