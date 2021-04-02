@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 const cors = require('cors')
 if (env !== 'production') { app.use(cors()) }
 
+
 // express-session for managing user sessions
 const session = require("express-session");
 const { ObjectID } = require('mongodb')
@@ -217,6 +218,179 @@ app.post('/spendings/categories', async (req, res) => {
         res.status(400).send()
     }
 
+})
+
+/**************************
+ ROUTES FOR INVESTMENTS
+ *************************/ 
+const { StockEntrySchema } = require('./models/investments')
+
+// gets the user's stock entries
+// GET /investments
+app.get('/investments',async (req, res) => {
+    if (mongoose.connection.readyState != 1) {  
+        log('Issue with mongoose connection')  
+        res.status(500).send('Internal server error')  
+        return;  
+    }    
+
+    const username = "user"
+    const pw = "user"
+
+    // normal promise version
+	User.findByUserNamePassword(username, pw).then((user) => {
+        if(!user){
+            res.status(400).send('User not found')
+        }else{
+            //just send the entire list of stocks
+		    res.send(user.investments)
+        }
+	})
+	.catch((error) => {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	})
+})
+
+// adds a stock entry
+// POST /investments
+app.post('/investments', async (req, res) => {
+    if (mongoose.connection.readyState != 1) {  
+        log('Issue with mongoose connection')  
+        res.status(500).send('Internal server error')  
+        return;  
+    }   
+    
+    const username = "user";
+    const pw = "user";
+
+    //create new stock entry
+    let stock_entry =  new Object()
+    
+    stock_entry["Name"]= req.body.Name,
+    stock_entry["Quantity"]= req.body.Quantity,
+    stock_entry["Price"]= req.body.Price,
+    stock_entry["Average Cost"]= req.body["Average Cost"],
+    stock_entry["Market Value"]= req.body["Market Value"],
+    stock_entry["Book Cost"]= req.body["Book Cost"],
+    stock_entry["Gain/Loss"]= req.body["Gain/Loss"],
+    
+
+
+    User.findByUserNamePassword(username, pw).then((user) => {
+		if(!user){
+            res.status(400).send('User not found')
+        }else{
+            //just send the entire list of stocks
+            if( user.investments.some(item => item["Name"] === req.body.Name)){
+                res.send("duplicate");
+                return;
+            }
+		    user.investments.unshift(stock_entry);
+            user.save().then((result) => {
+				res.send(user.investments);
+			}).catch((error) => {
+				log(error) // log server error to the console, not to the client.
+				if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+					res.status(500).send('Internal server error')
+				} else {
+					res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+				}
+			})
+        }
+	})
+})
+
+// DELETE investments/<stock name>/
+app.delete('/investments/:name', async (req, res) => {
+    if (mongoose.connection.readyState != 1) {  
+        log('Issue with mongoose connection')  
+        res.status(500).send('Internal server error')  
+        return;  
+    }   
+    const stockNameToDelete = req.params.name;
+    
+    const username = "user";
+    const pw = "user";
+
+    User.findByUserNamePassword(username, pw).then((user) => {
+		if (!user) {
+			res.status(404).send('User not found')  // could not find this restaurant
+		} else {
+			//save the one to delete such that you can return it later...or else it'll be gone!
+			
+            for(let i = 0; i< user.investments.length;i++){
+                if(user.investments[i]["Name"] == stockNameToDelete){
+                    let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
+                    user.investments = newStocksList;
+                    user.save().then((result) => {
+                        res.send(user.investments)
+                    }).catch((error) => {
+                        log(error) // log server error to the console, not to the client.
+                        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+                            res.status(500).send('Internal server error')
+                        } else {
+                            res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                        }
+                    })
+                    
+                }
+            }
+			
+		}
+	})
+	.catch((error) => {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
+	})		
+})
+
+//PATCH investments/<old stock name>/
+app.patch('/investments/:name', async (req, res) => {
+    if (mongoose.connection.readyState != 1) {  
+        log('Issue with mongoose connection')  
+        res.status(500).send('Internal server error')  
+        return;  
+    }   
+    const stockNameToEdit = req.params.name;    
+    const username = "user";
+    const pw = "user";
+    const newStockEntry = req.body;
+    newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
+    console.log(newStockEntry);
+    User.findByUserNamePassword(username, pw).then((user) => {
+		if (!user) {
+			res.status(404).send('User not found')  // could not find this restaurant
+		} else {
+            if( user.investments.some(item => item["Name"] === req.body.Name)){
+                res.send("duplicate");
+                return;
+            }
+            for(let i = 0; i< user.investments.length;i++){
+                if(user.investments[i]["Name"] == stockNameToEdit){
+                    let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
+                    newStocksList.splice(i, 0, newStockEntry);
+                    user.investments = newStocksList;
+                    user.save().then((result) => {
+                        res.send(user.investments)
+                    }).catch((error) => {
+                        log(error) // log server error to the console, not to the client.
+                        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+                            res.status(500).send('Internal server error')
+                        } else {
+                            res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                        }
+                    })
+                    
+                }
+            }
+			
+		}
+	})
+	.catch((error) => {
+		log(error)
+		res.status(500).send('Internal Server Error')  // server error
+	})		
 })
 
 // deletes a new user defined category from the database 
@@ -567,6 +741,7 @@ app.post('/spendings/sheet', async (req, res) => {
 		}
     }
  })
+
 
 
 const port = process.env.PORT || 5000
