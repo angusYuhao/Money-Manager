@@ -4,9 +4,11 @@ const log = console.log
 
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
 
+const { localMongoURI } = require('./db/config.js');
 const express = require("express")
 const app = express()
 
+const MongoStore = require('connect-mongo') // to store session information on the database in production
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 
@@ -14,6 +16,8 @@ app.use(bodyParser.json());
 const cors = require('cors')
 if (env !== 'production') { app.use(cors()) }
 
+// express-session for managing user sessions
+const session = require("express-session");
 const { ObjectID } = require('mongodb')
 const { mongoose } = require("./db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
@@ -36,35 +40,82 @@ const mongoChecker = (req, res, next) => {
     }   
 }
 
+/*** Session handling **************************************/
+// Create a session and session cookie
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "our hardcoded secret", // make a SESSION_SECRET environment variable when deploying (for example, on heroku)
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            expires: 60000,
+            httpOnly: true
+        },
+        // store the sessions on the database in production
+        store: env === 'production' ? MongoStore.create({
+                    mongoUrl: process.env.MONGODB_URI || localMongoURI
+        }) : null
+    })
+);
+
 /**************************
  ROUTES FOR USERS
  *************************/ 
 
-app.post("/login", (req, res) => {
-    const username = req.body.username;
+app.post("/users/login", (req, res) => {
+    const username = req.body.userName;
     const password = req.body.password;
+    console.log(req.body);
+    console.log("username from login: ", username);
+    console.log("password from login: ", password);
 
     User.findByUserNamePassword(username, password)
         .then(user => {
             // Add the user's id to the session.
             // We can check later if this exists to ensure we are logged in.
-            req.user = user._id;
-            req.username = user.username; // we will later send the email to the browser when checking if someone is logged in through GET /check-session (we will display it on the frontend dashboard. You could however also just send a boolean flag).
-            res.send({ currentUser: user.username });
+            req.session.user = user._id;
+            req.session.username = user.username; // we will later send the email to the browser when checking if someone is logged in through GET /check-session (we will display it on the frontend dashboard. You could however also just send a boolean flag).
+            console.log(req.session);
+            res.send({ currentUser: user });
         })
         .catch(error => {
-            res.status(400).send()
+            console.log("did not log in");
+            res.status(400).send("hereeeee")
         });
  });
 
+ // A route to logout a user
+app.get("/users/logout", (req, res) => {
+    // Remove the session
+    req.session.destroy(error => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send()
+        }
+    });
+});
  // User API Route
-app.post("/signup", async (req, res) => {
+app.post("/users/signup", mongoChecker, async (req, res) => {
     log(req.body)
 
     // Create a new user
     const user = new User({
-        username: req.body.username,
-        password: req.body.password
+        username: req.body.userName,
+        password: req.body.confirmPassword,
+        userLevel: req.body.userLevel,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        occupation: req.body.occupation,
+        gender: req.body.gender,
+        email: req.body.email,
+        birthday: req.body.birthday,
+        salary: req.body.salary,
+        bio: req.body.bio,
+        FAName: req.body.userName,
+        FAIntro: req.body.FAIntro,
+        FAFields: req.body.FAFields,
+        FAPoints: req.body.FAPoints
     })
 
     try {
@@ -80,6 +131,16 @@ app.post("/signup", async (req, res) => {
         }
     }
 })
+
+// A route to check if a user is logged in on the session
+app.get("/users/check-session", (req, res) => {
+    console.log("session user: ", req.session)
+    if (req.session.user) {
+        res.send({ currentUser: req.session.username });
+    } else {
+        res.status(401).send("ERRORRRRR");
+    }
+});
 /**************************
  ROUTES FOR SPENDINGS
  *************************/ 
