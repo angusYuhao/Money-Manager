@@ -1,7 +1,9 @@
 'use strict'
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+
+const {StockEntrySchema} = require('./investments');
 const { SpendingsSchema } = require("./spendings");
 
 // Making a Mongoose model a little differently: a Mongoose Schema
@@ -16,6 +18,7 @@ const UserSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: true,
+
 		minlength: 4,
 	},
 	userLevel: {
@@ -70,7 +73,9 @@ const UserSchema = new mongoose.Schema({
 	spendings_categories: {
 		type: [String],
 		default: ["Food", "Personal", "Transit", "Home"]
-  }
+  },
+  investments: [StockEntrySchema]
+
 })
 
 // An example of Mongoose middleware.
