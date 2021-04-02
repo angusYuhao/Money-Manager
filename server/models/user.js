@@ -1,7 +1,9 @@
 'use strict'
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+
+const {StockEntrySchema} = require('./investments');
 
 // Making a Mongoose model a little differently: a Mongoose Schema
 // Allows us to add additional functionality.
@@ -16,7 +18,8 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		minlength: 8
-	}
+	},
+	investments: [StockEntrySchema],
 })
 
 // An example of Mongoose middleware.

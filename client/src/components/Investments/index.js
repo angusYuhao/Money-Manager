@@ -10,6 +10,9 @@ import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
+// getting the config settings variable 
+import CONFIG from '../../config'
+const API_HOST = CONFIG.api_host
 
 const useStyles = theme => ({
   root: {
@@ -42,16 +45,16 @@ class Investments extends React.Component {
     stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
     stockList_categories: [],
-
+    stocklist_data: [],
     //some hard coded stock entries: will need to be linked to some database
-    stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
-    {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
-    {"Name": "PDD", "Quantity": 9, "Price": 260.03, "Average Cost": 250,  "Market Value": 2340.27, "Book Cost": 2250, "Gain/Loss":-240},
-    {"Name": "GME", "Quantity": 11, "Price": 280.45, "Average Cost": 340,  "Market Value": 3084.95, "Book Cost": 3740, "Gain/Loss":-655.05 },
-    {"Name": "MSFT", "Quantity": 6, "Price": 330.0, "Average Cost": 280,  "Market Value": 1980, "Book Cost": 1680, "Gain/Loss":1473.56},
-    {"Name": "BABA", "Quantity": 17, "Price": 222.98, "Average Cost": 136.3,  "Market Value": 3790.66, "Book Cost": 2317.1, "Gain/Loss":1473.56 },
-    {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
-    {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
+    // stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
+    // {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
+    // {"Name": "PDD", "Quantity": 9, "Price": 260.03, "Average Cost": 250,  "Market Value": 2340.27, "Book Cost": 2250, "Gain/Loss":-240},
+    // {"Name": "GME", "Quantity": 11, "Price": 280.45, "Average Cost": 340,  "Market Value": 3084.95, "Book Cost": 3740, "Gain/Loss":-655.05 },
+    // {"Name": "MSFT", "Quantity": 6, "Price": 330.0, "Average Cost": 280,  "Market Value": 1980, "Book Cost": 1680, "Gain/Loss":1473.56},
+    // {"Name": "BABA", "Quantity": 17, "Price": 222.98, "Average Cost": 136.3,  "Market Value": 3790.66, "Book Cost": 2317.1, "Gain/Loss":1473.56 },
+    // {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
+    // {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
 
     //table values
     sortBy: "Market Value",
@@ -71,8 +74,28 @@ class Investments extends React.Component {
     total: 0,
   }
 
+  
   constructor(props) {
     super(props);
+    const url = `${API_HOST}/investments`
+    const request = new Request(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+
+    fetch(request)
+    .then(res => res.json())
+    .then(data => {
+      this.setState({stocklist_data : data})
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
     this.changeSort = this.changeSort.bind(this);
     this.totalMoneyInvested();
   }
