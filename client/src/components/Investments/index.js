@@ -91,13 +91,14 @@ class Investments extends React.Component {
     .then(res => res.json())
     .then(data => {
       this.setState({stocklist_data : data})
+      this.totalMoneyInvested();
     })
     .catch(error => {
       console.log(error)
     })
 
     this.changeSort = this.changeSort.bind(this);
-    this.totalMoneyInvested();
+    
   }
 
   //For sorting the stock entries in the table:
@@ -176,24 +177,91 @@ class Investments extends React.Component {
 
   // add newTransaction to the beginning of the stocklist array 
   addStock = (newStock) => {
-    this.state.stocklist_data.unshift(newStock)
-    this.setState({ stocklist_data: this.state.stocklist_data })
-    this.totalMoneyInvested();
+    //const stockname = newStock.Name
+    const url = `${API_HOST}/investments/`
+    const request = new Request(url, {
+      method: "POST",
+      body: JSON.stringify(newStock),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+
+    // this.state.stocklist_data.unshift(newStock)
+    // this.setState({ stocklist_data: this.state.stocklist_data })
+    // this.totalMoneyInvested();
   }
 
   // finds the index of the stock data and replace it with the new stock data
   editStock = (oldStock, newStock) => {
-    const index = this.state.stocklist_data.findIndex(t => t === oldStock)
-    this.state.stocklist_data[index] = newStock
-    this.setState({ stocklist_data: this.state.stocklist_data })
-    this.totalMoneyInvested();
+    // const index = this.state.stocklist_data.findIndex(t => t === oldStock)
+    // this.state.stocklist_data[index] = newStock
+    // this.setState({ stocklist_data: this.state.stocklist_data })
+    // this.totalMoneyInvested();
+    newStock._id = oldStock._id
+    const stockname = newStock.Name
+
+    const url = `${API_HOST}/investments/${stockname}/`
+    const request = new Request(url, {
+      method: "PATCH",
+      body: JSON.stringify(newStock),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   // deletes stocks from the stock list
-  deleteStock = (transaction) => {
-    const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
-    this.setState({ stocklist_data: keepTransactions })
-    this.totalMoneyInvested();
+  deleteStock = (stockToDelete) => {
+    // const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
+    // this.setState({ stocklist_data: keepTransactions })
+    // this.totalMoneyInvested();
+
+    const stockname = stockToDelete.Name;
+
+    const url = `${API_HOST}/investments/${stockname}/`
+    const request = new Request(url, {
+      method: "DELETE",
+      body: JSON.stringify(stockToDelete),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   changeSort(sortBy) {
