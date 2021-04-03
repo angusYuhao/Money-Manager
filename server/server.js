@@ -228,19 +228,26 @@ app.patch('/investments/:name', async (req, res) => {
     const stockNameToEdit = req.params.name;    
     const username = "user";
     const pw = "user";
-    const newStockEntry = req.body;
-    newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
+    const oldStockEntry = req.body[0];
+    const newStockEntry = req.body[1];
     console.log(newStockEntry);
+    newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
+    console.log(newStockEntry._id)
     User.findByUserNamePassword(username, pw).then((user) => {
 		if (!user) {
 			res.status(404).send('User not found')  // could not find this restaurant
 		} else {
-            if( user.investments.some(item => item["Name"] === req.body.Name)){
+            let listExclusingCurrent = user.investments.filter(res => res["Name"] != oldStockEntry["Name"]);
+            if( listExclusingCurrent.some(item =>(item["Name"] === newStockEntry["Name"] ))){
+                
+                console.log("Duplicate")
                 res.send("duplicate");
                 return;
             }
             for(let i = 0; i< user.investments.length;i++){
+                console.log(user.investments[i]._id)
                 if(user.investments[i]["Name"] == stockNameToEdit){
+                    console.log(user.investments[i])
                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                     newStocksList.splice(i, 0, newStockEntry);
                     user.investments = newStocksList;

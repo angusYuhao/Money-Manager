@@ -247,7 +247,7 @@ class Investments extends React.Component {
     const url = `${API_HOST}/investments/${stockname}/`
     const request = new Request(url, {
       method: "PATCH",
-      body: JSON.stringify(newStock),
+      body: JSON.stringify([oldStock,newStock]),
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json"
