@@ -2,6 +2,15 @@
 "use strict"
 const log = console.log
 
+
+
+
+
+
+
+
+
+
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
 
 const express = require("express")
@@ -272,6 +281,35 @@ app.patch('/investments/:name', async (req, res) => {
 		res.status(500).send('Internal Server Error')  // server error
 	})		
 })
+
+
+
+
+
+
+
+
+
+
+
+require("dotenv").config();
+
+// const timePeriod = require("./constants");
+
+app.post("/stock", cors(), async (req, res) => {
+  const body = JSON.parse(JSON.stringify(req.body));
+  const { ticker, type } = body;
+  console.log("stocks-api.js 14 | body", body.ticker);
+  const request = await fetch(
+    `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=8N55YD54SG1F6RCN`
+  );
+  const data = await request.json();
+  res.json({ data: data });
+});
+
+
+
+
 
 
 

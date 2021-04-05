@@ -5,6 +5,7 @@
     margin-left: 8%;
     margin-right: 8%;
     display: flex;
+    overflow:auto; 
 
 }
 
@@ -85,4 +86,8 @@
     margin-right: 3%;
     width: 95%;
     height: 190px;
+}
+
+.InvestmentPage{
+    position:absolute
 }

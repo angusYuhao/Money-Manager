@@ -1,8 +1,14 @@
 import React from 'react';
 import PieChart from './PieChart'
+import BarChart from './BarChart'
+// import newBarChart from './BarChartNew'
 import TableComp from '../Table'
 import './investments.css'
+import './barChart.css'
+
 import SortButton from './SortButton';
+// import App from './liveStock';
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
@@ -10,6 +16,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
+
 // getting the config settings variable 
 import CONFIG from '../../config'
 const API_HOST = CONFIG.api_host
@@ -71,6 +78,8 @@ class Investments extends React.Component {
     //overview card and the pie chart itself
     pieChartSize: 700,
     pieChartRadius: 190,
+    barChartWidth: 1000,
+    barChartHeight: 600,
     total: 0,
   }
 
@@ -298,6 +307,40 @@ class Investments extends React.Component {
       })
   }
 
+
+  getStock = async ticker => {
+    console.log("Getting data");
+    const request = new Request(`${API_HOST}/stock`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    
+        body: JSON.stringify({
+          ticker: ticker,
+        })
+    });
+  
+    fetch(request)
+      .then(res => res.json())
+      .then(data =>{
+        console.log(data);
+      })
+      // .then(data => {
+      //   this.setState({ stocklist_data: data })
+      //   this.totalMoneyInvested();
+      // }
+      //)
+      .catch(error => {
+        console.log(error)
+      })
+
+    // const data = await request.json();
+    // console.log(data);
+    // return data;
+};
+  
+
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
@@ -317,23 +360,33 @@ class Investments extends React.Component {
     <div className = "InvestmentPage">
 
       <div className = "PieChartGeneral">
-
-          <div className = "TitleAndPieChart">
-            <div className = "StockPieChartTitle">
-                Stock Portfolio
-            </div>
-            <div className = "PieChart">
-              <PieChart totalAmountInvested = {this.state.total} listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
-            </div>
+        <div className = "TitleAndPieChart">
+          <div className = "StockPieChartTitle">
+              Stock Portfolio
           </div>
-
-          <div className = "GeneralInfo">
-            <GeneralCard total = {this.state.total}/>
+          <div className = "PieChart">
+            <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
           </div>
+        </div>
 
+        <div className = "GeneralInfo">
+          <GeneralCard total = {this.state.total}/>
+        </div>
       </div>
 
-
+      <div className = "BarChartGeneral">
+        <div className = "BarChartTitle">
+            Gain/Loss
+        </div>
+        <div className = "BarChart" id = "">
+          <BarChart listToDisplay = {this.state.stocklist_data}  barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>
+        </div>
+      </div>
+      {/* <div id="chart"></div> */}
+      {/* <div>
+            <h2>Hey!</h2>
+            <button onClick={() => this.getStock("AAPL")}>Get stock</button>
+      </div> */}
       <div className = "StockList">
         <div className="StockTable">
           <TableComp

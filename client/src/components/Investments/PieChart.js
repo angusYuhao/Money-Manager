@@ -39,6 +39,7 @@ class PieChart extends React.Component {
         //BookCost is the total amount spend on that stock/in that category
        
         const { listToDisplay} = this.props
+        //console.log(listToDisplay);
 
         let startAngle = 0; 
         let radius = this.state.radius;
@@ -235,6 +236,7 @@ class PieChart extends React.Component {
         let elem = document.getElementById('pieChartCanvas');
         let rect = elem.getBoundingClientRect();
         const context = this.context;
+        console.log(context);
 
         //clear canvas
         context.clearRect(0, 0, rect.width, rect.height);
