@@ -28,7 +28,7 @@ import { followingData, followerData } from './data';
 import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
-import { logout } from '../../actions/user.js';
+import { logout, updateProfile, updateProfileField } from '../../actions/user.js';
 
 const drawerWidth = 400;
 
@@ -201,42 +201,66 @@ class Profile extends React.Component {
         logout(app);
     };
 
-    state = {
-        // if false, display edit; if true, display Done
-        followerData: followerData,
-        followingData: followingData,
-        edit: false,
-        logout: false,
-        openFollowers: false,
-        openFollowing: false,
-        followed: false,
-        userLevel: "",
-        avatar: "",
-        bio: "An individual that is pursuing one's passions.",
-        username: "user",
-        name: "User X",
-        email: "user@123.com",
-        occupation: "student",
-        birthday: "2021-03-08",
-        openNewPost: false,
-        openManagePost: false,
-        author: "",
-        title: "",
-        authorAvatar: "",
-        content: "",
-        category: "",
-        postFilter: "",
-        sortOrder: "",
-        commenter: "",
-        commentContent: "",
-        userInfo: {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            // if false, display edit; if true, display Done
+            followerData: followerData,
+            followingData: followingData,
+            edit: false,
+            logout: false,
+            openFollowers: false,
+            openFollowing: false,
+            followed: false,
+            userLevel: "",
+            avatar: "",
+            bio: "",
             username: "",
-            usertype: "",
-            userUpvotedPosts: [],
-            userDownvotedPosts: [],
-            userFollows: [],
-        },
-        posts:  "",
+            name: "",
+            email: "",
+            occupation: "",
+            birthday: "",
+            FAName: "",
+            FAIntro: "",
+            FAFields: "",
+            FAPoints: "",
+            openNewPost: false,
+            openManagePost: false,
+            author: "",
+            title: "",
+            authorAvatar: "",
+            content: "",
+            category: "",
+            postFilter: "",
+            sortOrder: "",
+            commenter: "",
+            commentContent: "",
+            userInfo: {
+                username: "",
+                usertype: "",
+                userUpvotedPosts: [],
+                userDownvotedPosts: [],
+                userFollows: [],
+            },
+            posts:  "",
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            avatar: this.props.user.username[0],
+            username: this.props.user.username,
+            email: this.props.user.email,
+            occupation: this.props.user.occupation,
+            birthday: this.props.user.birthday,
+            bio: this.props.user.bio,
+            userLevel: this.props.user.userLevel,
+            FAName: this.props.user.firstName + " " + this.props.user.lastName,
+            FAIntro: this.props.user.FAIntro,
+            FAPoints: this.props.user.FAPoints,
+            FAFields: this.props.user.FAFields,
+        })
     }
 
     // Check the state of the edit, and changes UI accordingly
@@ -244,6 +268,53 @@ class Profile extends React.Component {
         this.setState({
             edit: !this.state.edit,
         })
+        if(this.state.edit == true && this.state.userLevel == "Regular User") {
+            const updatedProfile = [{
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "email",
+                value: this.state.email
+            }, 
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "occupation",
+                value: this.state.occupation,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "birthday",
+                value: this.state.birthday,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "bio",
+                value: this.state.bio,
+            }]   
+            updateProfileField(updatedProfile, this.props.app);
+        } else if(this.state.edit == true && this.state.userLevel == "Financial Advisor") {
+            const updatedProfile = [{
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "email",
+                value: this.state.email
+            }, 
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAIntro",
+                value: this.state.FAIntro,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAFields",
+                value: this.state.FAFields,
+            }]   
+            updateProfileField(updatedProfile, this.props.app);
+        }
     }
 
     // Change the state of openFollowers, this is for opening 
@@ -468,133 +539,10 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
-    // Mount the current user state passed in from the app.js
-    componentDidMount() {
-        this.changeUserState();
-    }
-
-    // All of these data will not be hardcoded and will be fetched from a database
-    /********************************************************************************
-    for phase 2, you would be making a server call to get the user information and 
-    update the state accordingly, will also fetch its corresponded posts
-    *********************************************************************************/
-    changeUserState = () => {
-        if(this.state.userLevel === "User") {
-            this.state.avatar = "U";
-            this.state.bio = "An individual that is pursuing one's passions.";
-            this.state.username = "user";
-            this.state.name = "User X";
-            this.state.email = "user@123.com";
-            this.state.occupation = "Student";
-            this.state.birthday = "2021-03-08";
-            this.state.commenter = "User";
-            this.state.posts = [
-                {author: 'User', 
-                authorUsertype: "RU",
-                title: 'Welcome to communtiy', 
-                content: 'this is the first community thread', 
-                authorAvatar: "U",
-                category: "Announcement",
-                postID: 1,
-                numUpvotes: 5,
-                numDownvotes: 1,
-                comments: [
-                {commenter: "User2",
-                    commentContent: "This is a great post"},
-                {commenter: "User3",
-                    commentContent: "This is a bad post"}
-                ]
-                },
-                {author: 'User', 
-                authorUsertype: "RU",
-                title: 'My second post', 
-                content: 'This is the second post ever!!!!!!!', 
-                authorAvatar: "U",
-                category: "Opinion",
-                postID: 2,
-                numUpvotes: 4,
-                numDownvotes: 2,
-                comments: [
-                {commenter: "Financial Advisor3",
-                    commentContent: "You should come to my page to learn about financials"},
-                {commenter: "User4",
-                    commentContent: "Go buy GME!"}
-                ]
-                }
-            ];
-            this.setState({
-                avatar: this.state.avatar,
-                bio: this.state.bio,
-                username: this.state.username,
-                name: this.state.name,
-                email: this.state.email,
-                occupation: this.state.occupation,
-                birthday: this.state.birthday,
-                posts: this.state.posts,
-                commenter: this.state.commenter,
-            })
-            
-        } else if(this.state.userLevel === "Financial Advisor") {
-            this.state.avatar = "A";
-            this.state.bio = "A certified financial advisor, dedicated to help others";
-            this.state.username = "admin";
-            this.state.name = "Admin X";
-            this.state.email = "admin@123.com";
-            this.state.occupation = "Financial advisor";
-            this.state.birthday = "2021-03-08";
-            this.state.commenter = "Admin";
-            this.state.posts = [
-                {author: 'Admin', 
-                authorUsertype: "FA",
-                title: 'Welcome to communtiy', 
-                content: 'I am the financial advisor', 
-                authorAvatar: "A",
-                category: "Announcement",
-                postID: 1,
-                numUpvotes: 5,
-                numDownvotes: 1,
-                comments: [
-                {commenter: "User2",
-                    commentContent: "This is a great post"},
-                {commenter: "User3",
-                    commentContent: "This is a bad post"}
-                ]
-                },
-                {author: 'Admin', 
-                authorUsertype: "FA",
-                title: 'My second post', 
-                content: 'I am here to provide you guys with some help in financing', 
-                authorAvatar: "A",
-                category: "Opinion",
-                postID: 2,
-                numUpvotes: 4,
-                numDownvotes: 2,
-                comments: [
-                {commenter: "Financial Advisor3",
-                    commentContent: "You should come to my page to learn about financials"},
-                {commenter: "User4",
-                    commentContent: "Go buy GME!"}
-                ]
-                }
-            ];
-            this.setState({
-                avatar: this.state.avatar,
-                bio: this.state.bio,
-                username: this.state.username,
-                name: this.state.name,
-                email: this.state.email,
-                occupation: this.state.occupation,
-                birthday: this.state.birthday,
-                posts: this.state.posts,
-                commenter: this.state.commenter,
-            })
-        }
-    }
-
     render() {
         const { classes, handleLogOut, loggedIn, user, app } = this.props;
         const name = user.firstName + ' ' + user.lastName;
-        this.state.avatar = user.username[0];
+        console.log(user.username);
         return ( 
 
             loggedIn ? 
@@ -656,22 +604,31 @@ class Profile extends React.Component {
                             { this.state.edit ? 
                                 <Edit 
                                     handleInputChange={ this.handleInputChange }
-                                    username={ user.username }
+                                    username={ this.state.username }
                                     name={ name }
-                                    email={ user.email }
-                                    occupation={ user.occupation }
-                                    birthday={ user.birthday }
-                                    bio={ user.bio }
+                                    email={ this.state.email }
+                                    occupation={ this.state.occupation }
+                                    birthday={ this.state.birthday }
+                                    bio={ this.state.bio }
+                                    userLevel = { this.state.userLevel }
+                                    FAName = { this.state.FAName }
+                                    FAIntro = { this.state.FAIntro }
+                                    FAFields = { this.state.FAFields }
                                     profile={this}
                                 />
                                 :
                                 <Done  
-                                    username={ user.username }
+                                    username={ this.state.username }
                                     name={ name }
-                                    email={ user.email }
-                                    occupation={ user.occupation }
-                                    birthday={ user.birthday }
-                                    bio={ user.bio } 
+                                    email={ this.state.email }
+                                    occupation={ this.state.occupation }
+                                    birthday={ this.state.birthday }
+                                    bio={ this.state.bio } 
+                                    userLevel = { this.state.userLevel }
+                                    FAName = { this.state.FAName }
+                                    FAIntro = { this.state.FAIntro }
+                                    FAFields = { this.state.FAFields }
+                                    FAPoints = { this.state.FAPoints }
                                 />    
                             }
                             
