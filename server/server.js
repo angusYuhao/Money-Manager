@@ -137,9 +137,9 @@ app.get('/investments',async (req, res) => {
 //https://stackoverflow.com/questions/12805981/get-last-week-date-with-jquery-javascript/12806057
 
 function getLastWeek(fromDateStr) {
-    let fromDate = new Date(entryDate);
+    let fromDate = new Date(fromDateStr);
     let lastWeek = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - 7);
-    let lastWeek = getLastWeek();
+  
     let lastWeekMonth = lastWeek.getMonth() + 1;
     let lastWeekDay = lastWeek.getDate();
     let lastWeekYear = lastWeek.getFullYear();
@@ -174,9 +174,9 @@ app.post('/investments', async (req, res) => {
     //create new stock entry
     let stock_entry =  new Object();
     stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
-    stock_entry["Name"]= req.body.Name;
-    stock_entry["Quantity"]= req.body.Quantity;
-    stock_entry["Price"]= req.body.Price;
+    stock_entry["Name"]= req.body["Name"];
+    stock_entry["Quantity"]= req.body["Quantity"];
+    stock_entry["Price"]= req.body["Price"];
     stock_entry["Average Cost"]= req.body["Average Cost"];
     stock_entry["Market Value"]= req.body["Market Value"];
     stock_entry["Book Cost"]= req.body["Book Cost"];
@@ -185,21 +185,22 @@ app.post('/investments', async (req, res) => {
 
     let isoDate= stock_entry["Last Traded Date"].replace('/', '-') 
     let year = isoDate.substring(6,isoDate.length);
-    let monthDay = isoDate.substring(0,6);
+    let monthDay = isoDate.substring(0,5);
     isoDate = year.concat('-');//cuz there's no - in the original str behind year
     isoDate = isoDate.concat(monthDay);
     console.log(isoDate);
    
-    //let fromDate = getLastWeek(isoDate);
+    let fromDate = getLastWeek(isoDate);
 
     let closingPrice = 0;
     yhFinance.historical({
         symbol: stock_entry["Name"],
-        from: '2021-03-01',
+        from: fromDate,
         to: isoDate,
     }, function(err, quotes) {
+        console.log(quotes[0]);
         closingPrice = quotes[0]['close'];
-        console.log(closingPrice);
+        //console.log(closingPrice);
     });
 
 
