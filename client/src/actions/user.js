@@ -145,6 +145,41 @@ export const updateProfile = (profileComp, field) => {
     });
 };
 
+// edit the profile (name, birthday, email, bio...)
+export const updateProfileField = (pathObj, app) => {
+
+    const url = `${API_HOST}/users/profile/${pathObj[0].username}`;
+    
+    const request = new Request(url, {
+        method: "PATCH",
+        body: JSON.stringify(pathObj),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+        .then(res => {
+            if (res.status === 200) {
+                console.log("updated profile")
+                return res.json();
+            } else {
+                // add post failed
+                console.log("failed to update post")
+            }
+        })
+        .then(json => {
+            if (json !== undefined) {
+                app.setState({ currentUser: json });
+            }
+        })
+        .catch(error => {
+            console.log("inside login function");
+            console.log(error)
+        });
+};
+
 // A function to send a GET request to logout the current user
 export const logout = (app) => {
     const url = `${API_HOST}/users/logout`;

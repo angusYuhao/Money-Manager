@@ -6,6 +6,8 @@ const env = process.env.NODE_ENV // read the environment variable (will be 'prod
 
 const { localMongoURI } = require('./db/config.js');
 const express = require("express")
+const path = require('path')
+
 const app = express()
 
 const MongoStore = require('connect-mongo') // to store session information on the database in production
@@ -161,6 +163,61 @@ app.post("/users/signup", mongoChecker, async (req, res) => {
             res.status(400).send('Bad Request') // bad request for changing the student.
         }
     }
+})
+
+/// a PATCH route for making *specific* changes to a resource.
+// The body will be an array that consists of a list of changes to make to the
+//  resource:
+/*
+[
+  { "op": "replace", "path": "/year", "value": 4 },
+  { "op": "replace", "path": "/name", "value": "Jim" },
+      const name = req.body.name;
+    const email = req.body.email;
+    const occupation = req.body.occupation;
+    const birthday = req.body.birthday;
+    const bio = req.body.bio;
+  ...
+]
+*/
+
+// modifies profile of user by username
+app.patch('/users/profile/:username', async (req, res) => {
+    
+    const username = req.params.username;
+
+    console.log("in patch", username)
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    // Find the fields to update and their values.
+	const fieldsToUpdate = {}
+	req.body.map((change) => {
+		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+		fieldsToUpdate[propertyToChange] = change.value
+	})
+
+    // Update the student by their id.
+	try {
+		const updateProfile = await User.findOneAndUpdate({username: username}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
+		if (!updateProfile) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.send(updateProfile);
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // bad request for changing the student.
+		}
+	}
+
 })
 
 // A route to check if a user is logged in on the session
@@ -742,7 +799,22 @@ app.post('/spendings/sheet', async (req, res) => {
     }
  })
 
+/*** Webpage routes below **********************************/
+// Serve the build
+app.use(express.static(path.join(__dirname, "../client/build")));
 
+// All routes other than above will go to index.html
+app.get("*", (req, res) => {
+    // check for page routes that we expect in the frontend to provide correct status code.
+    // const goodPageRoutes = ["/", "/login", "/dashboard"];
+    // if (!goodPageRoutes.includes(req.url)) {
+    //     // if url not in expected page routes, set status to 404.
+    //     res.status(404);
+    // }
+
+    // send index.html
+    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
 
 const port = process.env.PORT || 5000
 app.listen(port, () => {
