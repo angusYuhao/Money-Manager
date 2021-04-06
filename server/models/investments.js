@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 // require('mongoose-double')(mongoose);
 
 const StockEntrySchema = new mongoose.Schema({
+    "Last Traded Date": String,
     "Name": String,
     "Quantity": Number,
     "Price": Number,

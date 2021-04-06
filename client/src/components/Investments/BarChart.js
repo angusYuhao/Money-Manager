@@ -1,5 +1,6 @@
 //Tutorials followed:
 
+// import { createStyles } from '@material-ui/styles';
 import React, { useRef, useEffect, useReducer } from 'react'
 
 class BarChart extends React.Component {
@@ -48,6 +49,22 @@ class BarChart extends React.Component {
         let maxAmount = gainLossArray[0];
         let minAmount = gainLossArray[0];
 
+        //kinda like the number of pixels to be in that section
+        let proportionalHeight = 0;
+        if(maxAmount > 0 && minAmount < 0){
+            proportionalHeight = maxAmount - minAmount;
+        }else if(maxAmount > 0 && minAmount > 0){
+            proportionalHeight = maxAmount;
+        }else if(maxAmount < 0 && minAmount < 0){
+            proportionalHeight = minAmount;
+        }else{
+            //error cuz maxAmount < 0 && minAmount > 0
+            console.log("ERROR in maxAmount and minAmount");
+        }
+
+        //Make it slightly bigger to look a bit better
+        proportionalHeight *= 0.1;
+
         for(let i = 0; i < gainLossArray.length; i++){
             if(maxAmount < gainLossArray[i])maxAmount = gainLossArray[i];
             if(minAmount > gainLossArray[i])minAmount = gainLossArray[i];
@@ -55,25 +72,32 @@ class BarChart extends React.Component {
      
         listToDisplay.forEach(element => {
             console.log("DRAWING")
+            const canvas = document.getElementById('barChartCanvas');
+            const ctx = canvas.getContext('2d');
+            this.context.strokeStyle = "#FF0000";
+            this.context.strokeRect(20, 20, 150, 100);
+            // ctx.rect(900,900,100,100);
+            // ctx.fill();
             //let ctx = {...this.context}
-            // amountVertical = maxAmount.gainLoss - minAmount.gainLoss;
+            // amou0ntVertical = maxAmount.gainLoss - minAmount.gainLoss;
             // axisPosition = (maxAmount/amountVertical) * this.state.canvasHeight;
-            this.context.lineWidth = 3;
-            this.context.strokeStyle = '#fafafa';
-            this.context.fillStyle = this.randomPastelColourCode();
-            let barColour = this.context.filStyle;
-            this.context.beginPath();
+            // this.context.lineWidth = 3;
+            // this.context.strokeStyle = '#fafafa';
+            // this.context.fillStyle = this.randomPastelColourCode();
+            // let barColour = this.context.filStyle;
+            // this.context.beginPath();
 
-            //draw the actual bars
-            let barValue = element[indexName];
-            console.log(barValue);
-
-            this.context.beginPath();
-            this.context.moveTo(800, 800);
-            this.context.lineTo(900, 900);
-            this.context.fill();
-            this.context.stroke();
-            this.context.closePath();
+            // //draw the actual bars
+            // let barValue = element[indexName];
+            // console.log(barValue);
+            // this.context.rect(900,900,100,100);
+            // this.context.fill();
+            // this.context.beginPath();
+            // this.context.moveTo(800, 800);
+            // this.context.lineTo(900, 900);
+            // this.context.fill();
+            // this.context.stroke();
+            // this.context.closePath();
 
 
 

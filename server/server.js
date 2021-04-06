@@ -148,7 +148,7 @@ app.post('/investments', async (req, res) => {
 
     //create new stock entry
     let stock_entry =  new Object()
-    
+    stock_entry["Last Traded Date"]= req.body["Last Traded Date"],
     stock_entry["Name"]= req.body.Name,
     stock_entry["Quantity"]= req.body.Quantity,
     stock_entry["Price"]= req.body.Price,
@@ -156,8 +156,8 @@ app.post('/investments', async (req, res) => {
     stock_entry["Market Value"]= req.body["Market Value"],
     stock_entry["Book Cost"]= req.body["Book Cost"],
     stock_entry["Gain/Loss"]= req.body["Gain/Loss"],
-    
-
+    console.log(stock_entry);
+   
 
     User.findByUserNamePassword(username, pw).then((user) => {
 		if(!user){
@@ -170,6 +170,7 @@ app.post('/investments', async (req, res) => {
             }
 		    user.investments.unshift(stock_entry);
             user.save().then((result) => {
+                console.log(user.investments);
 				res.send(user.investments);
 			}).catch((error) => {
 				log(error) // log server error to the console, not to the client.

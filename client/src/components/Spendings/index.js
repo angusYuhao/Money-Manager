@@ -199,7 +199,7 @@ class Spendings extends React.Component {
 
     fetch(request)
       .then(res => {
-        console.log(res)
+        //console.log(res)
       })
       .catch(error => {
         console.log(error)

@@ -236,7 +236,7 @@ class PieChart extends React.Component {
         let elem = document.getElementById('pieChartCanvas');
         let rect = elem.getBoundingClientRect();
         const context = this.context;
-        console.log(context);
+        //console.log(context);
 
         //clear canvas
         context.clearRect(0, 0, rect.width, rect.height);
