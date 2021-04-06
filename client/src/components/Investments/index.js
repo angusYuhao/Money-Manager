@@ -336,11 +336,8 @@ class Investments extends React.Component {
   }
 
   render() {
-
     const { loggedIn } = this.props
-
     return ( 
-
     loggedIn ? 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
@@ -396,11 +393,13 @@ class Investments extends React.Component {
           <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
         </div>
+
+        <div className = "Calculator">
+        <Calculator/>
+        </div>
       </div>
 
-      <div className = "Calculator">
-      <Calculator/>
-      </div>
+     
 
     </div>
     </ThemeProvider> : <Redirect to="/login" />

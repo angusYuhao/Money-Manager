@@ -35,15 +35,16 @@
 
 .SortButtons{
     display: flex; 
-    width: 100%; 
+    width: 90vw; 
     margin-top: 2%;
-    justify-content: space-between;
+    justify-content: space-between;    
 }
 
 .InvestmentSortButton{
     height: 100%;
     width: 100%;
     display: flex; 
+    justify-content: center;
 }
 
 .StockPieChartTitle{
@@ -60,8 +61,13 @@
 }
 
 .Calculator{
-    margin-left: 5%;
-    margin-right: 5%;
+    /* display: flex; */
+    width: 90vw; 
+    /* vertical-align: middle; */
+    justify-content: center;
+    margin-top: 5%;
+    /* margin-left: 5%;
+    margin-right: 5%; */
     margin-bottom: 5%;
 }
 

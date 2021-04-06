@@ -134,8 +134,8 @@ app.get('/investments',async (req, res) => {
 	})
 })
 
-//https://stackoverflow.com/questions/12805981/get-last-week-date-with-jquery-javascript/12806057
-
+//Use this function to get the toDate to accomodate for entry dates enterred in a non-trading day like Good Friday :)
+//Reference: https://stackoverflow.com/questions/12805981/get-last-week-date-with-jquery-javascript/12806057
 function getLastWeek(fromDateStr) {
     let fromDate = new Date(fromDateStr);
     let lastWeek = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - 7);
@@ -145,16 +145,9 @@ function getLastWeek(fromDateStr) {
     let lastWeekYear = lastWeek.getFullYear();
     console.log(lastWeekMonth)
     console.log(lastWeekDay)
-
     console.log(lastWeekYear)
-
-    //let lastWeekDisplay = lastWeekMonth + "/" + lastWeekDay + "/" + lastWeekYear;
-    //let lastWeekDisplayPadded = ("00" + lastWeekMonth.toString()).slice(-2) + "/" + ("00" + lastWeekDay.toString()).slice(-2) + "/" + ("0000" + lastWeekYear.toString()).slice(-4);
-    
-   //console.log(lastWeekDisplay);
-    //console.log(lastWeekDisplayPadded);
-    // let toDateStr = 
-    // return toDateStr;
+    let toDateStr = toString(lastWeekYear)+"-"+toString(lastWeekMonth)+"-"+toString(lastWeekDay);
+    return toDateStr;
 }
 
 
@@ -172,15 +165,16 @@ app.post('/investments', async (req, res) => {
     const pw = "user";
 
     //create new stock entry
-    let stock_entry =  new Object();
-    stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
-    stock_entry["Name"]= req.body["Name"];
-    stock_entry["Quantity"]= req.body["Quantity"];
-    stock_entry["Price"]= req.body["Price"];
-    stock_entry["Average Cost"]= req.body["Average Cost"];
-    stock_entry["Market Value"]= req.body["Market Value"];
-    stock_entry["Book Cost"]= req.body["Book Cost"];
-    stock_entry["Gain/Loss"]= req.body["Gain/Loss"];
+   
+
+    //all of the below needs to be calculated again
+    // stock_entry["Price"]= req.body["Price"];
+    // stock_entry["Average Cost"]= req.body["Average Cost"];
+    // stock_entry["Market Value"]= req.body["Market Value"];
+    // stock_entry["Book Cost"]= req.body["Book Cost"];
+    // stock_entry["Gain/Loss"]= req.body["Gain/Loss"];
+
+
     console.log(stock_entry);
 
     let isoDate= stock_entry["Last Traded Date"].replace('/', '-') 
@@ -203,17 +197,33 @@ app.post('/investments', async (req, res) => {
         //console.log(closingPrice);
     });
 
+    
 
     User.findByUserNamePassword(username, pw).then((user) => {
 		if(!user){
             res.status(400).send('User not found')
         }else{
-            //just send the entire list of stocks
-            if( user.investments.some(item => item["Name"] === req.body.Name)){
-                res.send("duplicate");
-                return;
+            let stock_entry =  new Object();
+            stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
+            stock_entry["Name"]= req.body["Name"];
+
+
+            let obj = user.investments.filter(obj => {
+                return obj["Name"] === req.body.Name
+            })
+            if (typeof obj != "undefined") {
+                //The stock with the same ticker is already in the table!!! so update that row
+                stock_entry["Price"] = closingPrice;
+                stock_entry["Average Cost"]= ( parseFloat(req.body["Quantity"] * closingPrice ) + parseFloat(obj["Book Cost"]))/(parseFloat( obj["Quantity"]) + parseFloat(req.body["Quantity"]));
+                stock_entry["Quantity"]= parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
+                stock_entry["Market Value"]= stock_entry["Price"] * stock_entry["Quantity"];
+                stock_entry["Book Cost"]= stock_entry["Average Cost"] * stock_entry["Quantity"];
+                stock_entry["Gain/Loss"]= stock_entry["Market Value"] - stock_entry["Book Cost"];
+            }else{
+                //Not in the table, so add it to the table
+                user.investments.unshift(stock_entry);
             }
-		    user.investments.unshift(stock_entry);
+		    
             user.save().then((result) => {
                 console.log(user.investments);
 				res.send(user.investments);
