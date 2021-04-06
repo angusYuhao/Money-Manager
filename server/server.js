@@ -105,7 +105,7 @@ app.delete('/spendings/transaction', async (req, res) => {
 /**************************
  ROUTES FOR INVESTMENTS
  *************************/ 
-const { StockEntrySchema } = require('./models/investments')
+let yhFinance = require("yahoo-finance");
 
 // gets the user's stock entries
 // GET /investments
@@ -134,6 +134,31 @@ app.get('/investments',async (req, res) => {
 	})
 })
 
+//https://stackoverflow.com/questions/12805981/get-last-week-date-with-jquery-javascript/12806057
+
+function getLastWeek(fromDateStr) {
+    let fromDate = new Date(entryDate);
+    let lastWeek = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - 7);
+    let lastWeek = getLastWeek();
+    let lastWeekMonth = lastWeek.getMonth() + 1;
+    let lastWeekDay = lastWeek.getDate();
+    let lastWeekYear = lastWeek.getFullYear();
+    console.log(lastWeekMonth)
+    console.log(lastWeekDay)
+
+    console.log(lastWeekYear)
+
+    //let lastWeekDisplay = lastWeekMonth + "/" + lastWeekDay + "/" + lastWeekYear;
+    //let lastWeekDisplayPadded = ("00" + lastWeekMonth.toString()).slice(-2) + "/" + ("00" + lastWeekDay.toString()).slice(-2) + "/" + ("0000" + lastWeekYear.toString()).slice(-4);
+    
+   //console.log(lastWeekDisplay);
+    //console.log(lastWeekDisplayPadded);
+    // let toDateStr = 
+    // return toDateStr;
+}
+
+
+
 // adds a stock entry
 // POST /investments
 app.post('/investments', async (req, res) => {
@@ -147,17 +172,36 @@ app.post('/investments', async (req, res) => {
     const pw = "user";
 
     //create new stock entry
-    let stock_entry =  new Object()
-    stock_entry["Last Traded Date"]= req.body["Last Traded Date"],
-    stock_entry["Name"]= req.body.Name,
-    stock_entry["Quantity"]= req.body.Quantity,
-    stock_entry["Price"]= req.body.Price,
-    stock_entry["Average Cost"]= req.body["Average Cost"],
-    stock_entry["Market Value"]= req.body["Market Value"],
-    stock_entry["Book Cost"]= req.body["Book Cost"],
-    stock_entry["Gain/Loss"]= req.body["Gain/Loss"],
+    let stock_entry =  new Object();
+    stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
+    stock_entry["Name"]= req.body.Name;
+    stock_entry["Quantity"]= req.body.Quantity;
+    stock_entry["Price"]= req.body.Price;
+    stock_entry["Average Cost"]= req.body["Average Cost"];
+    stock_entry["Market Value"]= req.body["Market Value"];
+    stock_entry["Book Cost"]= req.body["Book Cost"];
+    stock_entry["Gain/Loss"]= req.body["Gain/Loss"];
     console.log(stock_entry);
+
+    let isoDate= stock_entry["Last Traded Date"].replace('/', '-') 
+    let year = isoDate.substring(6,isoDate.length);
+    let monthDay = isoDate.substring(0,6);
+    isoDate = year.concat('-');//cuz there's no - in the original str behind year
+    isoDate = isoDate.concat(monthDay);
+    console.log(isoDate);
    
+    //let fromDate = getLastWeek(isoDate);
+
+    let closingPrice = 0;
+    yhFinance.historical({
+        symbol: stock_entry["Name"],
+        from: '2021-03-01',
+        to: isoDate,
+    }, function(err, quotes) {
+        closingPrice = quotes[0]['close'];
+        console.log(closingPrice);
+    });
+
 
     User.findByUserNamePassword(username, pw).then((user) => {
 		if(!user){

@@ -39,15 +39,15 @@ class BarChart extends React.Component {
 
         //get the max and min gain loss stocks
         console.log(listToDisplay);
-        let gainLossArray =[];
-        console.log(typeof(gainLossArray))
-        gainLossArray = listToDisplay.map(function (obj) {
+        let keyComponentsArray =[];
+        console.log(typeof(keyComponentsArray))
+        keyComponentsArray = listToDisplay.map(function (obj) {
             console.log(obj[indexName])
             return obj[indexName];
         });
              
-        let maxAmount = gainLossArray[0];
-        let minAmount = gainLossArray[0];
+        let maxAmount = keyComponentsArray[0];
+        let minAmount = keyComponentsArray[0];
 
         //kinda like the number of pixels to be in that section
         let proportionalHeight = 0;
@@ -65,9 +65,9 @@ class BarChart extends React.Component {
         //Make it slightly bigger to look a bit better
         proportionalHeight *= 0.1;
 
-        for(let i = 0; i < gainLossArray.length; i++){
-            if(maxAmount < gainLossArray[i])maxAmount = gainLossArray[i];
-            if(minAmount > gainLossArray[i])minAmount = gainLossArray[i];
+        for(let i = 0; i < keyComponentsArray.length; i++){
+            if(maxAmount < keyComponentsArray[i])maxAmount = keyComponentsArray[i];
+            if(minAmount > keyComponentsArray[i])minAmount = keyComponentsArray[i];
         }
      
         listToDisplay.forEach(element => {
