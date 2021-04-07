@@ -241,18 +241,18 @@ app.post("/users/profile/userPosts/:username", async (req, res) => {
 		res.status(500).send('internal server error')
 	}
 
-    const newPost = new Post({
-        postID: req.body.postID,
-        author: req.body.author,
-        authorUsertype: req.body.authorUsertype,
-        title: req.body.title,
-        category: req.body.category,
-        content: req.body.content,
-        numUpvotes: req.body.numUpvotes,
-        numDownvotes: req.body.numDownvotes,
-        comments: []
-    })
-
+    // const newPost = new Post({
+    //     postID: req.body.postID,
+    //     author: req.body.author,
+    //     authorUsertype: req.body.authorUsertype,
+    //     title: req.body.title,
+    //     category: req.body.category,
+    //     content: req.body.content,
+    //     numUpvotes: req.body.numUpvotes,
+    //     numDownvotes: req.body.numDownvotes,
+    //     comments: []
+    // })
+    // console.log(req.body.postID)
     // console.log("im here!!!", newPost)
 
     try{
@@ -261,14 +261,15 @@ app.post("/users/profile/userPosts/:username", async (req, res) => {
             res.status(404).send("resource not found")
         }
         else {
-            let ret = await targetUser[0].userPosts.unshift(newPost)
-            ret = await targetUser[0].save()
-            ret = targetUser[0].userPosts[0]
-            res.status(200).send(ret)
+            await targetUser[0].userPosts.unshift(req.body.postID)
+            await targetUser[0].save()
+            let ret = targetUser[0].userPosts[0]
+            console.log("the ret value", ret)
+            res.status(200).send("success")
         }
     }
     catch(error) {
-        log(error)
+        console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
         }
@@ -299,10 +300,10 @@ app.delete('/users/profile/userPosts/:username/:postID', async (req, res) => {
             res.status(404).send("resource not found")
         }
         else {
-            let newPosts = targetUser[0].userPosts.filter((res) => res.postID != targetPostID)
+            let newPosts = targetUser[0].userPosts.filter((ID) => ID != targetPostID)
             targetUser[0].userPosts = newPosts
             await targetUser[0].save()
-            res.status(200).send("ples")
+            res.status(200).send(targetUser[0])
             // // let targetPost = await targetUser[0].userPosts.findOneAndDelete({ postID: targetPostID })
             // await targetUser[0]
             // if (!targetPost) {
@@ -316,6 +317,320 @@ app.delete('/users/profile/userPosts/:username/:postID', async (req, res) => {
     catch(error) {
         log(error)
         res.status(500).send('internal server error')
+    }
+})
+
+// add a post to user's profile userSavedPosts
+app.post("/users/profile/userSavedPosts/:username", async (req, res) => {
+
+    const targetUsername = req.params.username
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    try{
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            await targetUser[0].userSavedPosts.unshift(req.body.postID)
+            await targetUser[0].save()
+            let ret = targetUser[0].userSavedPosts[0]
+            console.log("the ret value", ret)
+            res.status(200).send("success")
+        }
+    }
+    catch(error) {
+        console.log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
+    }
+})
+
+// delete a post from user's profile userSavedPosts
+app.delete('/users/profile/userSavedPosts/:username/:postID', async (req, res) => {
+
+    const targetUsername = req.params.username
+    const targetPostID = req.params.postID
+
+    console.log("delete id:", targetPostID)
+    console.log("target user:", targetUsername)
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    try {
+        let targetUser = await User.find({ username: targetUsername })
+        console.log("target user!!:", targetUsername)
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let newPosts = targetUser[0].userSavedPosts.filter((ID) => ID != targetPostID)
+            targetUser[0].userSavedPosts = newPosts
+            await targetUser[0].save()
+            res.status(200).send(targetUser[0])
+        }
+    }
+    catch(error) {
+        log(error)
+        res.status(500).send('internal server error')
+    }
+})
+
+
+// add a post to user's profile userUpvotedPosts
+app.post("/users/profile/userUpvotedPosts/:username", async (req, res) => {
+
+    const targetUsername = req.params.username
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    try{
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            await targetUser[0].userUpvotedPosts.unshift(req.body.postID)
+            await targetUser[0].save()
+            let ret = targetUser[0].userUpvotedPosts[0]
+            console.log("the ret value", ret)
+            res.status(200).send("success")
+        }
+    }
+    catch(error) {
+        console.log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
+    }
+})
+
+// delete a post from user's profile userUpvotedPosts
+app.delete('/users/profile/userUpvotedPosts/:username/:postID', async (req, res) => {
+
+    const targetUsername = req.params.username
+    const targetPostID = req.params.postID
+
+    console.log("delete id:", targetPostID)
+    console.log("target user:", targetUsername)
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    try {
+        let targetUser = await User.find({ username: targetUsername })
+        console.log("target user!!:", targetUsername)
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let newPosts = targetUser[0].userUpvotedPosts.filter((ID) => ID != targetPostID)
+            targetUser[0].userUpvotedPosts = newPosts
+            await targetUser[0].save()
+            res.status(200).send(targetUser[0])
+        }
+    }
+    catch(error) {
+        log(error)
+        res.status(500).send('internal server error')
+    }
+})
+
+
+// add a post to user's profile userDownvotedPosts
+app.post("/users/profile/userDownvotedPosts/:username", async (req, res) => {
+
+    const targetUsername = req.params.username
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    try{
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            await targetUser[0].userDownvotedPosts.unshift(req.body.postID)
+            await targetUser[0].save()
+            let ret = targetUser[0].userDownvotedPosts[0]
+            console.log("the ret value", ret)
+            res.status(200).send("success")
+        }
+    }
+    catch(error) {
+        console.log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
+    }
+})
+
+// delete a post from user's profile userDownvotedPosts
+app.delete('/users/profile/userDownvotedPosts/:username/:postID', async (req, res) => {
+
+    const targetUsername = req.params.username
+    const targetPostID = req.params.postID
+
+    console.log("delete id:", targetPostID)
+    console.log("target user:", targetUsername)
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    try {
+        let targetUser = await User.find({ username: targetUsername })
+        console.log("target user!!:", targetUsername)
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let newPosts = targetUser[0].userDownvotedPosts.filter((ID) => ID != targetPostID)
+            targetUser[0].userDownvotedPosts = newPosts
+            await targetUser[0].save()
+            res.status(200).send(targetUser[0])
+        }
+    }
+    catch(error) {
+        log(error)
+        res.status(500).send('internal server error')
+    }
+})
+
+// add a FA to user's profile userFollows
+app.post("/users/profile/userFollows/:username", async (req, res) => {
+
+    const targetUsername = req.params.username
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    try{
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            await targetUser[0].userFollows.unshift(req.body.FAusername)
+            await targetUser[0].save()
+            let ret = targetUser[0].userFollows[0]
+            console.log("the ret value", ret)
+            res.status(200).send("success")
+        }
+    }
+    catch(error) {
+        console.log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
+    }
+})
+
+// delete a FA from user's profile userFollows
+app.delete('/users/profile/userFollows/:username/:FAusername', async (req, res) => {
+
+    const targetUsername = req.params.username
+    const targetFAusername = req.params.FAusername
+
+    console.log("delete FA:", targetFAusername)
+    console.log("target user:", targetUsername)
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    try {
+        let targetUser = await User.find({ username: targetUsername })
+        console.log("target user!!:", targetUsername)
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let newFAs = targetUser[0].userFollows.filter((name) => name != targetFAusername)
+            targetUser[0].userFollows = newFAs
+            await targetUser[0].save()
+            res.status(200).send(targetUser[0])
+        }
+    }
+    catch(error) {
+        log(error)
+        res.status(500).send('internal server error')
+    }
+})
+
+
+// add FAInfo into FAInfo database
+app.post('/users/FAInfo', async (req, res) => {
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    const newFAInfo = new FAInfo({
+        FAName: req.body.FAName,
+        FAFirstname: req.body.FAFirstname,
+        FALastname: req.body.FALastname,
+        FAIntro: req.body.FAIntro,
+        FAFields: req.body.FAFields,
+        FAPoints: req.body.FAPoints
+    })
+
+    console.log("=========", newFAInfo)
+
+    try{
+        const result = await newFAInfo.save()
+        res.status(200).send(result)
+    }
+    catch(error) {
+        log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
     }
 })
 

@@ -85,6 +85,10 @@ class Community extends React.Component {
       userDownvotedPosts: [],
       userSavedPosts: [],
       userFollows: [],
+      FAName: "",
+      FAIntro: "",
+      FAFields: "",
+      FAPoints: 0,
     },
     openSidebar: false,
     sidebarToggle: "Home",
@@ -104,13 +108,24 @@ class Community extends React.Component {
     if (this.props.usertype === "Financial Advisor") usertype = "FA"
     else usertype = "RU"
 
-    const newUserInfo = {
+    let newUserInfo = {
       username: this.props.username,
       usertype: usertype,
       userUpvotedPosts: [],
       userDownvotedPosts: [],
       userSavedPosts: [],
       userFollows: [],
+      FAName: "",
+      FAIntro: "",
+      FAFields: "",
+      FAPoints: 0,
+    }
+
+    if (usertype === "FA") {
+      newUserInfo.FAName = this.props.FAName
+      newUserInfo.FAIntro = this.props.FAIntro
+      newUserInfo.FAFields = this.props.FAFields
+      newUserInfo.FAPoints = this.props.FAPoints
     }
 
     this.setState({ userInfo: newUserInfo })
@@ -144,7 +159,7 @@ class Community extends React.Component {
   render() {
 
     // pass in relevant information as props
-    const { classes, username, usertype, loggedIn } = this.props
+    const { classes, username, usertype, FAName, FAIntro, FAFields, FAPoints, loggedIn } = this.props
 
     return (
 

@@ -64,7 +64,7 @@ const UserSchema = new mongoose.Schema({
 		type: String
 	},
 	FAFields: {
-		type: [String]
+		type: String
 	},
 	FAPoints: {
 		type: Number
@@ -76,10 +76,10 @@ const UserSchema = new mongoose.Schema({
   	},
   	investments: [StockEntrySchema],
 	userFollows: [String],
-	userPosts: [postSchema],
-	userUpvotedPosts: [postSchema],
-	userDownvotedPosts: [postSchema],
-	userSavedPosts: [postSchema],
+	userPosts: [Number],
+	userUpvotedPosts: [Number],
+	userDownvotedPosts: [Number],
+	userSavedPosts: [Number],
 })
 
 // An example of Mongoose middleware.

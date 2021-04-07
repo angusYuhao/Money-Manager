@@ -216,14 +216,14 @@ export const addUserPostdb = (forumListState) => {
 
     const newPost = {
         postID: forumListState.postID,
-        author: forumListState.author,
-        authorUsertype: forumListState.authorUsertype,
-        title: forumListState.title,
-        category: forumListState.category,
-        content: forumListState.content,
-        numUpvotes: 0,
-        numDownvotes: 0,
-        comments: []
+        // author: forumListState.author,
+        // authorUsertype: forumListState.authorUsertype,
+        // title: forumListState.title,
+        // category: forumListState.category,
+        // content: forumListState.content,
+        // numUpvotes: 0,
+        // numDownvotes: 0,
+        // comments: []
     };
 
     const request = new Request(url, {
@@ -274,6 +274,245 @@ export const deleteUserPostdb = (postInfo) => {
         else {
             // add post failed
             console.log("failed to delete post from user profile")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+
+// add a post to a user's profile userSavedPosts
+export const addUserSavedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userSavedPosts/${postInfo.username}`;
+
+    const newPost = {
+        postID: postInfo.postID,
+    };
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newPost),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("added post to user profile userSavedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to add post to user profile userSavedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// delete a post from user profile userSavedPosts
+export const deleteUserSavedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userSavedPosts/${postInfo.username}/${postInfo.postID}`;
+
+    const request = new Request(url, {
+        method: "delete"
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("deleted post from user profile userSavedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to delete post from user profile userSavedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+
+// add a post to a user's profile userUpvotedPosts
+export const addUserUpvotedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userUpvotedPosts/${postInfo.username}`;
+
+    const newPost = {
+        postID: postInfo.postID,
+    };
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newPost),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("added post to user profile userUpvotedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to add post to user profile userUpvotedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// delete a post from user profile userUpvotedPosts
+export const deleteUserUpvotedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userUpvotedPosts/${postInfo.username}/${postInfo.postID}`;
+
+    const request = new Request(url, {
+        method: "delete"
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("deleted post from user profile userUpvotedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to delete post from user profile userUpvotedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+
+// add a post to a user's profile userDownvotedPosts
+export const addUserDownvotedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userDownvotedPosts/${postInfo.username}`;
+
+    const newPost = {
+        postID: postInfo.postID,
+    };
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newPost),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("added post to user profile userDownvotedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to add post to user profile userDownvotedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// delete a post from user profile userDownvotedPosts
+export const deleteUserDownvotedPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userDownvotedPosts/${postInfo.username}/${postInfo.postID}`;
+
+    const request = new Request(url, {
+        method: "delete"
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("deleted post from user profile userDownvotedPosts")
+        }
+        else {
+            // add post failed
+            console.log("failed to delete post from user profile userDownvotedPosts")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// add a FA to user's profile userFollows
+export const addUserFollowdb = (followInfo) => {
+
+    const url = `${API_HOST}/users/profile/userFollows/${followInfo.username}`;
+
+    const newFollow = {
+        FAusername: followInfo.FAusername,
+    };
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newFollow),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("added FA to user profile userFollows")
+        }
+        else {
+            // add post failed
+            console.log("failed to add FA to user profile userFollows")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// delete a FA from user's profile userFollows
+export const deleteUserFollowdb = (followInfo) => {
+
+    const url = `${API_HOST}/users/profile/userDownvotedPosts/${followInfo.username}/${followInfo.FAusername}`;
+
+    const request = new Request(url, {
+        method: "delete"
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("deleted FA from user profile userFollows")
+        }
+        else {
+            // add post failed
+            console.log("failed to delete FA from user profile userFollows")
         }
     })
     .catch((error) => {
