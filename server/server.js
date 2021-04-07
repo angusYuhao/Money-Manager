@@ -145,6 +145,9 @@ app.post("/users/signup", mongoChecker, async (req, res) => {
         birthday: req.body.birthday,
         salary: req.body.salary,
         bio: req.body.bio,
+        accountName: req.body.accountName,
+        accountNumber: req.body.accountNumber,
+        investmentCurrency: req.body.investmentCurrency,
         FAName: req.body.userName,
         FAIntro: req.body.FAIntro,
         FAFields: req.body.FAFields,
@@ -166,21 +169,6 @@ app.post("/users/signup", mongoChecker, async (req, res) => {
 })
 
 /// a PATCH route for making *specific* changes to a resource.
-// The body will be an array that consists of a list of changes to make to the
-//  resource:
-/*
-[
-  { "op": "replace", "path": "/year", "value": 4 },
-  { "op": "replace", "path": "/name", "value": "Jim" },
-      const name = req.body.name;
-    const email = req.body.email;
-    const occupation = req.body.occupation;
-    const birthday = req.body.birthday;
-    const bio = req.body.bio;
-  ...
-]
-*/
-
 // modifies profile of user by username
 app.patch('/users/profile/:username', async (req, res) => {
     

@@ -6,6 +6,7 @@ const useStyles = theme => ({
     text: {
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
     },
     subtitle: {
         marginLeft: theme.spacing(3),

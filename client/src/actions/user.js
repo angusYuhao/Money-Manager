@@ -59,13 +59,14 @@ export const login = (loginComp, app) => {
         })
         .then(json => {
             if (json.currentUser !== undefined) {
-                app.setState({ currentUser: json.currentUser });
+                app.setState({ currentUser: json.currentUser, signedUpUser: false });
                 console.log("inside json");
                 loginComp.props.history.push('/spendings')
-            }
+            } 
         })
         .catch(error => {
-            console.log("inside login function");
+            console.log("error");
+            loginComp.setState({ snackMessage: "Wrong credentials, please re-enter!", displaySnack: true});
         });
 };
 
@@ -89,9 +90,11 @@ export const updateConfirmPassword = (formComp, field) => {
 
     if(value !== formComp.state.createdPassword) {
         formComp.state.passwordConfirmError = true;
+        formComp.state.firstTimeConfirm = false;
         console.log("password did not match");
     } else {
         formComp.state.passwordConfirmError = false;
+        formComp.state.firstTimeConfirm = false;
         console.log("password match")
     }
 }
@@ -123,6 +126,7 @@ export const addUser = (formComp, app) => {
             if (res.status === 200) {
                 // If student was added successfully, tell the user.
                 console.log("Successfully signed up")
+                app.setState({signedUpUser: true})
                 formComp.props.history.push("/login");
             } else {
                 // If server couldn't add the student, tell the user.
@@ -149,7 +153,7 @@ export const updateProfile = (profileComp, field) => {
 export const updateProfileField = (pathObj, app) => {
 
     const url = `${API_HOST}/users/profile/${pathObj[0].username}`;
-    
+
     const request = new Request(url, {
         method: "PATCH",
         body: JSON.stringify(pathObj),

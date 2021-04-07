@@ -53,6 +53,18 @@ const UserSchema = new mongoose.Schema({
 		type: Number,
 		required: false,
 	},
+	accountName: {
+		type: String,
+		required: false,
+	},
+	accountNumber: {
+		type: String,
+		required: false,
+	},
+	investmentCurrency: {
+		type: String,
+		required: false,
+	},
 	bio: {
 		type: String,
 		required: false,
