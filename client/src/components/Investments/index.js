@@ -4,7 +4,6 @@ import BarChart from './BarChart'
 // import newBarChart from './BarChartNew'
 import TableComp from '../Table'
 import './investments.css'
-import './barChart.css'
 
 import SortButton from './SortButton';
 // import App from './liveStock';
@@ -75,7 +74,7 @@ class Investments extends React.Component {
     //overview card and the pie chart itself
     pieChartSize: 700,
     pieChartRadius: 190,
-    barChartWidth: 1000,
+    barChartWidth: 1100,
     barChartHeight: 600,
     total: 0,
   }
@@ -359,7 +358,7 @@ class Investments extends React.Component {
 
       <div className = "BarChartGeneral">
         <div className = "BarChartTitle">
-            Gain/Loss
+            Overall Portfolio Performance
         </div>
         <div className = "BarChart" id = "">
           <BarChart listToDisplay = {this.state.stocklist_data} numDatasets = {1} barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>

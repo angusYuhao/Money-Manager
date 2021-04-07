@@ -1,11 +1,13 @@
 //Tutorials followed:
 
 // import { createStyles } from '@material-ui/styles';
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 import React, { useRef, useEffect, useReducer } from 'react'
+import { deepPurple, grey } from '@material-ui/core/colors';
 
 class BarChart extends React.Component {
     state = {
-        canvasWidth: 1200,
+        canvasWidth: 1400,
         canvasHeight: 600,
         bars:[],
     }
@@ -24,7 +26,7 @@ class BarChart extends React.Component {
              (80 + 10 * Math.random()) + '%)'
     }
 
-    drawBars = (indexName) => {
+    drawBars = (barIndex,labelIndex, ) => {
         //!!!Ian: bookCost is the total amount spend on that stock/in that category
         const {listToDisplay, numDatasets} = this.props
         if(listToDisplay === undefined || listToDisplay.length == 0){
@@ -32,8 +34,8 @@ class BarChart extends React.Component {
         }
 
         let total = listToDisplay.reduce( (ttl, entry) => {
-            console.log(entry[indexName])
-            return ttl + Math.round( (entry[indexName]  * 100)/ 100 )
+            console.log(entry[barIndex])
+            return ttl + Math.round( (entry[barIndex]  * 100)/ 100 )
         }, 0);
         // console.log(total);
 
@@ -43,7 +45,7 @@ class BarChart extends React.Component {
         // console.log(typeof(keyComponentsArray))
         keyComponentsArray = listToDisplay.map(function (obj) {
             // console.log(obj[indexName])
-            return obj[indexName];
+            return obj[barIndex];
         });
 
         //use min = -15, max = 220 for now to ensure drawings are right for now, NEED TO INITIALIZE TO 1st element later
@@ -80,46 +82,44 @@ class BarChart extends React.Component {
         //For some of the properties needed for drawing the bars.
         let sectionWidth = this.state.canvasWidth / keyComponentsArray.length;
         let sectionBorder = 0.05*sectionWidth;
-        let unitHeight = (this.state.canvasHeight /proportionalHeight)*0.9;  //Make it slightly smaller than the canvas to look a bit better
+        let unitHeight = this.state.canvasHeight /proportionalHeight;
+        
         let barWidth = (sectionWidth/numDatasets)- (2*sectionBorder);
         let centerHoritzonalAxis = maxAmount * unitHeight;
+        unitHeight *= 0.85;  //Make it slightly smaller than the canvas to look a bit better
+        console.log(centerHoritzonalAxis);
+        console.log(maxAmount * (this.state.canvasHeight /proportionalHeight));
 
         
 
         let currentSection = 0;
+
+        let colourForThisList = this.randomPastelColourCode();
         listToDisplay.forEach(element => {
-            console.log("DRAWING")
-            this.context.strokeStyle = "#FF0000";
-            console.log(element[indexName]);
-            let barHeight = unitHeight * Math.abs(element[indexName]);
-            console.log(barHeight);
+            //draw bar
             let x = (currentSection*sectionWidth) + sectionBorder;
             let y;
-            if(element[indexName] > 0)y = centerHoritzonalAxis - barHeight;
+            let barHeight = unitHeight * Math.abs(element[barIndex]);
+            if(element[barIndex] > 0)y = centerHoritzonalAxis - barHeight;
             else y = centerHoritzonalAxis;
-            this.context.strokeRect(x, y, barWidth, barHeight);
-            // ctx.rect(900,900,100,100);
-            // ctx.fill();
-            //let ctx = {...this.context}
-            // amou0ntVertical = maxAmount.gainLoss - minAmount.gainLoss;
-            // axisPosition = (maxAmount/amountVertical) * this.state.canvasHeight;
-            // this.context.lineWidth = 3;
-            // this.context.strokeStyle = '#fafafa';
-            // this.context.fillStyle = this.randomPastelColourCode();
-            // let barColour = this.context.filStyle;
-            // this.context.beginPath();
+            this.context.fillStyle = colourForThisList;
+            this.context.fillRect(x, y, barWidth, barHeight);
 
-            // //draw the actual bars
-            // let barValue = element[indexName];
-            // console.log(barValue);
-            // this.context.rect(900,900,100,100);
-            // this.context.fill();
-            // this.context.beginPath();
-            // this.context.moveTo(800, 800);
-            // this.context.lineTo(900, 900);
-            // this.context.fill();
-            // this.context.stroke();
-            // this.context.closePath();
+            //draw the label
+            let labelString = element[labelIndex];
+            let amountString = element[barIndex];
+            if(element[barIndex] >= 0)amountString = '$' + amountString;
+            else amountString = '-$' + amountString;
+
+            //put the amountString just above the bar
+            this.context.fillStyle = '#85929E';
+            this.context.font = '20px Poppins, sans-serif';
+            this.context.textAlign = 'center';
+            let text_x=x+(barWidth/2.1); 
+            let text_y=y*0.97;
+            this.context.fillText(amountString,text_x, text_y);
+
+            //put the labelString in a legend thingy
 
 
 
@@ -136,7 +136,7 @@ class BarChart extends React.Component {
         let elem = document.getElementById('barChartCanvas');
         let rect = elem.getBoundingClientRect();
         const context = this.context;
-        this.drawBars("Gain/Loss");
+        this.drawBars("Gain/Loss", "Name");
         Object.preventExtensions(this);
     
     }
@@ -144,10 +144,18 @@ class BarChart extends React.Component {
 
     componentDidUpdate(){
         this.context = this.barChartRef.current.getContext('2d');
-        console.log(this.context)
         let elem = document.getElementById('barChartCanvas');
         let rect = elem.getBoundingClientRect();
-        this.drawBars("Gain/Loss");
+        const context = this.context;
+        //clear canvas
+        context.clearRect(0, 0, rect.width, rect.height);
+        context.beginPath();
+
+        //clear bars
+        //this.state.slices = [];
+
+        //redraw
+        this.drawBars("Gain/Loss","Name");
     }
     
     render() {

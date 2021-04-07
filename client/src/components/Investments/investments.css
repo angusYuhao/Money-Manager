@@ -23,8 +23,11 @@
 }
 
 .BarChart{
-    /* margin-top: 1%; */
-    /* position:absolute; */
+    /* margin-top: 5%; */
+    margin-left: 8%;
+    margin-right: 8%;
+    width: 95vw;
+    position: relative;
 }
 
 .StockTable{
@@ -49,10 +52,21 @@
 
 .StockPieChartTitle{
     height: 20px;
-    /* color: #673ab7; */
-    color: #5423a8;
+    color: #6C3483 ;
     font-weight: bold;
-    font-size: 250%;
+    font-size: 220%;
+    width: 100%;
+    float: center;
+    text-align: center;
+    margin-top: 10%;
+    margin-bottom: 0%;
+}
+
+.BarChartTitle{
+    height: 20px;
+    color: #6C3483 ;
+    font-weight: bold;
+    font-size: 220%;
     width: 100%;
     float: center;
     text-align: center;
