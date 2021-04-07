@@ -29,7 +29,7 @@ class App extends React.Component {
     password: "",
     userLevel: "",
     currentUser: null,
-    message: { type: "", body: "" }
+    signedUpUser: false,
   }
 
   loginHandler = (username, password) => {
