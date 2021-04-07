@@ -140,14 +140,18 @@ function getLastWeek(fromDateStr) {
     let fromDate = new Date(fromDateStr);
     let lastWeek = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - 7);
   
-    let lastWeekMonth = lastWeek.getMonth() + 1;
-    let lastWeekDay = lastWeek.getDate();
-    let lastWeekYear = lastWeek.getFullYear();
+    let lastWeekMonth = (lastWeek.getMonth() + 1).toString();
+    if((lastWeek.getMonth() + 1) < 10) lastWeekMonth = '0' + lastWeekMonth;
+    let lastWeekDay = (lastWeek.getDate()).toString();
+    if(lastWeek.getDate() < 10) lastWeekDay = '0' + lastWeekDay; 
+    let lastWeekYear = (lastWeek.getFullYear()).toString();
     console.log(lastWeekMonth)
     console.log(lastWeekDay)
     console.log(lastWeekYear)
-    let toDateStr = toString(lastWeekYear)+"-"+toString(lastWeekMonth)+"-"+toString(lastWeekDay);
-    return toDateStr;
+    let returnIsoDate = lastWeekYear + '-' + lastWeekMonth + '-' + lastWeekDay;
+    console.log("line 153")
+    console.log(returnIsoDate);
+    return returnIsoDate;
 }
 
 
@@ -173,9 +177,10 @@ app.post('/investments', async (req, res) => {
     // stock_entry["Market Value"]= req.body["Market Value"];
     // stock_entry["Book Cost"]= req.body["Book Cost"];
     // stock_entry["Gain/Loss"]= req.body["Gain/Loss"];
+    let stock_entry =  new Object();
+    stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
+    stock_entry["Name"]= req.body["Name"];
 
-
-    console.log(stock_entry);
 
     let isoDate= stock_entry["Last Traded Date"].replace('/', '-') 
     let year = isoDate.substring(6,isoDate.length);
@@ -187,14 +192,23 @@ app.post('/investments', async (req, res) => {
     let fromDate = getLastWeek(isoDate);
 
     let closingPrice = 0;
+
+    console.log("Sending")
+    console.log(stock_entry["Name"])
+    console.log(fromDate)
+    console.log(isoDate)
     yhFinance.historical({
         symbol: stock_entry["Name"],
         from: fromDate,
         to: isoDate,
     }, function(err, quotes) {
-        console.log(quotes[0]);
-        closingPrice = quotes[0]['close'];
-        //console.log(closingPrice);
+        //check if it's valid
+        console.log('quotes')
+        console.log(quotes)
+        if(Object.keys(quotes).length === 0) closingPrice = -1.0;
+        else closingPrice = quotes[0]['close'];
+        console.log("CLOSING PRICE")
+        console.log(closingPrice);
     });
 
     
@@ -202,27 +216,39 @@ app.post('/investments', async (req, res) => {
     User.findByUserNamePassword(username, pw).then((user) => {
 		if(!user){
             res.status(400).send('User not found')
+        }else if(closingPrice == -1.0){
+            res.status(400).send('Invalid stock entry')
         }else{
-            let stock_entry =  new Object();
-            stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
-            stock_entry["Name"]= req.body["Name"];
+            
 
 
             let obj = user.investments.filter(obj => {
-                return obj["Name"] === req.body.Name
+                return obj["Name"] === req.body["Name"];
             })
             if (typeof obj != "undefined") {
                 //The stock with the same ticker is already in the table!!! so update that row
+
+                let newStocksList = user.investments.filter(res => res["Name"] != req.body.Name);
+                let index = user.investments.findIndex(function(item, i){
+                    return item["Name"] === req.body["Name"]
+                });
+
+
                 stock_entry["Price"] = closingPrice;
                 stock_entry["Average Cost"]= ( parseFloat(req.body["Quantity"] * closingPrice ) + parseFloat(obj["Book Cost"]))/(parseFloat( obj["Quantity"]) + parseFloat(req.body["Quantity"]));
                 stock_entry["Quantity"]= parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
                 stock_entry["Market Value"]= stock_entry["Price"] * stock_entry["Quantity"];
                 stock_entry["Book Cost"]= stock_entry["Average Cost"] * stock_entry["Quantity"];
                 stock_entry["Gain/Loss"]= stock_entry["Market Value"] - stock_entry["Book Cost"];
+                console.log(stock_entry);
+                newStocksList.splice(index, 0, stock_entry);
+                user.investments = newStocksList;
             }else{
                 //Not in the table, so add it to the table
                 user.investments.unshift(stock_entry);
             }
+
+            console.log(user.investments);
 		    
             user.save().then((result) => {
                 console.log(user.investments);

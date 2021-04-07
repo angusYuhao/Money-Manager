@@ -311,18 +311,13 @@ class Investments extends React.Component {
       .then(data =>{
         console.log(data);
       })
-      // .then(data => {
-      //   this.setState({ stocklist_data: data })
-      //   this.totalMoneyInvested();
-      // }
-      //)
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+      })
       .catch(error => {
         console.log(error)
       })
-
-    // const data = await request.json();
-    // console.log(data);
-    // return data;
 };
   
 
