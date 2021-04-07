@@ -139,6 +139,46 @@ export const addUser = (formComp, app) => {
         });
 };
 
+// add FAInfo when an FA signs up
+export const addFAInfo = (formComp) => {
+
+    if (formComp.state.userLevel === "Regular User") {
+        return;
+    }
+
+    const url = `${API_HOST}/users/FAInfo`
+
+    const newFAInfo = {
+        FAName: formComp.state.userName,
+        FAFirstname: formComp.state.firstName,
+        FALastname: formComp.state.lastName,
+        FAIntro: formComp.state.FAIntro,
+        FAFields: formComp.state.FAFields,
+        FAPoints: formComp.state.FAPoints
+    }
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newFAInfo),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    })
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            console.log("Successfully added FAInfo")
+        } else {
+            console.log("Failed to add FAInfo");
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
 // A function to update the signup form state
 export const updateProfile = (profileComp, field) => {
     const value = field.value;

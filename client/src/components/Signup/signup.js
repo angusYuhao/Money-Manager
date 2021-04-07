@@ -21,7 +21,7 @@ import FinancialAdvisorForm from '../FinancialAdvisorForm/financialAdvisorForm.j
 import LinkButton from './linkButton.js';
 import LogoButton from './logoButton.js';
 import FormTitle from './formTitle.js';
-import { updateSignupForm, addUser } from '../../actions/user.js';
+import { updateSignupForm, addUser, addFAInfo } from '../../actions/user.js';
 const useStyles = theme => ({
   root: {
     flexGrow: 1,
@@ -108,7 +108,17 @@ class SignUp extends React.Component {
     firstTimeConfirm: true,
     passwordConfirmError: false, 
     signedUp: false,
+    FAName: "",
+    FAIntro: "N/A",
+    FAFields: "N/A",
+    FAPoints: 0,
   };
+
+  addInfo = () => {
+    console.log("hello????")
+    addUser(this, this.props.app)
+    addFAInfo(this)
+  }
 
   handleInputChange = (event) => {
 
@@ -274,7 +284,7 @@ class SignUp extends React.Component {
                 
                 <Button variant="contained" 
                         color="primary"  
-                        onClick={() => addUser(this, app)}
+                        onClick={() => this.addInfo()}
                         className={classes.signInButton}>
                   Sign up
                 </Button>
