@@ -18,6 +18,7 @@ const express = require("express")
 const path = require('path')
 
 const app = express()
+const spendingsRoutes = require('./routes/spendings')
 
 const MongoStore = require('connect-mongo') // to store session information on the database in production
 const bodyParser = require('body-parser')
@@ -40,34 +41,6 @@ const { Post } = require("./models/posts");
 
 function isMongoError(error) { // checks for first error returned by promise rejection if Mongo database suddently disconnects
     return typeof error === 'object' && error !== null && error.name === "MongoNetworkError"
-}
-
-function checkIfInArray(key, arr, type) {
-    let exists = false
-    arr.map(obj => {
-        if (obj[type] == key) exists = true
-    })
-    return exists
-}
-
-// get the year index from the year 
-function getIndexFromYear(year, arr) {
-    let index = undefined
-    arr.map((yearObj, i) => {
-        const yearFromObj = yearObj["Year"]
-        if (yearFromObj == year) index = i
-    })
-    return index
-}
-
-// get the month index from the month
-function getIndexFromMonth(month, arr) {
-    let index = undefined
-    arr.map((yearObj, i) => {
-        const monthFromObj = yearObj["Month"]
-        if (monthFromObj == month) index = i
-    })
-    return index
 }
 
 // middleware for mongo connection error for routes that need it
@@ -95,7 +68,7 @@ app.use(
         },
         // store the sessions on the database in production
         store: env === 'production' ? MongoStore.create({
-                    mongoUrl: process.env.MONGODB_URI || localMongoURI
+            mongoUrl: process.env.MONGODB_URI || localMongoURI
         }) : null
     })
 );
@@ -126,7 +99,7 @@ app.post("/users/login", (req, res) => {
         });
 });
 
- // A route to logout a user
+// A route to logout a user
 app.get("/users/logout", (req, res) => {
     // Remove the session
     req.session.destroy(error => {
@@ -137,7 +110,7 @@ app.get("/users/logout", (req, res) => {
         }
     });
 });
- // User API Route
+// User API Route
 app.post("/users/signup", mongoChecker, async (req, res) => {
     log(req.body)
 
@@ -633,82 +606,35 @@ app.post('/users/FAInfo', async (req, res) => {
 
 
 /**************************
- ROUTES FOR SPENDINGS
- *************************/
-
-// gets the entire spendings data as well as user defined categories 
-app.get('/spendings/transactions', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        res.send({ spendings: user.spendings, categories: user.spendings_categories })
-    }
-    
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-// adds a new user defined category to the database 
-app.post('/spendings/categories', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-    const newCategory = req.body.newCategory
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        // only add to database if it's not a duplicate of existing category
-        if (!user.spendings_categories.includes(newCategory)) {
-            user.spendings_categories.push(newCategory)
-            const updatedCategories = await user.save()
-            res.send(updatedCategories.spendings_categories)
-        }
-        else {
-            res.status(400).send()
-        }
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-/**************************
  ROUTES FOR INVESTMENTS
  *************************/ 
 let yhFinance = require("yahoo-finance");
 
 // gets the user's stock entries
 // GET /investments
-app.get('/investments',async (req, res) => {
-    if (mongoose.connection.readyState != 1) {  
-        log('Issue with mongoose connection')  
-        res.status(500).send('Internal server error')  
-        return;  
-    }    
+app.get('/investments', async (req, res) => {
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('Internal server error')
+        return;
+    }
 
     const username = "user"
     const pw = "user"
 
     // normal promise version
-	User.findByUserNamePassword(username, pw).then((user) => {
-        if(!user){
+    User.findByUserNamePassword(username, pw).then((user) => {
+        if (!user) {
             res.status(400).send('User not found')
-        }else{
+        } else {
             //just send the entire list of stocks
-		    res.send(user.investments)
+            res.send(user.investments)
         }
-	})
-	.catch((error) => {
-		log(error)
-		res.status(500).send("Internal Server Error")
-	})
+    })
+        .catch((error) => {
+            log(error)
+            res.status(500).send("Internal Server Error")
+        })
 })
 
 //Use this function to get the toDate to accomodate for entry dates enterred in a non-trading day like Good Friday :)
@@ -736,18 +662,16 @@ function getLastWeek(fromDateStr) {
 // adds a stock entry
 // POST /investments
 app.post('/investments', async (req, res) => {
-    if (mongoose.connection.readyState != 1) {  
-        log('Issue with mongoose connection')  
-        res.status(500).send('Internal server error')  
-        return;  
-    }   
-    
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('Internal server error')
+        return;
+    }
+
     const username = "user";
     const pw = "user";
 
     //create new stock entry
-   
-
     //all of the below needs to be calculated again
     // stock_entry["Price"]= req.body["Price"];
     // stock_entry["Average Cost"]= req.body["Average Cost"];
@@ -844,24 +768,24 @@ app.post('/investments', async (req, res) => {
 
 // DELETE investments/<stock name>/
 app.delete('/investments/:name', async (req, res) => {
-    if (mongoose.connection.readyState != 1) {  
-        log('Issue with mongoose connection')  
-        res.status(500).send('Internal server error')  
-        return;  
-    }   
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('Internal server error')
+        return;
+    }
     const stockNameToDelete = req.params.name;
-    
+
     const username = "user";
     const pw = "user";
 
     User.findByUserNamePassword(username, pw).then((user) => {
-		if (!user) {
-			res.status(404).send('User not found')  // could not find this restaurant
-		} else {
-			//save the one to delete such that you can return it later...or else it'll be gone!
-			
-            for(let i = 0; i< user.investments.length;i++){
-                if(user.investments[i]["Name"] == stockNameToDelete){
+        if (!user) {
+            res.status(404).send('User not found')  // could not find this restaurant
+        } else {
+            //save the one to delete such that you can return it later...or else it'll be gone!
+
+            for (let i = 0; i < user.investments.length; i++) {
+                if (user.investments[i]["Name"] == stockNameToDelete) {
                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                     user.investments = newStocksList;
                     user.save().then((result) => {
@@ -874,26 +798,26 @@ app.delete('/investments/:name', async (req, res) => {
                             res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
                         }
                     })
-                    
+
                 }
             }
-			
-		}
-	})
-	.catch((error) => {
-		log(error)
-		res.status(500).send('Internal Server Error')  // server error
-	})		
+
+        }
+    })
+        .catch((error) => {
+            log(error)
+            res.status(500).send('Internal Server Error')  // server error
+        })
 })
 
 //PATCH investments/<old stock name>/
 app.patch('/investments/:name', async (req, res) => {
-    if (mongoose.connection.readyState != 1) {  
-        log('Issue with mongoose connection')  
-        res.status(500).send('Internal server error')  
-        return;  
-    }   
-    const stockNameToEdit = req.params.name;    
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('Internal server error')
+        return;
+    }
+    const stockNameToEdit = req.params.name;
     const username = "user";
     const pw = "user";
     const oldStockEntry = req.body[0];
@@ -929,224 +853,85 @@ app.patch('/investments/:name', async (req, res) => {
                             res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
                         }
                     })
-                    
+
                 }
             }
-			
-		}
-	})
-	.catch((error) => {
-		log(error)
-		res.status(500).send('Internal Server Error')  // server error
-	})		
-})
 
-// deletes a new user defined category from the database 
-app.delete('/spendings/categories', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-    const deleteCategory = req.body.deleteCategory
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        user.spendings_categories.pull(deleteCategory)
-        const updatedCategories = await user.save()
-        res.send(updatedCategories.spendings_categories)
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-// adds a new transaction to a specific year and month sheet 
-app.post('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-
-    const yearIndex = req.params.yearIndex
-    const monthIndex = req.params.monthIndex
-    const newTransaction = req.body
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].unshift(newTransaction)
-        const updatedSpendings = await user.save()
-        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-// modifies a transaction from a specific year and month sheet 
-app.patch('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-
-    const yearIndex = req.params.yearIndex
-    const monthIndex = req.params.monthIndex
-    const editTransaction = req.body
-    editTransaction._id = mongoose.Types.ObjectId(editTransaction._id)
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        const index = user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].findIndex(t => parseInt(t._id) == parseInt(editTransaction._id))
-        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"][index] = editTransaction
-        const updatedSpendings = await user.save()
-        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-// deletes a transaction from a specific year and month sheet 
-app.delete('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-
-    const yearIndex = req.params.yearIndex
-    const monthIndex = req.params.monthIndex
-    const deleteTransaction = req.body
-    const _id = mongoose.Types.ObjectId(deleteTransaction._id)
-
-    try {
-        const user = await User.findByUserNamePassword(username, password)
-        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].pull(_id)
-        const updatedSpendings = await user.save()
-        res.send(updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
-
-})
-
-// adds a new sheet for the spendings, year and month specified in body 
-app.post('/spendings/sheet', async (req, res) => {
-
-    const username = "user"
-    const password = "user"
-
-    const month = req.body.month
-    const year = req.body.year
-    const projectedSpendings = req.body.projectedSpendings
-
-    try {
-
-        const user = await User.findByUserNamePassword(username, password)
-
-        // create new object for the year if the year doesn't exist
-        if (!checkIfInArray(year, user.spendings, "Year")) {
-            let newObj = new Object()
-            newObj["Year"] = year
-            newObj["Data"] = []
-            user.spendings.push(newObj)
         }
-
-        const yearIndex = getIndexFromYear(year, user.spendings)
-
-        // if attempting to create an exisiting month/year combination, return 
-        if (checkIfInArray(month, user.spendings[yearIndex]["Data"], "Month")) {
-            console.log("Month/Year already exists!")
-            res.status(201).send(user.spendings)
-        }
-
-        // create new object for the month 
-        else {
-            let newObj = new Object()
-            newObj["Month"] = month
-            newObj["Data"] = new Object()
-            user.spendings[yearIndex]["Data"].push(newObj)
-        }
-
-        const monthIndex = getIndexFromMonth(month, user.spendings[yearIndex]["Data"])
-
-        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"] = []
-        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"] = projectedSpendings
-
-        const updatedSpendings = await user.save()
-        res.send(updatedSpendings.spendings)
-
-    }
-
-    catch (error) {
-        res.status(400).send()
-    }
+    })
+        .catch((error) => {
+            log(error)
+            res.status(500).send('Internal Server Error')  // server error
+        })
 })
 
 /**************************
- ROUTES FOR COMMUNITY
- *************************/ 
+ ROUTES FOR SPENDINGS
+ *************************/
 
- // get all posts
- app.get('/community/posts', async (req, res) => {
+app.use('/spendings', spendingsRoutes)
+
+/**************************
+ ROUTES FOR COMMUNITY
+ *************************/
+
+// get all posts
+app.get('/community/posts', async (req, res) => {
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('Issue with mongoose connection')
-		res.status(500).send('internal server error')
-		return
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('internal server error')
+        return
+    }
 
     try {
         const allPosts = await Post.find()
         console.log(allPosts)
         res.send(allPosts)
     }
-    catch(error) {
+    catch (error) {
         log(error)
-		res.status(500).send("internal server error")
+        res.status(500).send("internal server error")
     }
- })
+})
 
- // get posts by username
- app.get('/community/posts/:username', async (req, res) => {
+// get posts by username
+app.get('/community/posts/:username', async (req, res) => {
 
     const targetUsername = req.params.username
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('Issue with mongoose connection')
-		res.status(500).send('internal server error')
-		return
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('internal server error')
+        return
+    }
 
     try {
         const postsByUsername = await Post.find({ username: targetUsername })
         if (!postsByUsername) {
-            res.status(404),send("resouce not found")
+            res.status(404), send("resouce not found")
         }
         else {
             res.send(postsByUsername)
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
-		res.status(500).send("internal server error")
+        res.status(500).send("internal server error")
     }
- })
+})
 
- // add new post
- app.post('/community/posts', async (req, res) => {
+// add new post
+app.post('/community/posts', async (req, res) => {
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('Issue with mongoose connection')
-		res.status(500).send('internal server error')
-		return
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('internal server error')
+        return
+    }
 
     const newPost = new Post({
         postID: req.body.postID,
@@ -1162,11 +947,11 @@ app.post('/spendings/sheet', async (req, res) => {
 
     // console.log("im here", newPost)
 
-    try{
+    try {
         const result = await newPost.save()
         res.status(200).send(result)
     }
-    catch(error) {
+    catch (error) {
         log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -1175,20 +960,20 @@ app.post('/spendings/sheet', async (req, res) => {
             res.status(400).send("bad request")
         }
     }
- })
+})
 
- // delete a post
- app.delete('/community/posts/:postID', async (req, res) => {
+// delete a post
+app.delete('/community/posts/:postID', async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     try {
         let targetPost = await Post.findOneAndDelete({ postID: targetPostID })
@@ -1200,69 +985,69 @@ app.post('/spendings/sheet', async (req, res) => {
             res.send(targetPost)
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
-		res.status(500).send('internal server error')
+        res.status(500).send('internal server error')
     }
- })
+})
 
- // edit the post (upvotes and downvotes)
- /*
+// edit the post (upvotes and downvotes)
+/*
 [
-  { "op": "replace", "path": "/numUpvotes", "value": 4 },
-  { "op": "replace", "path": "/numDownvotes", "value": 5 },
-  ...
+ { "op": "replace", "path": "/numUpvotes", "value": 4 },
+ { "op": "replace", "path": "/numDownvotes", "value": 5 },
+ ...
 ]
 */
- app.patch('/community/posts/:postID', async (req, res) => {
+app.patch('/community/posts/:postID', async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log("in patch", targetPostID)
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     // Find the fields to update and their values.
-	const fieldsToUpdate = {}
-	req.body.map((change) => {
-		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
-		fieldsToUpdate[propertyToChange] = change.value
-	})
+    const fieldsToUpdate = {}
+    req.body.map((change) => {
+        const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+        fieldsToUpdate[propertyToChange] = change.value
+    })
 
     // Update the student by their id.
-	try {
-		const retPost = await Post.findOneAndUpdate({postID: targetPostID}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
-		if (!retPost) {
-			res.status(404).send('Resource not found')
-		} else {   
-			res.send(retPost)
-		}
-	} catch (error) {
-		log(error)
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') // bad request for changing the student.
-		}
-	}
- })
+    try {
+        const retPost = await Post.findOneAndUpdate({ postID: targetPostID }, { $set: fieldsToUpdate }, { new: true, useFindAndModify: false })
+        if (!retPost) {
+            res.status(404).send('Resource not found')
+        } else {
+            res.send(retPost)
+        }
+    } catch (error) {
+        log(error)
+        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+            res.status(500).send('Internal server error')
+        } else {
+            res.status(400).send('Bad Request') // bad request for changing the student.
+        }
+    }
+})
 
- // add new comment to a post
- app.post('/community/posts/:postID', async (req, res) => {
+// add new comment to a post
+app.post('/community/posts/:postID', async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log(targetPostID)
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     try {
         let targetPost = await Post.find({ postID: targetPostID })
@@ -1279,16 +1064,16 @@ app.post('/spendings/sheet', async (req, res) => {
             res.status(200).send(comment)
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
-		if (isMongoError(error)) {
-			res.status(500).send('internal server error')
-		}
-		else {
-			res.status(400).send('bad request')
-		}
+        if (isMongoError(error)) {
+            res.status(500).send('internal server error')
+        }
+        else {
+            res.status(400).send('bad request')
+        }
     }
- })
+})
 
 /*** Webpage routes below **********************************/
 // Serve the build

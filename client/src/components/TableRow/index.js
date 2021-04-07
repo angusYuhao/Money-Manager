@@ -21,6 +21,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 const useStyles = () => ({
     formControl_root: {
         minWidth: "10vw",
+    },
+    noBottomBorderTableCell: {
+        borderBottom: "0px"
     }
 })
 
@@ -207,6 +210,11 @@ class TableRowComp extends React.Component {
                     onChange={(e) => this.textFieldOnChangeHandler(e, this.props.headings, index)}
                 // InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
                 > </TextField>
+
+            case "None":
+                return <TableCell classes={{ root: this.props.classes.noBottomBorderTableCell }}>
+                    {this.props.row[heading]}
+                </TableCell>
 
             default:
                 return <TextField

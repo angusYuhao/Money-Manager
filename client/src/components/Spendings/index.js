@@ -30,6 +30,7 @@ import Typography from '@material-ui/core/Typography';
 
 import './spendings.css'
 // import { data } from './data'
+import noResultsFound from '../Images/noResultsFound.jpg';
 
 import TableComp from '../Table'
 import PieChart from '../Investments/PieChart'
@@ -45,7 +46,6 @@ const useStyles = () => ({
   },
   menu_list: {
     width: "15vw",
-    marginTop: "5%",
     marginLeft: "1vw",
     marginRight: "1vw"
   },
@@ -81,6 +81,27 @@ const useStyles = () => ({
     padding: "20px",
     backgroundColor: deepPurple[100],
     zIndex: "-1",
+  },
+  noSheetsMsgDiv: {
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: "30vw",
+    borderRadius: "25px",
+    padding: "20px",
+    maxHeight: "10vh",
+    width: "100%",
+    backgroundColor: deepPurple[100],
+    zIndex: "-1",
+  },
+  noResultsFoundImgDiv: {
+    marginTop: "5%",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  noResultsFoundImg: {
+    maxWidth: "30vw",
+    maxHeight: "50vh"
   }
 })
 
@@ -133,12 +154,16 @@ class Spendings extends React.Component {
       sumForCategories: [],
       // the position for the menu used to create a new spendings page
       menuPosition: null,
+      // the position for the menu used for deleting a sheet for the specific month
+      deleteMonthPosition: null,
       // the month selected for the menu
       newSpendings: { month: "", year: "", projectedSpendings: "" },
       // the projected balance on the selected year and month 
       projectedSpendings: 0,
       // used for changing the colours of the items in the drawer 
-      currentlySelectedMonth: { monthIndex: "", yearIndex: "" }
+      currentlySelectedMonth: { monthIndex: "", yearIndex: "" },
+      // used for deleting a sheet for the specific month
+      monthToDelete: { monthIndex: "", yearIndex: "" }
     }
 
     /***************************************************************************************************************************
@@ -147,26 +172,6 @@ class Spendings extends React.Component {
     you would also need to get the transactions_categories from the server since the user can have their own customized categories 
     which would need to be stored in a database 
     ****************************************************************************************************************************/
-
-    // initialize transactions_data
-    this.sortEntireData()
-
-    // only initialize if there is any spendings sheet in the database 
-    if (this.state.entire_data.length != 0) {
-      this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
-      this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
-      this.state.currentlySelectedMonth["monthIndex"] = "0"
-      this.state.currentlySelectedMonth["yearIndex"] = "0"
-
-      this.setState({
-        transactions_data: this.state.transactions_data,
-        projectedSpendings: this.state.projectedSpendings,
-        currentlySelectedMonth: this.state.currentlySelectedMonth
-      })
-    }
-
-    this.sumCategoriesAmount()
-    this.sumAccountBalance()
 
   }
 
@@ -202,7 +207,29 @@ class Spendings extends React.Component {
 
       .then(res => res.json())
       .then(data => {
+
         this.setState({ entire_data: data.spendings, transactions_categories: data.categories })
+
+        // initialize transactions_data
+        // this.sortEntireData()
+
+        // only initialize if there is any spendings sheet in the database 
+        if (this.state.entire_data.length != 0) {
+          this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
+          this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+          this.state.currentlySelectedMonth["monthIndex"] = "0"
+          this.state.currentlySelectedMonth["yearIndex"] = "0"
+
+          this.setState({
+            transactions_data: this.state.transactions_data,
+            projectedSpendings: this.state.projectedSpendings,
+            currentlySelectedMonth: this.state.currentlySelectedMonth
+          })
+        }
+
+        this.sumCategoriesAmount()
+        this.sumAccountBalance()
+
       })
       .catch(error => {
         console.log(error)
@@ -295,7 +322,6 @@ class Spendings extends React.Component {
     const body = newTransaction
     const yearIndex = this.state.currentlySelectedMonth.yearIndex
     const monthIndex = this.state.currentlySelectedMonth.monthIndex
-
     const url = `${API_HOST}/spendings/transaction/${yearIndex}/${monthIndex}`
     const request = new Request(url, {
       method: "POST",
@@ -309,7 +335,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data })
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
         this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
@@ -344,7 +370,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data })
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
         this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
@@ -379,7 +405,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data })
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
       })
       .catch(error => {
         console.log(error)
@@ -453,6 +479,34 @@ class Spendings extends React.Component {
     *********************************************************************************/
   }
 
+  // deletes a sheet for the specific month 
+  deleteMonth() {
+
+    // hide the menu that contains "delete"
+    this.hideDeleteMonth()
+
+    const yearIndex = this.state.monthToDelete.yearIndex
+    const monthIndex = this.state.monthToDelete.monthIndex
+
+    const url = `${API_HOST}/spendings/sheet/${yearIndex}/${monthIndex}`
+    const request = new Request(url, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ entire_data: data })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
@@ -472,6 +526,14 @@ class Spendings extends React.Component {
 
   displayAddNewMonth = (e) => {
     this.setState({ menuPosition: e.currentTarget })
+  }
+
+  hideDeleteMonth = () => {
+    this.setState({ deleteMonthPosition: null })
+  }
+
+  displayDeleteMonth = (e) => {
+    this.setState({ deleteMonthPosition: e.currentTarget })
   }
 
   // to update the months on the select for the menu
@@ -523,8 +585,25 @@ class Spendings extends React.Component {
         this.state.entire_data = data
 
         // sorting data again so it's in order 
-        this.sortEntireData()
+        // this.sortEntireData()
         this.setState({ entire_data: this.state.entire_data })
+        
+        const yearIndex = this.getIndexFromYear(year, this.state.entire_data)
+        const monthIndex = this.getIndexFromMonth(month, this.state.entire_data[yearIndex]["Data"])
+        
+        this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
+        this.state.projectedSpendings = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"]
+        this.state.currentlySelectedMonth["monthIndex"] = monthIndex
+        this.state.currentlySelectedMonth["yearIndex"] = yearIndex
+
+        this.setState({
+          transactions_data: this.state.transactions_data,
+          projectedSpendings: this.state.projectedSpendings,
+          currentlySelectedMonth: this.state.currentlySelectedMonth
+        })
+
+        this.sumCategoriesAmount()
+        this.sumAccountBalance()
 
         // resetting form and closing menu 
         Object.keys(this.state.newSpendings).map(heading => {
@@ -542,22 +621,6 @@ class Spendings extends React.Component {
     *********************************************************************************/
   }
 
-  // sorting the entire dataset for transactions of all months and years 
-  sortEntireData() {
-    this.state.entire_data.map((yearObj, index) => {
-      this.state.entire_data[index]["Data"].sort(this.sortDataByKey)
-    })
-    this.state.entire_data.sort(this.sortDataByKey)
-  }
-
-  sortDataByKey(a, b) {
-    // keys can be either month or year, want the latest to be on top 
-    const keyA = "Year" in a ? parseInt(a["Year"]) : parseInt(a["Month"])
-    const keyB = "Year" in b ? parseInt(b["Year"]) : parseInt(b["Month"])
-    if (keyA > keyB) return -1
-    else return 1
-  }
-
   // when clicking the months on the drawer, need to update the transactions_data in state for the table 
   monthsOnClickHandler(e, yearIndex, monthIndex, year, month) {
     this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
@@ -570,6 +633,11 @@ class Spendings extends React.Component {
     })
     this.sumAccountBalance()
     this.sumCategoriesAmount()
+  }
+
+  monthsOnRightClickHandler(e, yearIndex, monthIndex) {
+    e.preventDefault() // to hide the usual menu for right click 
+    this.setState({ monthToDelete: { yearIndex: yearIndex, monthIndex: monthIndex } })
   }
 
   // renders the months for a specific year in the drawer
@@ -711,6 +779,22 @@ class Spendings extends React.Component {
 
                 </Menu>
 
+                {/* menu to display "delete" for the months  */}
+                <Menu
+                  id="long-menu"
+                  anchorEl={this.state.deleteMonthPosition}
+                  open={Boolean(this.state.deleteMonthPosition)}
+                  onClose={() => this.hideDeleteMonth()}
+                  classes={{ list: classes.menu_list }}>
+
+                  <MenuItem
+                    key="Delete"
+                    onClick={() => this.deleteMonth()}>
+                    Delete
+                  </MenuItem>
+
+                </Menu>
+
                 <IconButton
                   aria-label="add"
                   onClick={(e) => this.displayAddNewMonth(e)}>
@@ -737,7 +821,11 @@ class Spendings extends React.Component {
                             className={(this.state.currentlySelectedMonth["yearIndex"] == yearIndex && this.state.currentlySelectedMonth["monthIndex"] == monthIndex) ? classes.listItem_buttonSelected : classes.listItem_button}
                             button
                             key={month}
-                            onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
+                            onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}
+                            onContextMenu={(e) => {
+                              this.monthsOnRightClickHandler(e, yearIndex, monthIndex)
+                              this.displayDeleteMonth(e)
+                            }}>
                             <ListItemText primary={month} />
                           </ListItem>
                         ))}
@@ -751,94 +839,115 @@ class Spendings extends React.Component {
 
             </div>
 
-            <div className="Content">
+            {this.state.entire_data.length == 0 ?
 
-              <div className="Chart">
+              <div className="ContentNoMsgs" >
 
-                <PieChart
-                  listToDisplay={this.state.sumForCategories}
-                  pieChartSize={600}
-                  pieChartRadius={150}
-                >
+                <div className={classes.noResultsFoundImgDiv}>
+                  <img className={classes.noResultsFoundImg} src={noResultsFound} />
+                </div>
 
-                </PieChart>
-
-                <div className={classes.accountBalanceDiv}>
+                <div className={classes.noSheetsMsgDiv}>
                   <Typography variant="h5" className={classes.accountBalance}>
-                    Total Amount: ${this.state.accountBalance}
-                    <br></br>
-                    Projected Spendings: ${this.state.projectedSpendings}
+                    You don't have any sheets for the moment. <br></br>
+                    Please click the "Add" button on the top left corner to add a new sheet.
                   </Typography>
                 </div>
 
               </div>
 
-              <div className="Table">
+              :
 
-                <TableComp
-                  // use the TableContainer class to style the table itself 
-                  classes={{ TableContainer: 'TableContainer' }}
-                  headings={this.state.transactions_headings}
-                  data={this.state.transactions_data}
-                  options={this.state.transactions_options}
-                  categories={this.state.transactions_categories}
-                  addRow={this.addTransaction}
-                  editRow={this.editTransaction}
-                  removeRow={this.deleteTransaction}
-                  addCategory={this.addCategory}
-                  removeCategory={this.deleteCategory}
-                />
+              <div className="Content">
 
-                <div className="SortButtons">
+                <div className="Chart">
 
-                  <Grid container spacing={3}>
+                  <PieChart
+                    listToDisplay={this.state.sumForCategories}
+                    pieChartSize={600}
+                    pieChartRadius={150}
+                  >
 
-                    <Grid item xs={4}>
-                      <Paper>
-                        <Button
-                          className="SortButton"
-                          variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
-                          color="primary"
-                          onClick={() => this.changeSort("Date")}>
-                          Sort By Date
+                  </PieChart>
+
+                  <div className={classes.accountBalanceDiv}>
+                    <Typography variant="h5" className={classes.accountBalance}>
+                      Total Amount: ${this.state.accountBalance}
+                      <br></br>
+                    Projected Spendings: ${this.state.projectedSpendings}
+                    </Typography>
+                  </div>
+
+                </div>
+
+                <div className="Table">
+
+                  <TableComp
+                    // use the TableContainer class to style the table itself 
+                    classes={{ TableContainer: 'TableContainer' }}
+                    headings={this.state.transactions_headings}
+                    data={this.state.transactions_data}
+                    options={this.state.transactions_options}
+                    categories={this.state.transactions_categories}
+                    addRow={this.addTransaction}
+                    editRow={this.editTransaction}
+                    removeRow={this.deleteTransaction}
+                    addCategory={this.addCategory}
+                    removeCategory={this.deleteCategory}
+                  />
+
+                  <div className="SortButtons">
+
+                    <Grid container spacing={3}>
+
+                      <Grid item xs={4}>
+                        <Paper>
+                          <Button
+                            className="SortButton"
+                            variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                            color="primary"
+                            onClick={() => this.changeSort("Date")}>
+                            Sort By Date
                           {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                        </Button>
-                      </Paper>
-                    </Grid>
+                          </Button>
+                        </Paper>
+                      </Grid>
 
-                    <Grid item xs={4}>
-                      <Paper>
-                        <Button
-                          className="SortButton"
-                          variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
-                          color="primary"
-                          onClick={() => this.changeSort("Amount")}>
-                          Sort By Amount
+                      <Grid item xs={4}>
+                        <Paper>
+                          <Button
+                            className="SortButton"
+                            variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                            color="primary"
+                            onClick={() => this.changeSort("Amount")}>
+                            Sort By Amount
                           {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                        </ Button>
-                      </Paper>
-                    </Grid>
+                          </ Button>
+                        </Paper>
+                      </Grid>
 
-                    <Grid item xs={4}>
-                      <Paper>
-                        <Button
-                          className="SortButton"
-                          variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
-                          color="primary"
-                          onClick={() => this.changeSort("Category")}>
-                          Sort By Category
+                      <Grid item xs={4}>
+                        <Paper>
+                          <Button
+                            className="SortButton"
+                            variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                            color="primary"
+                            onClick={() => this.changeSort("Category")}>
+                            Sort By Category
                           {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                        </Button>
-                      </Paper>
+                          </Button>
+                        </Paper>
+                      </Grid>
+
                     </Grid>
 
-                  </Grid>
+                  </div>
 
                 </div>
 
               </div>
 
-            </div>
+            }
 
           </div >
 

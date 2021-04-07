@@ -2,11 +2,15 @@
     max-height: 65vh;
 }
 
-.Content {
+.Content, .ContentNoMsgs {
     width: 93vw;
     height: 90vh;
     margin: none;
     display: flex;
+}
+
+.ContentNoMsgs {
+    flex-flow: wrap;
 }
 
 .Table {
