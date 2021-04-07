@@ -46,7 +46,6 @@ const useStyles = () => ({
   },
   menu_list: {
     width: "15vw",
-    marginTop: "5%",
     marginLeft: "1vw",
     marginRight: "1vw"
   },
@@ -155,12 +154,16 @@ class Spendings extends React.Component {
       sumForCategories: [],
       // the position for the menu used to create a new spendings page
       menuPosition: null,
+      // the position for the menu used for deleting a sheet for the specific month
+      deleteMonthPosition: null,
       // the month selected for the menu
       newSpendings: { month: "", year: "", projectedSpendings: "" },
       // the projected balance on the selected year and month 
       projectedSpendings: 0,
       // used for changing the colours of the items in the drawer 
-      currentlySelectedMonth: { monthIndex: "", yearIndex: "" }
+      currentlySelectedMonth: { monthIndex: "", yearIndex: "" },
+      // used for deleting a sheet for the specific month
+      monthToDelete: { monthIndex: "", yearIndex: "" }
     }
 
     /***************************************************************************************************************************
@@ -475,6 +478,34 @@ class Spendings extends React.Component {
     *********************************************************************************/
   }
 
+  // deletes a sheet for the specific month 
+  deleteMonth() {
+
+    // hide the menu that contains "delete"
+    this.hideDeleteMonth()
+
+    const yearIndex = this.state.monthToDelete.yearIndex
+    const monthIndex = this.state.monthToDelete.monthIndex
+
+    const url = `${API_HOST}/spendings/sheet/${yearIndex}/${monthIndex}`
+    const request = new Request(url, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      }
+    })
+
+    fetch(request)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ entire_data: data })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
@@ -494,6 +525,14 @@ class Spendings extends React.Component {
 
   displayAddNewMonth = (e) => {
     this.setState({ menuPosition: e.currentTarget })
+  }
+
+  hideDeleteMonth = () => {
+    this.setState({ deleteMonthPosition: null })
+  }
+
+  displayDeleteMonth = (e) => {
+    this.setState({ deleteMonthPosition: e.currentTarget })
   }
 
   // to update the months on the select for the menu
@@ -576,6 +615,11 @@ class Spendings extends React.Component {
     })
     this.sumAccountBalance()
     this.sumCategoriesAmount()
+  }
+
+  monthsOnRightClickHandler(e, yearIndex, monthIndex) {
+    e.preventDefault() // to hide the usual menu for right click 
+    this.setState({ monthToDelete: { yearIndex: yearIndex, monthIndex: monthIndex } })
   }
 
   // renders the months for a specific year in the drawer
@@ -717,6 +761,22 @@ class Spendings extends React.Component {
 
                 </Menu>
 
+                {/* menu to display "delete" for the months  */}
+                <Menu
+                  id="long-menu"
+                  anchorEl={this.state.deleteMonthPosition}
+                  open={Boolean(this.state.deleteMonthPosition)}
+                  onClose={() => this.hideDeleteMonth()}
+                  classes={{ list: classes.menu_list }}>
+
+                  <MenuItem
+                    key="Delete"
+                    onClick={() => this.deleteMonth()}>
+                    Delete
+                  </MenuItem>
+
+                </Menu>
+
                 <IconButton
                   aria-label="add"
                   onClick={(e) => this.displayAddNewMonth(e)}>
@@ -743,7 +803,11 @@ class Spendings extends React.Component {
                             className={(this.state.currentlySelectedMonth["yearIndex"] == yearIndex && this.state.currentlySelectedMonth["monthIndex"] == monthIndex) ? classes.listItem_buttonSelected : classes.listItem_button}
                             button
                             key={month}
-                            onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}>
+                            onClick={(e) => this.monthsOnClickHandler(e, yearIndex, monthIndex, this.getYearFromIndex(yearIndex), month)}
+                            onContextMenu={(e) => {
+                              this.monthsOnRightClickHandler(e, yearIndex, monthIndex)
+                              this.displayDeleteMonth(e)
+                            }}>
                             <ListItemText primary={month} />
                           </ListItem>
                         ))}

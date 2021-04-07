@@ -504,6 +504,37 @@ app.delete('/spendings/transaction/:yearIndex/:monthIndex', async (req, res) => 
 
 })
 
+// deletes a sheet for the spendings
+app.delete('/spendings/sheet/:yearIndex/:monthIndex', async (req, res) => {
+    
+    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    const userID = req.session.user
+
+    const yearIndex = req.params.yearIndex
+    const monthIndex = req.params.monthIndex
+
+    try {
+
+        const user = await User.findById(userID)
+        user.spendings[yearIndex]["Data"].splice(monthIndex, 1)
+        if (user.spendings[yearIndex]["Data"].length == 0) {
+            user.spendings.splice(yearIndex, 1)
+        }
+        user.spendings.map((yearObj, index) => {
+            user.spendings[index]["Data"].sort(sortDataByKey)
+        })
+        user.spendings.sort(sortDataByKey)
+        const updatedSpendings = await user.save()
+        res.send(updatedSpendings.spendings)
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
 // adds a new sheet for the spendings, year and month specified in body 
 app.post('/spendings/sheet', async (req, res) => {
 
@@ -558,6 +589,7 @@ app.post('/spendings/sheet', async (req, res) => {
     catch (error) {
         res.status(400).send()
     }
+
 })
 
 /**************************
