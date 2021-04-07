@@ -1,8 +1,13 @@
 import React from 'react';
 import PieChart from './PieChart'
+import BarChart from './BarChart'
+// import newBarChart from './BarChartNew'
 import TableComp from '../Table'
 import './investments.css'
+
 import SortButton from './SortButton';
+// import App from './liveStock';
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
@@ -10,6 +15,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
+
 // getting the config settings variable 
 import CONFIG from '../../config'
 const API_HOST = CONFIG.api_host
@@ -41,24 +47,21 @@ const theme = createMuiTheme({
 class Investments extends React.Component {
 
   state = {
+    //general account data: upon signup, pass in this info
+    accountName: "TFSA",
+    accountNumber: "ABCDEFG",
+    currency: "USD$",
+
     //general stock data
-    stockList_headings: ["Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
-    stockList_options: ["Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
+    stockList_headings: ["Last Traded Date", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
+    stockList_options: ["Date", "Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
     stockList_categories: [],
     stocklist_data: [],
-    //some hard coded stock entries: will need to be linked to some database
-    // stocklist_data: [{"Name": "FB", "Quantity": 15, "Price": 310.0, "Average Cost": 232.5,  "Market Value": 4560, "Book Cost": 3487.5, "Gain/Loss":1072.5},
-    // {"Name": "GOOGL", "Quantity": 3, "Price": 1500.40, "Average Cost": 1523,  "Market Value": 4501.2, "Book Cost": 4569, "Gain/Loss":-67.8 },
-    // {"Name": "PDD", "Quantity": 9, "Price": 260.03, "Average Cost": 250,  "Market Value": 2340.27, "Book Cost": 2250, "Gain/Loss":-240},
-    // {"Name": "GME", "Quantity": 11, "Price": 280.45, "Average Cost": 340,  "Market Value": 3084.95, "Book Cost": 3740, "Gain/Loss":-655.05 },
-    // {"Name": "MSFT", "Quantity": 6, "Price": 330.0, "Average Cost": 280,  "Market Value": 1980, "Book Cost": 1680, "Gain/Loss":1473.56},
-    // {"Name": "BABA", "Quantity": 17, "Price": 222.98, "Average Cost": 136.3,  "Market Value": 3790.66, "Book Cost": 2317.1, "Gain/Loss":1473.56 },
-    // {"Name": "V", "Quantity": 20, "Price": 233.0, "Average Cost": 220,  "Market Value": 4660, "Book Cost": 4400, "Gain/Loss":260},
-    // {"Name": "SHOP", "Quantity": 20, "Price": 233.8, "Average Cost": 220,  "Market Value": 4676, "Book Cost": 4400, "Gain/Loss":276}],
 
     //table values  
-    sortBy: "Market Value",
+    sortBy: "Last Traded Date",
     sortDes: {
+      "Last Traded Date": false,
       "Name": false,
       "Quantity": false,
       "Market Value": false,
@@ -71,32 +74,14 @@ class Investments extends React.Component {
     //overview card and the pie chart itself
     pieChartSize: 700,
     pieChartRadius: 190,
+    barChartWidth: 1100,
+    barChartHeight: 600,
     total: 0,
   }
 
   
   constructor(props) {
     super(props);
-    // const url = `${API_HOST}/investments`
-    // const request = new Request(url, {
-    //   method: "GET",
-    //   headers: {
-    //     Accept: "application/json, text/plain, */*",
-    //     "Content-Type": "application/json"
-    //   }
-    // })
-
-    // fetch(request)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     this.setState({ stocklist_data: data })
-    //     this.totalMoneyInvested();
-
-    //   })
-    //   .catch(error => {
-    //     console.log(error)
-    //   })
-
     this.changeSort = this.changeSort.bind(this);
     
   }
@@ -104,6 +89,15 @@ class Investments extends React.Component {
   //For sorting the stock entries in the table:
   sortObj = (a, b) => {
     switch (this.state.sortBy) {
+      case "Last Traded Date":
+        if (!this.state.sortDes["Last Traded Date"]) {
+          if (a["Last Traded Date"] < b["Last Traded Date"]) return -1
+          else return 1
+        }
+        else {
+          if (a["Last Traded Date"] > b["Last Traded Date"]) return -1
+          else return 1
+        }
 
       case "Name":
         if (!this.state.sortDes["Name"]) {
@@ -221,6 +215,7 @@ class Investments extends React.Component {
           console.log("You already have a stock with the same name in your stock table!");
           return;
         }
+        console.log(data);
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
 
@@ -228,8 +223,7 @@ class Investments extends React.Component {
       .catch(error => {
         console.log(error)
       })
-
-
+      console.log(this.state.stocklist_data)
     // this.state.stocklist_data.unshift(newStock)
     // this.setState({ stocklist_data: this.state.stocklist_data })
     // this.totalMoneyInvested();
@@ -247,7 +241,7 @@ class Investments extends React.Component {
     const url = `${API_HOST}/investments/${stockname}/`
     const request = new Request(url, {
       method: "PATCH",
-      body: JSON.stringify(newStock),
+      body: JSON.stringify([oldStock,newStock]),
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json"
@@ -298,6 +292,35 @@ class Investments extends React.Component {
       })
   }
 
+
+  getStock = async ticker => {
+    console.log("Getting data");
+    const request = new Request(`${API_HOST}/stock`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    
+        body: JSON.stringify({
+          ticker: ticker,
+        })
+    });
+  
+    fetch(request)
+      .then(res => res.json())
+      .then(data =>{
+        console.log(data);
+      })
+      .then(data => {
+        this.setState({ stocklist_data: data })
+        this.totalMoneyInvested();
+      })
+      .catch(error => {
+        console.log(error)
+      })
+};
+  
+
   changeSort(sortBy) {
     this.state.sortBy = sortBy
     this.setState({ sortBy: this.state.sortBy })
@@ -307,32 +330,35 @@ class Investments extends React.Component {
   }
 
   render() {
-
     const { loggedIn } = this.props
-
     return ( 
-
     loggedIn ? 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
 
       <div className = "PieChartGeneral">
-
-          <div className = "TitleAndPieChart">
-            <div className = "StockPieChartTitle">
-                Stock Portfolio
-            </div>
-            <div className = "PieChart">
-              <PieChart totalAmountInvested = {this.state.total} listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
-            </div>
+        <div className = "TitleAndPieChart">
+          <div className = "StockPieChartTitle">
+              Stock Portfolio
           </div>
-
-          <div className = "GeneralInfo">
-            <GeneralCard total = {this.state.total}/>
+          <div className = "PieChart">
+            <PieChart listToDisplay = {this.state.stocklist_data} pieChartSize = {this.state.pieChartSize} pieChartRadius = {this.state.pieChartRadius}/>            
           </div>
+        </div>
 
+        <div className = "GeneralInfo">
+          <GeneralCard total = {this.state.total} accountName = {this.state.accountName} accountNumber = {this.state.accountNumber} currency = {this.state.currency}/>
+        </div>
       </div>
 
+      <div className = "BarChartGeneral">
+        <div className = "BarChartTitle">
+            Overall Portfolio Performance
+        </div>
+        <div className = "BarChart">
+          <BarChart listToDisplay = {this.state.stocklist_data} numDatasets = {3} indices = {["Book Cost", "Gain/Loss", "Average Cost"]} labelIndex = "Name" barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>
+        </div>
+      </div>
 
       <div className = "StockList">
         <div className="StockTable">
@@ -350,6 +376,8 @@ class Investments extends React.Component {
         </div>
 
         <div className="SortButtons">
+          <SortButton categoryName = "Last Traded Date" callBackFunction = {this.changeSort} 
+          sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
           <SortButton categoryName = "Name" callBackFunction = {this.changeSort} 
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
           <SortButton categoryName = "Quantity" callBackFunction = {this.changeSort} 
@@ -359,11 +387,13 @@ class Investments extends React.Component {
           <SortButton categoryName = "Gain/Loss" callBackFunction = {this.changeSort} 
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
         </div>
+
+        <div className = "Calculator">
+        <Calculator/>
+        </div>
       </div>
 
-      <div className = "Calculator">
-      <Calculator/>
-      </div>
+     
 
     </div>
     </ThemeProvider> : <Redirect to="/login" />

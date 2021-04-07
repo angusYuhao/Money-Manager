@@ -5,6 +5,7 @@
     margin-left: 8%;
     margin-right: 8%;
     display: flex;
+    overflow:auto; 
 
 }
 
@@ -22,8 +23,11 @@
 }
 
 .BarChart{
-    margin-top: 1%;
-    /* position:absolute; */
+    width: 95vw;
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0%;
 }
 
 .StockTable{
@@ -34,23 +38,23 @@
 
 .SortButtons{
     display: flex; 
-    width: 100%; 
+    width: 90vw; 
     margin-top: 2%;
-    justify-content: space-between;
+    justify-content: space-between;    
 }
 
 .InvestmentSortButton{
     height: 100%;
     width: 100%;
     display: flex; 
+    justify-content: center;
 }
 
 .StockPieChartTitle{
     height: 20px;
-    /* color: #673ab7; */
-    color: #5423a8;
+    color: #6C3483 ;
     font-weight: bold;
-    font-size: 250%;
+    font-size: 220%;
     width: 100%;
     float: center;
     text-align: center;
@@ -58,9 +62,26 @@
     margin-bottom: 0%;
 }
 
+.BarChartTitle{
+    height: 20px;
+    color: #6C3483 ;
+    font-weight: bold;
+    font-size: 220%;
+    width: 100%;
+    float: center;
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 0%;
+}
+
 .Calculator{
-    margin-left: 5%;
-    margin-right: 5%;
+    /* display: flex; */
+    width: 90vw; 
+    /* vertical-align: middle; */
+    justify-content: center;
+    margin-top: 5%;
+    /* margin-left: 5%;
+    margin-right: 5%; */
     margin-bottom: 5%;
 }
 
@@ -85,4 +106,8 @@
     margin-right: 3%;
     width: 95%;
     height: 190px;
+}
+
+.InvestmentPage{
+    position:absolute
 }

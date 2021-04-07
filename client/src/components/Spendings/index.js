@@ -199,6 +199,7 @@ class Spendings extends React.Component {
     })
 
     fetch(request)
+
       .then(res => res.json())
       .then(data => {
         this.setState({ entire_data: data.spendings, transactions_categories: data.categories })
