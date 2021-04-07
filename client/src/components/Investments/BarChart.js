@@ -26,28 +26,40 @@ class BarChart extends React.Component {
 
     drawBars = (indexName) => {
         //!!!Ian: bookCost is the total amount spend on that stock/in that category
-        const {listToDisplay} = this.props
+        const {listToDisplay, numDatasets} = this.props
         if(listToDisplay === undefined || listToDisplay.length == 0){
             return;
         }
 
-        let total = listToDisplay.reduce( (ttl, stock) => {
-            console.log(stock["Gain/Loss"])
-            return ttl + Math.round( (stock[indexName]  * 100)/ 100 )
+        let total = listToDisplay.reduce( (ttl, entry) => {
+            console.log(entry[indexName])
+            return ttl + Math.round( (entry[indexName]  * 100)/ 100 )
         }, 0);
-        console.log(total);
+        // console.log(total);
 
-        //get the max and min gain loss stocks
-        console.log(listToDisplay);
+        //get the max and min gain loss stocks or spendings
+        // console.log(listToDisplay);
         let keyComponentsArray =[];
-        console.log(typeof(keyComponentsArray))
+        // console.log(typeof(keyComponentsArray))
         keyComponentsArray = listToDisplay.map(function (obj) {
-            console.log(obj[indexName])
+            // console.log(obj[indexName])
             return obj[indexName];
         });
-             
-        let maxAmount = keyComponentsArray[0];
-        let minAmount = keyComponentsArray[0];
+
+        //use min = -15, max = 220 for now to ensure drawings are right for now, NEED TO INITIALIZE TO 1st element later
+        // let maxAmount= keyComponentsArray[0];
+        // let minAmount= keyComponentsArray[0];
+        let maxAmount=keyComponentsArray[0];
+        let minAmount=keyComponentsArray[0];
+
+
+        for(let i = 0; i < keyComponentsArray.length; i++){
+            if(maxAmount < keyComponentsArray[i])maxAmount = keyComponentsArray[i];
+            if(minAmount > keyComponentsArray[i])minAmount = keyComponentsArray[i];
+        }
+
+        console.log(maxAmount);
+        console.log(minAmount);
 
         //kinda like the number of pixels to be in that section
         let proportionalHeight = 0;
@@ -62,20 +74,30 @@ class BarChart extends React.Component {
             console.log("ERROR in maxAmount and minAmount");
         }
 
-        //Make it slightly bigger to look a bit better
-        proportionalHeight *= 0.1;
+        console.log(proportionalHeight);
+       
 
-        for(let i = 0; i < keyComponentsArray.length; i++){
-            if(maxAmount < keyComponentsArray[i])maxAmount = keyComponentsArray[i];
-            if(minAmount > keyComponentsArray[i])minAmount = keyComponentsArray[i];
-        }
-     
+        //For some of the properties needed for drawing the bars.
+        let sectionWidth = this.state.canvasWidth / keyComponentsArray.length;
+        let sectionBorder = 0.05*sectionWidth;
+        let unitHeight = (this.state.canvasHeight /proportionalHeight)*0.9;  //Make it slightly smaller than the canvas to look a bit better
+        let barWidth = (sectionWidth/numDatasets)- (2*sectionBorder);
+        let centerHoritzonalAxis = maxAmount * unitHeight;
+
+        
+
+        let currentSection = 0;
         listToDisplay.forEach(element => {
             console.log("DRAWING")
-            const canvas = document.getElementById('barChartCanvas');
-            const ctx = canvas.getContext('2d');
             this.context.strokeStyle = "#FF0000";
-            this.context.strokeRect(20, 20, 150, 100);
+            console.log(element[indexName]);
+            let barHeight = unitHeight * Math.abs(element[indexName]);
+            console.log(barHeight);
+            let x = (currentSection*sectionWidth) + sectionBorder;
+            let y;
+            if(element[indexName] > 0)y = centerHoritzonalAxis - barHeight;
+            else y = centerHoritzonalAxis;
+            this.context.strokeRect(x, y, barWidth, barHeight);
             // ctx.rect(900,900,100,100);
             // ctx.fill();
             //let ctx = {...this.context}
@@ -101,13 +123,8 @@ class BarChart extends React.Component {
 
 
 
-
+            currentSection+=1;
         });
-       
-
-            
-     
-
     }
 
   

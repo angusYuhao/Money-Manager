@@ -357,14 +357,14 @@ class Investments extends React.Component {
         </div>
       </div>
 
-      {/* <div className = "BarChartGeneral">
+      <div className = "BarChartGeneral">
         <div className = "BarChartTitle">
             Gain/Loss
         </div>
         <div className = "BarChart" id = "">
-          <BarChart listToDisplay = {this.state.stocklist_data}  barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>
+          <BarChart listToDisplay = {this.state.stocklist_data} numDatasets = {1} barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>
         </div>
-      </div> */}
+      </div>
 
       <div className = "StockList">
         <div className="StockTable">
