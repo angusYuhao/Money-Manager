@@ -24,7 +24,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { addPostdb, getPostsdb } from './actions.js';
+import { addPostdb, addUserPostdb, getPostsdb } from './actions.js';
 
 // define styles
 const styles =  theme => ({
@@ -280,7 +280,7 @@ class ForumList extends React.Component {
   }
 
   // called when a new post is created
-  addPost = (username, callback) => {
+  addPost = (username, callback1, callback2) => {
 
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
@@ -314,7 +314,8 @@ class ForumList extends React.Component {
 
     this.handleClose()
     this.sortPosts(this.state.sortOrder)
-    callback(this.state.posts[0])
+    callback1(this.state.posts[0])
+    callback2(this.state.posts[0])
   }
 
   // called when user chooses a category for new post
@@ -345,7 +346,7 @@ class ForumList extends React.Component {
   }
 
   // called when user deletes a post
-  deletePosts = (target, callback) => {
+  deletePosts = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
@@ -369,7 +370,8 @@ class ForumList extends React.Component {
       this.props.userInfoUpdater(userInfo)
     }
 
-    callback(targetPostID)
+    callback1(targetPostID)
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // called when user upvotes a post
@@ -833,7 +835,7 @@ class ForumList extends React.Component {
                     Cancel
                   </Button>
 
-                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb, addUserPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
 

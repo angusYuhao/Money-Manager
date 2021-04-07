@@ -2,6 +2,8 @@
 import ENV from '../../config.js'
 const API_HOST = ENV.api_host
 
+// const { ObjectID } = require('mongodb')
+
 
 // get all posts from database
 export const getPostsdb = (forumList) => {
@@ -30,6 +32,34 @@ export const getPostsdb = (forumList) => {
         console.log(error)
     });
 };
+
+// // get posts for profile page
+// export const getProfilePostsdb = (profilePage) => {
+
+//     const url = `${API_HOST}/community/posts`;
+
+//     fetch(url)
+//     .then((res) => {
+//         if (res.status === 200) {
+//             // get post successful
+//             console.log("got posts")
+//             return res.json()
+//         }
+//         else {
+//             // get post failed
+//             console.log("failed to get posts")
+//         }
+//     })
+//     .then((json) => {
+//         console.log(json)
+//         profilePage.setState({
+//             posts: json
+//         })
+//     })
+//     .catch((error) => {
+//         console.log(error)
+//     });
+// };
 
 // add a post to database
 export const addPostdb = (forumListState) => {
@@ -172,6 +202,78 @@ export const addCommentdb = (comment) => {
         else {
             // add comment failed
             console.log("failed to add comment to post")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// add a post to a user's profile
+export const addUserPostdb = (forumListState) => {
+
+    const url = `${API_HOST}/users/profile/userPosts/${forumListState.author}`;
+
+    const newPost = {
+        postID: forumListState.postID,
+        author: forumListState.author,
+        authorUsertype: forumListState.authorUsertype,
+        title: forumListState.title,
+        category: forumListState.category,
+        content: forumListState.content,
+        numUpvotes: 0,
+        numDownvotes: 0,
+        comments: []
+    };
+
+    const request = new Request(url, {
+        method: "post",
+        body: JSON.stringify(newPost),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("added post to user profile")
+        }
+        else {
+            // add post failed
+            console.log("failed to add post to user profile")
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// delete a post from user profile
+export const deleteUserPostdb = (postInfo) => {
+
+    const url = `${API_HOST}/users/profile/userPosts/${postInfo.username}/${postInfo.postID}`;
+
+    const request = new Request(url, {
+        method: "delete"
+        // body: JSON.stringify(newPost),
+        // headers: {
+        //     Accept: "application/json, text/plain, */*",
+        //     "Content-Type": "application/json"
+        // }
+    });
+
+    fetch(request)
+    .then(function (res) {
+        if (res.status === 200) {
+            // add post successful
+            console.log("deleted post from user profile")
+        }
+        else {
+            // add post failed
+            console.log("failed to delete post from user profile")
         }
     })
     .catch((error) => {

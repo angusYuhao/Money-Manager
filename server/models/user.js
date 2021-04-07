@@ -75,7 +75,11 @@ const UserSchema = new mongoose.Schema({
 		default: ["Food", "Personal", "Transit", "Home"]
   	},
   	investments: [StockEntrySchema],
-	posts: [postSchema],
+	userFollows: [String],
+	userPosts: [postSchema],
+	userUpvotedPosts: [postSchema],
+	userDownvotedPosts: [postSchema],
+	userSavedPosts: [postSchema],
 })
 
 // An example of Mongoose middleware.

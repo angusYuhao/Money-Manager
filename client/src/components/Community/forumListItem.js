@@ -33,7 +33,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import Comment from "./comment.js"
 
-import { addCommentdb, deletePostdb, UpdatePostVotesdb } from './actions.js'
+import { addCommentdb, deletePostdb, deleteUserPostdb, UpdatePostVotesdb } from './actions.js'
 
 // define styles
 const styles =  theme => ({
@@ -324,7 +324,7 @@ class ForumListItem extends React.Component {
           {/* {display the delete button if in manage post mode} */}
           { openManagePost ? 
             <Tooltip title="Delete">
-              <IconButton color="primary" size="medium" onClick={ () => deletePosts(this.state, deletePostdb) }>
+              <IconButton color="primary" size="medium" onClick={ () => deletePosts(this.state, deletePostdb, deleteUserPostdb) }>
                 <DeleteIcon fontSize="default" />
               </IconButton>
             </Tooltip> 

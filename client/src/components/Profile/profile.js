@@ -15,7 +15,8 @@ import { Typography,
         List,
         Dialog,
         DialogTitle,
-        Divider} from '@material-ui/core';
+        Divider,
+        ButtonGroup} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
@@ -29,6 +30,7 @@ import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
 import { logout, updateProfile, updateProfileField } from '../../actions/user.js';
+import { getPostsdb } from '../Community/actions.js';
 
 const drawerWidth = 400;
 
@@ -162,6 +164,9 @@ const useStyles = theme => ({
     },
     dialogue_cursor: {
         cursor: 'move'
+    },
+    postSection: {
+        paddingLeft: '10%'
     }
 })
 
@@ -243,7 +248,8 @@ class Profile extends React.Component {
                 userDownvotedPosts: [],
                 userFollows: [],
             },
-            posts:  "",
+            posts: [],
+            displayPostCat: "My Posts",
         }
     }
 
@@ -261,6 +267,7 @@ class Profile extends React.Component {
             FAPoints: this.props.user.FAPoints,
             FAFields: this.props.user.FAFields,
         })
+        getPostsdb(this)
     }
 
     // Check the state of the edit, and changes UI accordingly
@@ -539,6 +546,11 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
+    // changes the list of posts to display
+    changePostsDisplay = (displayTitle) => {
+        this.setState({ displayPostCat: displayTitle })
+    }
+
     render() {
         const { classes, handleLogOut, loggedIn, user, app } = this.props;
         const name = user.firstName + ' ' + user.lastName;
@@ -722,50 +734,99 @@ class Profile extends React.Component {
                             </div>    
                         </Grid>
 
-                        <div>
-                            <Typography variant='h5' className={classes.post}>
-                                My posts:
+                        <div className={ classes.postSection }>
+                            <br></br>
+                            <br></br>
+                            <Typography variant="h5" gutterBottom>
+                                Community Posts:
                             </Typography>
+                            <ButtonGroup color="primary" fullWidth>
+                                <Button variant={ this.state.displayPostCat === "My Posts" ? "contained" : "outlined" } title="Your community posts" onClick={ () => this.changePostsDisplay("My Posts") }>My Posts</Button>
+                                <Button variant={ this.state.displayPostCat === "Saved Posts" ? "contained" : "outlined" } title="Your saved posts" onClick={ () => this.changePostsDisplay("Saved Posts") }>Saved Posts</Button>
+                                <Button variant={ this.state.displayPostCat === "Followed Posts" ? "contained" : "outlined" } title="Posts from financial advisors you follow" onClick={ () => this.changePostsDisplay("Followed Posts") }>Followed Posts</Button>
+                            </ButtonGroup>
 
-                            { this.state.posts == "" ? 
-                                <div>
-                                    <PostAddIcon className={classes.postIcon}/>
-                                    <Typography variant='h5' className={classes.nothing}>
-                                        You don't have anything posted yet. Go post something!
-                                    </Typography>
-                                </div>
-                                :
-                                <List className={ classes.forumList }>
-                                    { this.state.posts.map((thread) => {
-                                        if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === user.username : this.state.postFilter === "") {
-                                            return (
-                                            <div>
-                                                <ForumListItem postTitle={ thread.title }
-                                                            postAuthor={ thread.author }
-                                                            postAuthorUsertype={ thread.authorUsertype}
-                                                            postTextContent={ thread.content }
-                                                            avatar={ thread.authorAvatar }
-                                                            category={ thread.category }
-                                                            comments={ thread.comments }
-                                                            postID={ thread.postID }
-                                                            openManagePost={ this.state.openManagePost ? true : false }
-                                                            numUpvotes={ thread.numUpvotes }
-                                                            numDownvotes={ thread.numDownvotes }
-                                                            userInfo={ this.state.userInfo }
-                                                            addUpvote={ this.addUpvote }
-                                                            minusUpvote={ this.minusUpvote }
-                                                            addDownvote={ this.addDownvote }
-                                                            minusDownvote={ this.minusDownvote }
-                                                            deletePosts={ this.deletePosts }
-                                                            postComment={ this.postComment }/>
-                                                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                                            </div>
-                                            )
-                                        }
-                                    })
-                                }
-                                </List>
+                            
+                            <List className={ classes.forumList }>
+                                { this.state.posts.map((thread) => {
+                                    if (this.state.displayPostCat === "My Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                    else if (this.state.displayPostCat === "Saved Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                    if (this.state.displayPostCat === "My Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                })
                             }
+                            </List>
                             
                         </div>
                     </main> 

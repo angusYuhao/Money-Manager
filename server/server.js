@@ -230,6 +230,96 @@ app.get("/users/check-session", (req, res) => {
     }
 });
 
+// add a post to user's profile userPosts
+app.post("/users/profile/userPosts/:username", async (req, res) => {
+
+    const targetUsername = req.params.username
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    const newPost = new Post({
+        postID: req.body.postID,
+        author: req.body.author,
+        authorUsertype: req.body.authorUsertype,
+        title: req.body.title,
+        category: req.body.category,
+        content: req.body.content,
+        numUpvotes: req.body.numUpvotes,
+        numDownvotes: req.body.numDownvotes,
+        comments: []
+    })
+
+    // console.log("im here!!!", newPost)
+
+    try{
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let ret = await targetUser[0].userPosts.unshift(newPost)
+            ret = await targetUser[0].save()
+            ret = targetUser[0].userPosts[0]
+            res.status(200).send(ret)
+        }
+    }
+    catch(error) {
+        log(error)
+        if (isMongoError(error)) {
+            res.status(500).send("internal server error")
+        }
+        else {
+            res.status(400).send("bad request")
+        }
+    }
+})
+
+// delete a post from user's profile userPosts
+app.delete('/users/profile/userPosts/:username/:postID', async (req, res) => {
+
+    const targetUsername = req.params.username
+    const targetPostID = req.params.postID
+
+    console.log("delete id:", targetPostID)
+    console.log("target user:", targetUsername)
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
+
+    try {
+        let targetUser = await User.find({ username: targetUsername })
+        if (!targetUser) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            let newPosts = targetUser[0].userPosts.filter((res) => res.postID != targetPostID)
+            targetUser[0].userPosts = newPosts
+            await targetUser[0].save()
+            res.status(200).send("ples")
+            // // let targetPost = await targetUser[0].userPosts.findOneAndDelete({ postID: targetPostID })
+            // await targetUser[0]
+            // if (!targetPost) {
+            //     res.status(404).send("resource not found")
+            // }
+            // else {
+            //     res.status(200).send(targetPost)
+            // }
+        }
+    }
+    catch(error) {
+        log(error)
+        res.status(500).send('internal server error')
+    }
+})
+
+
 /**************************
  ROUTES FOR SPENDINGS
  *************************/
@@ -669,7 +759,7 @@ app.post('/spendings/sheet', async (req, res) => {
         comments: []
     })
 
-    console.log("im here", newPost)
+    // console.log("im here", newPost)
 
     try{
         const result = await newPost.save()
@@ -779,9 +869,9 @@ app.post('/spendings/sheet', async (req, res) => {
             res.status(404).send('resouce not found')
         }
         else {
-            console.log("check", req.body.commenter)
-            console.log("check", req.body.commentContent)
-            console.log("check1", targetPost)
+            // console.log("check", req.body.commenter)
+            // console.log("check", req.body.commentContent)
+            // console.log("check1", targetPost)
             let ret = await targetPost[0].comments.unshift({ commenter: req.body.commenter, commentContent: req.body.commentContent })
             ret = await targetPost[0].save()
             let comment = targetPost[0].comments[0]
