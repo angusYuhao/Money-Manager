@@ -360,7 +360,7 @@ class Investments extends React.Component {
         <div className = "BarChartTitle">
             Overall Portfolio Performance
         </div>
-        <div className = "BarChart" id = "">
+        <div className = "BarChart">
           <BarChart listToDisplay = {this.state.stocklist_data} numDatasets = {3} indices = {["Book Cost", "Gain/Loss", "Average Cost"]} labelIndex = "Name" barChartWidth = {this.state.barChartWidth} barChartHeight = {this.state.barChartHeight}/>
         </div>
       </div>

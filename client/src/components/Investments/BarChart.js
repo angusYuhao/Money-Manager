@@ -77,7 +77,9 @@ class BarChart extends React.Component {
        
 
         //For some of the properties needed for drawing the bars such as the bar widths and unit height per dollar amount...
-        let sectionWidth = this.state.canvasWidth / keyComponentsArray[0].length;
+
+        //take out 80 for the legend
+        let sectionWidth = (this.state.canvasWidth - 170)/ keyComponentsArray[0].length;
         let sectionBorder = 0.05*sectionWidth;
         let unitHeight = this.state.canvasHeight /proportionalHeight;
         
@@ -127,9 +129,21 @@ class BarChart extends React.Component {
         this.context = this.barChartRef.current.getContext('2d');
         this.context.beginPath();
         this.context.moveTo(0, centerHoritzonalAxis);
-        this.context.lineTo(this.state.canvasWidth, centerHoritzonalAxis);
+        this.context.lineTo(this.state.canvasWidth-170, centerHoritzonalAxis);
         this.context.stroke();
 
+
+        //Add legend
+        
+        for(let i = 0; i < numDatasets; i++){
+            let legend_x = this.state.canvasWidth - 175;
+            let legend_y = 30 + (i * 30);    //20 offset to the right and 20 for height offset
+            this.context.fillStyle = colourForThisList[i];
+            this.context.fillRect(legend_x, legend_y, 10, 10);
+            this.context.fillStyle = '#616A6A';
+            this.context.textAlign = 'left';
+            this.context.fillText(indices[i],legend_x + 13, legend_y+10, 175);
+        }
     }
 
   

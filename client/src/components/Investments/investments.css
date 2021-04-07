@@ -23,11 +23,11 @@
 }
 
 .BarChart{
-    /* margin-top: 5%; */
-    margin-left: 8%;
-    margin-right: 8%;
     width: 95vw;
-    position: relative;
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0%;
 }
 
 .StockTable{
@@ -70,7 +70,7 @@
     width: 100%;
     float: center;
     text-align: center;
-    margin-top: 10%;
+    margin-top: 0%;
     margin-bottom: 0%;
 }
 
