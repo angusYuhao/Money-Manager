@@ -9,7 +9,6 @@ class BarChart extends React.Component {
     state = {
         canvasWidth: 1400,
         canvasHeight: 600,
-        bars:[],
     }
 
     constructor(props) {
@@ -27,33 +26,34 @@ class BarChart extends React.Component {
     }
 
     drawBars = () => {
-        //!!!Ian: bookCost is the total amount spend on that stock/in that category
         const {indices, labelIndex, listToDisplay, numDatasets} = this.props
         let colourForThisList = [];
-        if(numDatasets == 0) return;
+        let keyComponentsArray = [];
+        if(numDatasets == 0) return;//error
         else if(numDatasets == 2){
-            //for 2 columns: comparing spendings nad earnings
+            //for 2 categories: comparing spendings nad earnings so use green and red
             colourForThisList.push('#AECEA5');
             colourForThisList.push('#E6A0AA');
         }else{
+            //for 1 || >2 categories: use randome pastel colours
             for (let i = 0 ; i < numDatasets;i++){
                 colourForThisList.push(this.randomPastelColourCode());
             }
         }
-        let keyComponentsArray = [];
+        
         for(let i = 0; i < numDatasets; i++){
             keyComponentsArray[i] = listToDisplay.map(function (obj) {
                 return obj[indices[i]];
             });
         }
-        console.log(keyComponentsArray);
 
-        //Get the max and min values out of both of the arrays.
-        //This is used for knowing the proportions of the canvas
+        //Get the max and min values out of all of the key components arrays.
+        //This is used for knowing the proportions of the canvas like the minimum pixel and maximum pixel and 
+        //how it's supposed to fit inside
         let maxAmount=keyComponentsArray[0][0];
         let minAmount=keyComponentsArray[0][0];
 
-
+        //get the max and mins interms of the amounts
         for(let j = 0; j < numDatasets; j++){
             for(let i = 0; i < keyComponentsArray[0].length; i++){
                 if(maxAmount < keyComponentsArray[j][i])maxAmount = keyComponentsArray[j][i];
@@ -61,7 +61,8 @@ class BarChart extends React.Component {
             }
         }
 
-        //kinda like the number of pixels to be in that section
+        //get proportionalHeight:
+        //kinda like the number of pixels to be in that section vertically
         let proportionalHeight = 0;
         if(maxAmount > 0 && minAmount < 0){
             proportionalHeight = maxAmount - minAmount;
@@ -70,26 +71,24 @@ class BarChart extends React.Component {
         }else if(maxAmount < 0 && minAmount < 0){
             proportionalHeight = minAmount;
         }else{
-            //error cuz maxAmount < 0 && minAmount > 0
+            //error cuz maxAmount < 0 && minAmount > 0 which is impossible unless I majorily messed up...
             console.log("ERROR in maxAmount and minAmount");
         }
 
        
 
         //For some of the properties needed for drawing the bars such as the bar widths and unit height per dollar amount...
-
-        //take out 80 for the legend
+        //Note: take out the rightmost 170 for the legend
         let sectionWidth = (this.state.canvasWidth - 170)/ keyComponentsArray[0].length;
         let sectionBorder = 0.05*sectionWidth;
         let unitHeight = this.state.canvasHeight /proportionalHeight;
-        
         let barWidth = (sectionWidth/numDatasets)- (2*sectionBorder);
         let centerHoritzonalAxis = maxAmount * unitHeight;
-        unitHeight *= 0.85;  //Make it slightly smaller than the canvas to look a bit better
+        unitHeight *= 0.85;  //Make it slightly smaller than the canvas to look a bit better so it doesn't get cut off or anything
         for(let i = 0; i < numDatasets; i++){
             let currentSection = 0;
             listToDisplay.forEach(element => {
-                //draw bar
+                //Draw the bar
                 let x = (currentSection*sectionWidth+(barWidth * i)) + sectionBorder;
                 let y;
                 let barHeight = unitHeight * Math.abs(element[indices[i]]);
@@ -98,7 +97,7 @@ class BarChart extends React.Component {
                 this.context.fillStyle = colourForThisList[i];
                 this.context.fillRect(x, y, barWidth, barHeight);
     
-                //Add the amount s.t. it's right above the bars
+                //Add the amount text s.t. it's right above the bars
                 let amountString = element[indices[i]];
                 if(element[indices[i]] >= 0)amountString = '$' + amountString;
                 else amountString = '-$' + Math.abs(amountString);
@@ -133,8 +132,7 @@ class BarChart extends React.Component {
         this.context.stroke();
 
 
-        //Add legend
-        
+        //Add legends for the coloured bars
         for(let i = 0; i < numDatasets; i++){
             let legend_x = this.state.canvasWidth - 175;
             let legend_y = 30 + (i * 30);    //20 offset to the right and 20 for height offset
@@ -161,10 +159,6 @@ class BarChart extends React.Component {
         //clear canvas
         context.clearRect(0, 0, rect.width, rect.height);
         context.beginPath();
-
-        //clear bars
-        //this.state.slices = [];
-
         //redraw
         this.drawBars();
     }
