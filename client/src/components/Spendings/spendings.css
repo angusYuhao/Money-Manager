@@ -13,7 +13,7 @@
     flex-flow: wrap;
 }
 
-.Table {
+.SpendingsTable {
     width: 50%;
     display: inline-block;
     margin-top: 5%;
@@ -31,7 +31,7 @@
     justify-content: center;
 }
 
-.SortButtons {
+.SpendingsSortButtons {
     margin-top: 5%;
     max-height: 1vh;
 }

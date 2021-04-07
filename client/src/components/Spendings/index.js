@@ -880,7 +880,7 @@ class Spendings extends React.Component {
 
                 </div>
 
-                <div className="Table">
+                <div className="SpendingsTable">
 
                   <TableComp
                     // use the TableContainer class to style the table itself 
@@ -896,7 +896,7 @@ class Spendings extends React.Component {
                     removeCategory={this.deleteCategory}
                   />
 
-                  <div className="SortButtons">
+                  <div className="SpendingsSortButtons">
 
                     <Grid container spacing={3}>
 

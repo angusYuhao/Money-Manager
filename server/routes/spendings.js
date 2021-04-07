@@ -45,7 +45,7 @@ function getIndexFromMonth(month, arr) {
 // gets the entire spendings data as well as user defined categories 
 routes.get('/transactions', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     try {
@@ -62,7 +62,7 @@ routes.get('/transactions', async (req, res) => {
 // adds a new user defined category to the database 
 routes.post('/categories', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
     const newCategory = req.body.newCategory
 
@@ -88,7 +88,7 @@ routes.post('/categories', async (req, res) => {
 // deletes a new user defined category from the database 
 routes.delete('/categories', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
     const deleteCategory = req.body.deleteCategory
 
@@ -108,7 +108,7 @@ routes.delete('/categories', async (req, res) => {
 // adds a new transaction to a specific year and month sheet 
 routes.post('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -135,7 +135,7 @@ routes.post('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 // modifies a transaction from a specific year and month sheet 
 routes.patch('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -160,7 +160,7 @@ routes.patch('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 // deletes a transaction from a specific year and month sheet 
 routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -188,7 +188,7 @@ routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 // deletes a sheet for the spendings
 routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
     
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -219,7 +219,7 @@ routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
 // adds a new sheet for the spendings, year and month specified in body 
 routes.post('/sheet', async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606748daddb69e65d498df46'
+    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
     const month = req.body.month
