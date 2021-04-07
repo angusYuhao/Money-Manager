@@ -179,6 +179,32 @@ export const addFAInfo = (formComp) => {
     });
 }
 
+export const updateFAInfo = (pathObj) => {
+    const url = `${API_HOST}/users/FAInfo/${pathObj[0].username}`;
+
+    const request = new Request(url, {
+        method: "PATCH",
+        body: JSON.stringify(pathObj),
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        }
+    });
+
+    fetch(request)
+    .then(res => {
+        if (res.status === 200) {
+            console.log("updated FAInfo")
+        } else {
+            console.log("failed to update FAInfo")
+        }
+    })
+    .catch(error => {
+        console.log("inside updateFAInfo function");
+        console.log(error)
+    });
+}
+
 // A function to update the signup form state
 export const updateProfile = (profileComp, field) => {
     const value = field.value;

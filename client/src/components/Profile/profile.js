@@ -29,7 +29,7 @@ import { followingData, followerData } from './data';
 import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
-import { logout, updateProfile, updateProfileField } from '../../actions/user.js';
+import { logout, updateFAInfo, updateProfile, updateProfileField } from '../../actions/user.js';
 import { getPostsdb } from '../Community/actions.js';
 
 const drawerWidth = 400;
@@ -319,8 +319,21 @@ class Profile extends React.Component {
                 op: "replace",
                 path: "/" + "FAFields",
                 value: this.state.FAFields,
-            }]   
+            }]
+            const updatedFAInfo = [{
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAIntro",
+                value: this.state.FAIntro
+            }, 
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAFields",
+                value: this.state.FAFields,
+            }]
             updateProfileField(updatedProfile, this.props.app);
+            updateFAInfo(updatedFAInfo);
         }
     }
 

@@ -604,6 +604,44 @@ app.post('/users/FAInfo', async (req, res) => {
     }
 })
 
+// patch FAInfo
+app.patch('/users/FAInfo/:username', async (req, res) => {
+    
+    const username = req.params.username;
+
+    console.log("in FAInfo patch", username)
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    // Find the fields to update and their values.
+	const fieldsToUpdate = {}
+	req.body.map((change) => {
+		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+		fieldsToUpdate[propertyToChange] = change.value
+	})
+
+	try {
+		const updateFAInfo = await FAInfo.findOneAndUpdate({FAName: username}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
+		if (!updateFAInfo) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.status(200).send(updateFAInfo);
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // bad request for changing the student.
+		}
+	}
+
+})
+
 
 /**************************
  ROUTES FOR INVESTMENTS
