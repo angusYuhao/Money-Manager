@@ -24,7 +24,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { addPostdb, getPostsdb } from './actions.js';
+import { addPostdb, addUserPostdb, getPostsdb } from './actions.js';
 
 // define styles
 const styles =  theme => ({
@@ -280,7 +280,7 @@ class ForumList extends React.Component {
   }
 
   // called when a new post is created
-  addPost = (username, callback) => {
+  addPost = (username, callback1, callback2) => {
 
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
@@ -314,7 +314,8 @@ class ForumList extends React.Component {
 
     this.handleClose()
     this.sortPosts(this.state.sortOrder)
-    callback(this.state.posts[0])
+    callback1(this.state.posts[0])
+    callback2(this.state.posts[0])
   }
 
   // called when user chooses a category for new post
@@ -345,7 +346,7 @@ class ForumList extends React.Component {
   }
 
   // called when user deletes a post
-  deletePosts = (target, callback) => {
+  deletePosts = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const otherPosts = this.state.posts.filter((p) => { return p.postID !== targetPostID })
@@ -369,11 +370,12 @@ class ForumList extends React.Component {
       this.props.userInfoUpdater(userInfo)
     }
 
-    callback(targetPostID)
+    callback1(targetPostID)
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // called when user upvotes a post
-  addUpvote = (target, callback) => {
+  addUpvote = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -387,11 +389,12 @@ class ForumList extends React.Component {
     userInfo.userUpvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
-    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // called when user deletes their upvote from a post
-  minusUpvote = (target, callback) => {
+  minusUpvote = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -406,11 +409,12 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
 
-    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // called when user downvotes a post
-  addDownvote = (target, callback) => {
+  addDownvote = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -424,11 +428,12 @@ class ForumList extends React.Component {
     userInfo.userDownvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
-    callback({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
+    callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // called when user deletes a downvote from a post
-  minusDownvote = (target, callback) => {
+  minusDownvote = (target, callback1, callback2) => {
 
     const targetPostID = target.postID
     const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
@@ -443,7 +448,8 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
     
-    callback({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numDownvotes})
+    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numDownvotes})
+    callback2({username: userInfo.username, postID: targetPostID})
   }
 
   // main render function
@@ -833,7 +839,7 @@ class ForumList extends React.Component {
                     Cancel
                   </Button>
 
-                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb, addUserPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
 

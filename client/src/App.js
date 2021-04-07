@@ -29,7 +29,7 @@ class App extends React.Component {
     password: "",
     userLevel: "",
     currentUser: null,
-    message: { type: "", body: "" }
+    signedUpUser: false,
   }
 
   loginHandler = (username, password) => {
@@ -141,7 +141,11 @@ class App extends React.Component {
               render={() => (<Community
                 loggedIn={this.state.loggedIn}
                 username={currentUser.username}
-                usertype={currentUser.userLevel} />)} />
+                usertype={currentUser.userLevel}
+                FAName={currentUser.FAName}
+                FAIntro={currentUser.FAIntro}
+                FAFields={currentUser.FAFields}
+                FAPoints={currentUser.FAPoints} />)} />
 
             <Route exact path='/contact'
               render={() => (<Contact

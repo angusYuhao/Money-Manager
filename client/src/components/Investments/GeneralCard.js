@@ -45,7 +45,7 @@ class GeneralCard extends React.Component {
   //some database in phase 2. 
   //the total amount invested is also based on hard coded entries(in index.js's state)
     render(){
-        const {total,classes} = this.props;
+        const {total,classes, accountName, accountNumber, currency} = this.props;
         return(
             <ThemeProvider theme={ theme }>
             <Card variant="outlined" className = {classes.generalCard}>
@@ -57,19 +57,19 @@ class GeneralCard extends React.Component {
               <Typography variant="h5" display="block"gutterBottom>
                 Account name: <br/>
                 <Typography variant="h5" gutterBottom>
-                  RRSP
+                {accountName}
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>
                 Account number: <br/>
                 <Typography variant="h5" gutterBottom>
-                  12345A6
+                  {accountNumber}
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>
                   Currency: <br/>
                 <Typography variant="h5" gutterBottom>
-                  CAD$
+                  {currency}
                 </Typography>
               </Typography>
               <Typography variant="h5" display="block" gutterBottom>

@@ -3,32 +3,37 @@
 const mongoose = require('mongoose');
 
 const FAInfoSchema = new mongoose.Schema({
-	author: {
+	FAName: {
 		type: String,
 		required: true,
 		minlength: 1,
 		unique: true,
 	},
-	firstname: {
+	FAFirstname: {
 		type: String,
 		required: true,
 		minlength: 1,
 		unique: false,
 	},
-	lastname: {
+	FALastname: {
 		type: String,
 		required: true,
 		minlength: 1,
 		unique: false,
 	},
-	intro: {
+	FAIntro: {
 		type: String,
 		required: true,
 		minlength: 1,
 		unique: false,
 	},
-	fields: [String],
-	points: {
+	FAFields: {
+		type: String,
+		required: true,
+		minlength: 1,
+		unique: false,
+	},
+	FAPoints: {
 		type: Number,
 		required: true,
 		unique: false,

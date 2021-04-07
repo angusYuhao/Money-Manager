@@ -204,6 +204,7 @@ class Spendings extends React.Component {
     })
 
     fetch(request)
+
       .then(res => res.json())
       .then(data => {
 

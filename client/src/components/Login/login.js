@@ -9,7 +9,9 @@ import { withStyles,
         Grid,
         createMuiTheme,
         Paper,
-        ThemeProvider} from '@material-ui/core';
+        ThemeProvider,
+        Snackbar} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { deepPurple } from '@material-ui/core/colors';
 import Footer from '../Footer/footer.js';
 import LogoButton from './../Signup/logoButton.js';
@@ -94,6 +96,8 @@ class Login extends React.Component {
     userName: "",
     password: "",
     userLevel: "",
+    displaySnack: false,
+    snackMessage: undefined,
   };
 
   // set state for all the state variables
@@ -104,20 +108,20 @@ class Login extends React.Component {
     const value = target.value;
     const name = target.name;
 
-    /********************************************************************************
-    for phase 2, you would be making a server call to check the user level of the user
-    *********************************************************************************/
-    if(value === "user") {
-      this.state.userLevel = "User"
-    } else if(value === "admin") {
-      this.state.userLevel = "Financial Advisor"
-    }
     // state is updated and value is also updated in JSX
     // the square bracket dynamically changes the name 
     this.setState({
       [name]: value,
       userLevel: this.state.userLevel
     })
+  }
+
+  snackBarOnClose() {
+    this.setState({ displaySnack: false })
+  }
+
+  snackBarOnExited() {
+    this.setState({ snackMessage: undefined })
   }
 
   render() {
@@ -144,11 +148,18 @@ class Login extends React.Component {
 
                 <Grid container className={classes.grid} >
                   <Paper elevation={3} className={classes.paper}>
-                      <FormTitle firstTitle="Welcome back!"
-                                subTitle="Login to continue"
-                      />
+                      {!app.state.signedUpUser ? 
+                        <FormTitle firstTitle="Welcome back!"
+                                  subTitle="Login to continue"
+                        />
+                        :
+                        <FormTitle firstTitle="Sign up was successful!"
+                                  subTitle="Login to continue" 
+                        />
+                      }
 
                     <form className={classes.form}>
+                      {!this.state.displaySnack ? 
                       <Grid container direction="column" spacing={2}>
                         <TextField required 
                                   onChange={ e => updateLoginForm(this, e.target) }
@@ -171,36 +182,57 @@ class Login extends React.Component {
                         <Button onClick={ () => login(this, app) }
                                     variant="contained" 
                                     color="primary" 
-                                    
                                     className={classes.logInButton}>
                               Log in
-                            </Button>
-                        {/* { this.state.userLevel === "Financial Advisor" ? 
-                          <Link to={"/community"}>
-                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
-                                    variant="contained" 
-                                    color="primary" 
-                                    type="submit" 
-                                    className={classes.logInButton}>
-                              Log in
-                            </Button>
-                          </Link>
-                          :
-                          <Link to={"/spendings"}>
-                            <Button onClick={ () => loginHandler(this.state.userName, this.state.password) }
-                                    variant="contained" 
-                                    color="primary" 
-                                    type="submit" 
-                                    className={classes.logInButton}>
-                              Log in
-                            </Button>
-                          </Link>
-                        } */}
+                        </Button>
                       </Grid>
-
+                      :
+                      <Grid container direction="column" spacing={2}>
+                        <TextField required 
+                                  error
+                                  onChange={ e => updateLoginForm(this, e.target) }
+                                  value={ this.state.userName }
+                                  id="outlined-required" 
+                                  label="username" 
+                                  name="userName"
+                                  variant="outlined" 
+                                  className={classes.text}/>
+                        <TextField required
+                                   error
+                                   value={ this.state.password }
+                                   onChange={ e => updateLoginForm(this, e.target) }
+                                   id="outlined-basic" 
+                                   label="password" 
+                                   name="password"
+                                   type="password" 
+                                   variant="outlined" 
+                                   className={classes.text}/>
+                        
+                        <Button onClick={ () => login(this, app) }
+                                    variant="contained" 
+                                    color="primary" 
+                                    className={classes.logInButton}>
+                              Log in
+                        </Button>
+                      </Grid>
+                      }
                     </form>
                   </Paper>
                 </Grid>
+
+                <Snackbar
+                  open={this.state.displaySnack}
+                  autoHideDuration={4000}
+                  onClose={() => this.snackBarOnClose()}
+                  onExited={() => this.snackBarOnExited()}
+                >
+
+                <Alert severity="error"
+                      variant="filled">
+                  {this.state.snackMessage}
+                </Alert>
+
+                </Snackbar>
 
                 <div className={classes.footer}>
                   <Footer />

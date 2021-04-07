@@ -10,7 +10,9 @@ import { withStyles,
         Grid,
         createMuiTheme,
         Paper,
-        ThemeProvider} from '@material-ui/core';
+        ThemeProvider,
+        Divider,
+        Typography} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { withRouter } from 'react-router-dom';
 import Footer from '../Footer/footer.js';
@@ -19,7 +21,7 @@ import FinancialAdvisorForm from '../FinancialAdvisorForm/financialAdvisorForm.j
 import LinkButton from './linkButton.js';
 import LogoButton from './logoButton.js';
 import FormTitle from './formTitle.js';
-import { updateSignupForm, addUser } from '../../actions/user.js';
+import { updateSignupForm, addUser, addFAInfo } from '../../actions/user.js';
 const useStyles = theme => ({
   root: {
     flexGrow: 1,
@@ -49,6 +51,12 @@ const useStyles = theme => ({
   },
   footer: {
     marginTop: theme.spacing(5),
+  },
+  divider: {
+    marginBottom: theme.spacing(1),
+  },
+  general: {
+    marginBottom: theme.spacing(1),
   }
 });
 
@@ -92,10 +100,25 @@ class SignUp extends React.Component {
     email: "",
     createdPassword: "",
     confirmPassword: "",
+    accountName: "",
+    accountNumber: "",
+    investmentCurrency: "",
     passwordLengthError: false,
+    firstTime: true,
+    firstTimeConfirm: true,
     passwordConfirmError: false, 
     signedUp: false,
+    FAName: "",
+    FAIntro: "N/A",
+    FAFields: "N/A",
+    FAPoints: 0,
   };
+
+  addInfo = () => {
+    console.log("hello????")
+    addUser(this, this.props.app)
+    addFAInfo(this)
+  }
 
   handleInputChange = (event) => {
 
@@ -124,9 +147,11 @@ class SignUp extends React.Component {
 
     if(value.length >= 8) {
       this.state.passwordLengthError = false;
+      this.state.firstTime = false;
       console.log("good password")
     } else {
       this.state.passwordLengthError = true;
+      this.state.firstTime = false;
       console.log("The minimum number of characters for password is 8!")
     }
   }
@@ -144,9 +169,11 @@ class SignUp extends React.Component {
 
     if(value !== this.state.createdPassword) {
       this.state.passwordConfirmError = true;
+      this.state.firstTimeConfirm = false;
       console.log("password did not match");
     } else {
       this.state.passwordConfirmError = false;
+      this.state.firstTimeConfirm = false;
       console.log("password match")
     }
   }
@@ -190,7 +217,8 @@ class SignUp extends React.Component {
               />
 
               <form className={classes.form}>
-
+                <Divider className={classes.divider} />
+                <Typography align="center" variant="h6" className={classes.general}> General information</Typography>
                 <Grid container direction="row" spacing={1}>
                   <FormControl variant="outlined" className={classes.formControl}>
                     <InputLabel id="user-label">Sign up as:</InputLabel>
@@ -219,7 +247,12 @@ class SignUp extends React.Component {
                     occupation={ this.state.occupation }
                     salary={ this.state.salary }
                     email={ this.state.email }
+                    accountName={ this.state.accountName }
+                    accountNumber={ this.state.accountNumber }
+                    investmentCurrency={ this.state.investmentCurrency }
                     createdPassword={ this.state.createdPassword }
+                    firstTime={ this.state.firstTime }
+                    firstTimeConfirm={ this.state.firstTimeConfirm }
                     checkLength={ this.checkLength }
                     passwordLengthError={ this.state.passwordLengthError }
                     passwordConfirmError={ this.state.passwordConfirmError }
@@ -237,6 +270,8 @@ class SignUp extends React.Component {
                     birthday={ this.state.birthday }
                     gender={ this.state.gender }
                     email={ this.state.email }
+                    firstTime={ this.state.firstTime }
+                    firstTimeConfirm={ this.state.firstTimeConfirm }
                     passwordLengthError={ this.state.passwordLengthError }
                     createdPassword={ this.state.createdPassword }
                     checkLength={ this.checkLength }
@@ -249,7 +284,7 @@ class SignUp extends React.Component {
                 
                 <Button variant="contained" 
                         color="primary"  
-                        onClick={() => addUser(this, app)}
+                        onClick={() => this.addInfo()}
                         className={classes.signInButton}>
                   Sign up
                 </Button>

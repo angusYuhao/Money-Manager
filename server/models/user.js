@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const {StockEntrySchema} = require('./investments');
 const { SpendingsSchema } = require("./spendings");
+const { postSchema } = require('./posts.js');
 
 // Making a Mongoose model a little differently: a Mongoose Schema
 // Allows us to add additional functionality.
@@ -18,7 +19,6 @@ const UserSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: true,
-
 		minlength: 4,
 	},
 	userLevel: {
@@ -53,6 +53,18 @@ const UserSchema = new mongoose.Schema({
 		type: Number,
 		required: false,
 	},
+	accountName: {
+		type: String,
+		required: false,
+	},
+	accountNumber: {
+		type: String,
+		required: false,
+	},
+	investmentCurrency: {
+		type: String,
+		required: false,
+	},
 	bio: {
 		type: String,
 		required: false,
@@ -64,7 +76,7 @@ const UserSchema = new mongoose.Schema({
 		type: String
 	},
 	FAFields: {
-		type: [String]
+		type: String
 	},
 	FAPoints: {
 		type: Number
@@ -73,9 +85,13 @@ const UserSchema = new mongoose.Schema({
 	spendings_categories: {
 		type: [String],
 		default: ["Food", "Personal", "Transit", "Home"]
-  },
-  investments: [StockEntrySchema]
-
+  	},
+  	investments: [StockEntrySchema],
+	userFollows: [String],
+	userPosts: [Number],
+	userUpvotedPosts: [Number],
+	userDownvotedPosts: [Number],
+	userSavedPosts: [Number],
 })
 
 // An example of Mongoose middleware.
