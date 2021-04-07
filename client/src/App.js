@@ -15,14 +15,21 @@ import Contact from './components/ContactUs/contact.js';
 import Sent from './components/ContactUs/sent.js';
 import About from './components/AboutUs/about.js';
 import Profile from './components/Profile/profile.js';
+import { checkSession } from "./actions/user.js";
 
 class App extends React.Component {
+
+  componentDidMount() {
+    checkSession(this); // sees if a user is logged in
+  }
 
   state = {
     loggedIn: false,
     username: "",
     password: "",
     userLevel: "",
+    currentUser: null,
+    signedUpUser: false,
   }
 
   loginHandler = (username, password) => {
@@ -60,24 +67,34 @@ class App extends React.Component {
 
   render() {
 
+    const { currentUser } = this.state;
+    if(currentUser != null) {
+      this.state.loggedIn = true;
+    } else {
+      this.state.loggedIn = false;
+    }
+
     return (
 
       <div>
         <BrowserRouter>
 
-          {this.state.userLevel === "Financial Advisor" ?
-            <div>
-              <AdminNavBar
-                username={this.state.username}
-                password={this.state.password} />
-            </div>
-            : this.state.loggedIn ?
+          {currentUser != null ? 
+            currentUser.userLevel === "Financial Advisor" ?
               <div>
-                <NavBar
-                  username={this.state.username}
-                  password={this.state.password} />
+                <AdminNavBar
+                  username={currentUser.username}
+                />
               </div>
-              : null
+              : this.state.loggedIn ?
+                <div>
+                  <NavBar
+                    username={currentUser.username}
+                  />
+                </div>
+                : null
+            :
+            null
           }
 
           <Switch>
@@ -86,20 +103,34 @@ class App extends React.Component {
               render={() => (<Home
                 loggedIn={this.state.loggedIn} />)} />
 
-            <Route exact path='/login'
-              render={() => (<Login
-                loginHandler={this.loginHandler}
-              />)} />
+            <Route
+                exact path={["/login", "/spendings"]}
+                render={ props => (
+                    <div className="app">
+                        { /* Different componenets rendered depending on if someone is logged in. */}
+                        {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Spendings loggedIn={this.state.loggedIn} {...props} app={this} />
+                          }
+                    </div>                   // ... spread operator - provides all of the props in the props object
+                    
+                )}
+            />
+             {/* <Route exact path='/login'
+               render={() => (<Login
+                 loginHandler={this.loginHandler}
+               />)} /> */}
 
             <Route exact path='/signup'
-              render={() => (<SignUp />)} />
+              render={props => (<SignUp {...props} app={this}/>)} />
 
-            <Route exact path='/spendings'
+            {/* <Route exact path='/spendings'
               render={() => (<Spendings
                 loggedIn={this.state.loggedIn}
                 username={this.state.username}
                 password={this.state.password}
-              />)} />
+              />)} /> */}
 
             <Route exact path='/investments'
               render={() => (<Investments
@@ -109,8 +140,12 @@ class App extends React.Component {
             <Route exact path='/community'
               render={() => (<Community
                 loggedIn={this.state.loggedIn}
-                username={this.state.username}
-                usertype={this.state.userLevel} />)} />
+                username={currentUser.username}
+                usertype={currentUser.userLevel}
+                FAName={currentUser.FAName}
+                FAIntro={currentUser.FAIntro}
+                FAFields={currentUser.FAFields}
+                FAPoints={currentUser.FAPoints} />)} />
 
             <Route exact path='/contact'
               render={() => (<Contact
@@ -125,12 +160,12 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
-              render={() => (<Profile
+              render={props => (<Profile
                 handleLogOut={this.handleLogOut}
                 loggedIn={this.state.loggedIn}
-                username={this.state.username}
-                password={this.state.password}
-                userLevel={this.state.userLevel}
+                user={currentUser}
+                app={this}
+                {...props}
               />)} />
 
           </Switch>

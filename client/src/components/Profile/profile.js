@@ -15,7 +15,8 @@ import { Typography,
         List,
         Dialog,
         DialogTitle,
-        Divider} from '@material-ui/core';
+        Divider,
+        ButtonGroup} from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
@@ -28,6 +29,8 @@ import { followingData, followerData } from './data';
 import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
+import { logout, updateProfile, updateProfileField } from '../../actions/user.js';
+import { getPostsdb } from '../Community/actions.js';
 
 const drawerWidth = 400;
 
@@ -161,6 +164,9 @@ const useStyles = theme => ({
     },
     dialogue_cursor: {
         cursor: 'move'
+    },
+    postSection: {
+        paddingLeft: '10%'
     }
 })
 
@@ -194,42 +200,74 @@ function PaperComponent(props) {
 // that stores the user information
 class Profile extends React.Component {
 
-    state = {
-        // if false, display edit; if true, display Done
-        followerData: followerData,
-        followingData: followingData,
-        edit: false,
-        logout: false,
-        openFollowers: false,
-        openFollowing: false,
-        followed: false,
-        userLevel: "",
-        avatar: "",
-        bio: "An individual that is pursuing one's passions.",
-        username: "user",
-        name: "User X",
-        email: "user@123.com",
-        occupation: "student",
-        birthday: "2021-03-08",
-        openNewPost: false,
-        openManagePost: false,
-        author: "",
-        title: "",
-        authorAvatar: "",
-        content: "",
-        category: "",
-        postFilter: "",
-        sortOrder: "",
-        commenter: "",
-        commentContent: "",
-        userInfo: {
+    // logs out the user
+    logoutUser = (app) => {
+        this.props.history.push("/");
+        logout(app);
+    };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            // if false, display edit; if true, display Done
+            followerData: followerData,
+            followingData: followingData,
+            edit: false,
+            logout: false,
+            openFollowers: false,
+            openFollowing: false,
+            followed: false,
+            userLevel: "",
+            avatar: "",
+            bio: "",
             username: "",
-            usertype: "",
-            userUpvotedPosts: [],
-            userDownvotedPosts: [],
-            userFollows: [],
-        },
-        posts:  "",
+            name: "",
+            email: "",
+            occupation: "",
+            birthday: "",
+            FAName: "",
+            FAIntro: "",
+            FAFields: "",
+            FAPoints: "",
+            openNewPost: false,
+            openManagePost: false,
+            author: "",
+            title: "",
+            authorAvatar: "",
+            content: "",
+            category: "",
+            postFilter: "",
+            sortOrder: "",
+            commenter: "",
+            commentContent: "",
+            userInfo: {
+                username: "",
+                usertype: "",
+                userUpvotedPosts: [],
+                userDownvotedPosts: [],
+                userFollows: [],
+            },
+            posts: [],
+            displayPostCat: "My Posts",
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            avatar: this.props.user.username[0],
+            username: this.props.user.username,
+            email: this.props.user.email,
+            occupation: this.props.user.occupation,
+            birthday: this.props.user.birthday,
+            bio: this.props.user.bio,
+            userLevel: this.props.user.userLevel,
+            FAName: this.props.user.firstName + " " + this.props.user.lastName,
+            FAIntro: this.props.user.FAIntro,
+            FAPoints: this.props.user.FAPoints,
+            FAFields: this.props.user.FAFields,
+        })
+        getPostsdb(this)
     }
 
     // Check the state of the edit, and changes UI accordingly
@@ -237,6 +275,53 @@ class Profile extends React.Component {
         this.setState({
             edit: !this.state.edit,
         })
+        if(this.state.edit == true && this.state.userLevel == "Regular User") {
+            const updatedProfile = [{
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "email",
+                value: this.state.email
+            }, 
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "occupation",
+                value: this.state.occupation,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "birthday",
+                value: this.state.birthday,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "bio",
+                value: this.state.bio,
+            }]   
+            updateProfileField(updatedProfile, this.props.app);
+        } else if(this.state.edit == true && this.state.userLevel == "Financial Advisor") {
+            const updatedProfile = [{
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "email",
+                value: this.state.email
+            }, 
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAIntro",
+                value: this.state.FAIntro,
+            },
+            {
+                username: this.state.username,
+                op: "replace",
+                path: "/" + "FAFields",
+                value: this.state.FAFields,
+            }]   
+            updateProfileField(updatedProfile, this.props.app);
+        }
     }
 
     // Change the state of openFollowers, this is for opening 
@@ -461,144 +546,21 @@ class Profile extends React.Component {
         this.setState({ userInfo: userInfo })
     }
 
-    // Mount the current user state passed in from the app.js
-    componentDidMount() {
-        this.changeUserState();
-    }
-
-    // All of these data will not be hardcoded and will be fetched from a database
-    /********************************************************************************
-    for phase 2, you would be making a server call to get the user information and 
-    update the state accordingly, will also fetch its corresponded posts
-    *********************************************************************************/
-    changeUserState = () => {
-        if(this.state.userLevel === "User") {
-            this.state.avatar = "U";
-            this.state.bio = "An individual that is pursuing one's passions.";
-            this.state.username = "user";
-            this.state.name = "User X";
-            this.state.email = "user@123.com";
-            this.state.occupation = "Student";
-            this.state.birthday = "2021-03-08";
-            this.state.commenter = "User";
-            this.state.posts = [
-                {author: 'User', 
-                authorUsertype: "RU",
-                title: 'Welcome to communtiy', 
-                content: 'this is the first community thread', 
-                authorAvatar: "U",
-                category: "Announcement",
-                postID: 1,
-                numUpvotes: 5,
-                numDownvotes: 1,
-                comments: [
-                {commenter: "User2",
-                    commentContent: "This is a great post"},
-                {commenter: "User3",
-                    commentContent: "This is a bad post"}
-                ]
-                },
-                {author: 'User', 
-                authorUsertype: "RU",
-                title: 'My second post', 
-                content: 'This is the second post ever!!!!!!!', 
-                authorAvatar: "U",
-                category: "Opinion",
-                postID: 2,
-                numUpvotes: 4,
-                numDownvotes: 2,
-                comments: [
-                {commenter: "Financial Advisor3",
-                    commentContent: "You should come to my page to learn about financials"},
-                {commenter: "User4",
-                    commentContent: "Go buy GME!"}
-                ]
-                }
-            ];
-            this.setState({
-                avatar: this.state.avatar,
-                bio: this.state.bio,
-                username: this.state.username,
-                name: this.state.name,
-                email: this.state.email,
-                occupation: this.state.occupation,
-                birthday: this.state.birthday,
-                posts: this.state.posts,
-                commenter: this.state.commenter,
-            })
-            
-        } else if(this.state.userLevel === "Financial Advisor") {
-            this.state.avatar = "A";
-            this.state.bio = "A certified financial advisor, dedicated to help others";
-            this.state.username = "admin";
-            this.state.name = "Admin X";
-            this.state.email = "admin@123.com";
-            this.state.occupation = "Financial advisor";
-            this.state.birthday = "2021-03-08";
-            this.state.commenter = "Admin";
-            this.state.posts = [
-                {author: 'Admin', 
-                authorUsertype: "FA",
-                title: 'Welcome to communtiy', 
-                content: 'I am the financial advisor', 
-                authorAvatar: "A",
-                category: "Announcement",
-                postID: 1,
-                numUpvotes: 5,
-                numDownvotes: 1,
-                comments: [
-                {commenter: "User2",
-                    commentContent: "This is a great post"},
-                {commenter: "User3",
-                    commentContent: "This is a bad post"}
-                ]
-                },
-                {author: 'Admin', 
-                authorUsertype: "FA",
-                title: 'My second post', 
-                content: 'I am here to provide you guys with some help in financing', 
-                authorAvatar: "A",
-                category: "Opinion",
-                postID: 2,
-                numUpvotes: 4,
-                numDownvotes: 2,
-                comments: [
-                {commenter: "Financial Advisor3",
-                    commentContent: "You should come to my page to learn about financials"},
-                {commenter: "User4",
-                    commentContent: "Go buy GME!"}
-                ]
-                }
-            ];
-            this.setState({
-                avatar: this.state.avatar,
-                bio: this.state.bio,
-                username: this.state.username,
-                name: this.state.name,
-                email: this.state.email,
-                occupation: this.state.occupation,
-                birthday: this.state.birthday,
-                posts: this.state.posts,
-                commenter: this.state.commenter,
-            })
-        }
+    // changes the list of posts to display
+    changePostsDisplay = (displayTitle) => {
+        this.setState({ displayPostCat: displayTitle })
     }
 
     render() {
-        const { classes, username, handleLogOut, password, userLevel, loggedIn } = this.props;
-
-        if(userLevel === "User") {
-            this.state.userLevel = "User"
-        } else if(userLevel === "Financial Advisor") {
-            this.state.userLevel = "Financial Advisor"
-        }
-
+        const { classes, handleLogOut, loggedIn, user, app } = this.props;
+        const name = user.firstName + ' ' + user.lastName;
+        console.log(user.username);
         return ( 
 
             loggedIn ? 
             <ThemeProvider theme={theme}>
                 <div className={classes.root}>
-                    { this.state.userLevel === "User" ? 
+                    { user.userLevel === "Regular User" ? 
                         <AppBar color="secondary" position="fixed" className={classes.appBar}>
                             <Toolbar>
                                 <Typography variant='h6' noWrap>
@@ -655,20 +617,30 @@ class Profile extends React.Component {
                                 <Edit 
                                     handleInputChange={ this.handleInputChange }
                                     username={ this.state.username }
-                                    name={ this.state.name }
+                                    name={ name }
                                     email={ this.state.email }
                                     occupation={ this.state.occupation }
                                     birthday={ this.state.birthday }
                                     bio={ this.state.bio }
+                                    userLevel = { this.state.userLevel }
+                                    FAName = { this.state.FAName }
+                                    FAIntro = { this.state.FAIntro }
+                                    FAFields = { this.state.FAFields }
+                                    profile={this}
                                 />
                                 :
                                 <Done  
                                     username={ this.state.username }
-                                    name={ this.state.name }
+                                    name={ name }
                                     email={ this.state.email }
                                     occupation={ this.state.occupation }
                                     birthday={ this.state.birthday }
                                     bio={ this.state.bio } 
+                                    userLevel = { this.state.userLevel }
+                                    FAName = { this.state.FAName }
+                                    FAIntro = { this.state.FAIntro }
+                                    FAFields = { this.state.FAFields }
+                                    FAPoints = { this.state.FAPoints }
                                 />    
                             }
                             
@@ -688,7 +660,7 @@ class Profile extends React.Component {
                                     Edit Profile
                                 </Button>
                                 <Link to={"/"}>
-                                    <Button onClick={ () => handleLogOut() }
+                                    <Button onClick={() => this.logoutUser(app)}
                                             color="primary" 
                                             variant="contained" 
                                             className={classes.logoutButton}>
@@ -762,50 +734,99 @@ class Profile extends React.Component {
                             </div>    
                         </Grid>
 
-                        <div>
-                            <Typography variant='h5' className={classes.post}>
-                                My posts:
+                        <div className={ classes.postSection }>
+                            <br></br>
+                            <br></br>
+                            <Typography variant="h5" gutterBottom>
+                                Community Posts:
                             </Typography>
+                            <ButtonGroup color="primary" fullWidth>
+                                <Button variant={ this.state.displayPostCat === "My Posts" ? "contained" : "outlined" } title="Your community posts" onClick={ () => this.changePostsDisplay("My Posts") }>My Posts</Button>
+                                <Button variant={ this.state.displayPostCat === "Saved Posts" ? "contained" : "outlined" } title="Your saved posts" onClick={ () => this.changePostsDisplay("Saved Posts") }>Saved Posts</Button>
+                                <Button variant={ this.state.displayPostCat === "Followed Posts" ? "contained" : "outlined" } title="Posts from financial advisors you follow" onClick={ () => this.changePostsDisplay("Followed Posts") }>Followed Posts</Button>
+                            </ButtonGroup>
 
-                            { this.state.posts == "" ? 
-                                <div>
-                                    <PostAddIcon className={classes.postIcon}/>
-                                    <Typography variant='h5' className={classes.nothing}>
-                                        You don't have anything posted yet. Go post something!
-                                    </Typography>
-                                </div>
-                                :
-                                <List className={ classes.forumList }>
-                                    { this.state.posts.map((thread) => {
-                                        if (this.state.openManagePost ? this.state.postFilter === "" && thread.author === username : this.state.postFilter === "") {
-                                            return (
-                                            <div>
-                                                <ForumListItem postTitle={ thread.title }
-                                                            postAuthor={ thread.author }
-                                                            postAuthorUsertype={ thread.authorUsertype}
-                                                            postTextContent={ thread.content }
-                                                            avatar={ thread.authorAvatar }
-                                                            category={ thread.category }
-                                                            comments={ thread.comments }
-                                                            postID={ thread.postID }
-                                                            openManagePost={ this.state.openManagePost ? true : false }
-                                                            numUpvotes={ thread.numUpvotes }
-                                                            numDownvotes={ thread.numDownvotes }
-                                                            userInfo={ this.state.userInfo }
-                                                            addUpvote={ this.addUpvote }
-                                                            minusUpvote={ this.minusUpvote }
-                                                            addDownvote={ this.addDownvote }
-                                                            minusDownvote={ this.minusDownvote }
-                                                            deletePosts={ this.deletePosts }
-                                                            postComment={ this.postComment }/>
-                                                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                                            </div>
-                                            )
-                                        }
-                                    })
-                                }
-                                </List>
+                            
+                            <List className={ classes.forumList }>
+                                { this.state.posts.map((thread) => {
+                                    if (this.state.displayPostCat === "My Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                    else if (this.state.displayPostCat === "Saved Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                    if (this.state.displayPostCat === "My Posts" && thread.author === user.username) {
+                                        return (
+                                        <div>
+                                            <ForumListItem postTitle={ thread.title }
+                                                        postAuthor={ thread.author }
+                                                        postAuthorUsertype={ thread.authorUsertype}
+                                                        postTextContent={ thread.content }
+                                                        avatar={ thread.authorAvatar }
+                                                        category={ thread.category }
+                                                        comments={ thread.comments }
+                                                        postID={ thread.postID }
+                                                        openManagePost={ this.state.openManagePost ? true : false }
+                                                        numUpvotes={ thread.numUpvotes }
+                                                        numDownvotes={ thread.numDownvotes }
+                                                        userInfo={ this.state.userInfo }
+                                                        addUpvote={ this.addUpvote }
+                                                        minusUpvote={ this.minusUpvote }
+                                                        addDownvote={ this.addDownvote }
+                                                        minusDownvote={ this.minusDownvote }
+                                                        deletePosts={ this.deletePosts }
+                                                        postComment={ this.postComment }/>
+                                            { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+                                        </div>
+                                        )
+                                    }
+                                })
                             }
+                            </List>
                             
                         </div>
                     </main> 

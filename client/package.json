@@ -22,6 +22,8 @@
     "web-vitals": "^1.1.0",
     "yahoo-finance": "^0.3.7",
     "yahoo-stock-prices": "^1.1.0"
+    "styled-components": "^5.2.3",
+
   },
   "scripts": {
     "start": "react-scripts start",
