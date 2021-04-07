@@ -94,6 +94,7 @@ class BarChart extends React.Component {
                 let barHeight = unitHeight * Math.abs(element[indices[i]]);
                 if(element[indices[i]] > 0)y = centerHoritzonalAxis - barHeight;
                 else y = centerHoritzonalAxis;
+                this.context = this.barChartRef.current.getContext('2d');
                 this.context.fillStyle = colourForThisList[i];
                 this.context.fillRect(x, y, barWidth, barHeight);
     

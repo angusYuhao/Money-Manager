@@ -4,7 +4,7 @@
 
 .Content, .ContentNoMsgs {
     width: 93vw;
-    height: 90vh;
+    height: 82vh;
     margin: none;
     display: flex;
 }
@@ -23,12 +23,23 @@
 .Chart {
     width: 50%;
     left: 2%;
-    bottom: 3%;
+    bottom: 12%;
     display: inline-block;
     align-items: stretch;
     position: relative;
     /* display: flex; */
     justify-content: center;
+}
+
+.SpendingsBarChart {
+    padding-left: 10%;
+}
+
+.SpendingsBarChartTitle {
+    position: relative;
+    text-align: center;
+    padding-top: 3%;
+    z-index: -1;
 }
 
 .SpendingsSortButtons {
@@ -38,6 +49,13 @@
 
 .SortButton {
     width: 100%;
+}
+
+.SpendingsModeButtons {
+    padding-top: 2%;
+    padding-right: 2%;
+    height: 1vh;
+    float: right;
 }
 
 .DrawerDiv {
