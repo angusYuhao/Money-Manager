@@ -586,6 +586,23 @@ class Spendings extends React.Component {
         // sorting data again so it's in order 
         // this.sortEntireData()
         this.setState({ entire_data: this.state.entire_data })
+        
+        const yearIndex = this.getIndexFromYear(year, this.state.entire_data)
+        const monthIndex = this.getIndexFromMonth(month, this.state.entire_data[yearIndex]["Data"])
+        
+        this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
+        this.state.projectedSpendings = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"]
+        this.state.currentlySelectedMonth["monthIndex"] = monthIndex
+        this.state.currentlySelectedMonth["yearIndex"] = yearIndex
+
+        this.setState({
+          transactions_data: this.state.transactions_data,
+          projectedSpendings: this.state.projectedSpendings,
+          currentlySelectedMonth: this.state.currentlySelectedMonth
+        })
+
+        this.sumCategoriesAmount()
+        this.sumAccountBalance()
 
         // resetting form and closing menu 
         Object.keys(this.state.newSpendings).map(heading => {
