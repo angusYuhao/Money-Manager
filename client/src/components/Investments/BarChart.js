@@ -20,48 +20,49 @@ class BarChart extends React.Component {
         this.barChartRef = React.createRef();
     }
 
-    randomPastelColourCode = () => {
-        return "hsl(" + 360 * Math.random() + ',' +
-             (25 + 70 * Math.random()) + '%,' + 
-             (80 + 10 * Math.random()) + '%)'
-    }
+   
 
-    drawBars = (barIndex,labelIndex, ) => {
+    drawBars = () => {
         //!!!Ian: bookCost is the total amount spend on that stock/in that category
-        const {listToDisplay, numDatasets} = this.props
-        if(listToDisplay === undefined || listToDisplay.length == 0){
-            return;
+        const {index1, index2, labelIndex, listToDisplay,numDatasets} = this.props
+        let colourForThisList1 = '';
+        let colourForThisList2 = '';
+        if(numDatasets == 0) return;
+        else if(numDatasets == 1)colourForThisList1 = '#A986CE';
+        else if(numDatasets == 2){
+            colourForThisList1 = '#AECEA5';
+            colourForThisList2 = '#E6A0AA';
         }
 
-        let total = listToDisplay.reduce( (ttl, entry) => {
-            console.log(entry[barIndex])
-            return ttl + Math.round( (entry[barIndex]  * 100)/ 100 )
-        }, 0);
-        // console.log(total);
-
-        //get the max and min gain loss stocks or spendings
-        // console.log(listToDisplay);
-        let keyComponentsArray =[];
-        // console.log(typeof(keyComponentsArray))
-        keyComponentsArray = listToDisplay.map(function (obj) {
-            // console.log(obj[indexName])
-            return obj[barIndex];
+        //get an array for only the components, such as gain/loss or spendings needed 
+        let keyComponentsArray1 =[];
+        let keyComponentsArray2 =[];
+        keyComponentsArray1 = listToDisplay.map(function (obj) {
+            return obj[index1];
         });
 
-        //use min = -15, max = 220 for now to ensure drawings are right for now, NEED TO INITIALIZE TO 1st element later
-        // let maxAmount= keyComponentsArray[0];
-        // let minAmount= keyComponentsArray[0];
-        let maxAmount=keyComponentsArray[0];
-        let minAmount=keyComponentsArray[0];
-
-
-        for(let i = 0; i < keyComponentsArray.length; i++){
-            if(maxAmount < keyComponentsArray[i])maxAmount = keyComponentsArray[i];
-            if(minAmount > keyComponentsArray[i])minAmount = keyComponentsArray[i];
+        if(numDatasets == 2){
+            keyComponentsArray2 = listToDisplay.map(function (obj) {
+                return obj[index2];
+            });
         }
 
-        console.log(maxAmount);
-        console.log(minAmount);
+        //Get the max and min values out of both of the arrays.
+        //This is used for knowing the proportions of the canvas
+        let maxAmount=keyComponentsArray1[0];
+        let minAmount=keyComponentsArray1[0];
+
+        for(let i = 0; i < keyComponentsArray1.length; i++){
+            if(maxAmount < keyComponentsArray1[i])maxAmount = keyComponentsArray1[i];
+            if(minAmount > keyComponentsArray1[i])minAmount = keyComponentsArray1[i];
+        }
+
+        for(let i = 0; i < keyComponentsArray2.length; i++){
+            if(maxAmount < keyComponentsArray2[i])maxAmount = keyComponentsArray2[i];
+            if(minAmount > keyComponentsArray2[i])minAmount = keyComponentsArray2[i];
+        }
+
+        
 
         //kinda like the number of pixels to be in that section
         let proportionalHeight = 0;
@@ -79,8 +80,8 @@ class BarChart extends React.Component {
         console.log(proportionalHeight);
        
 
-        //For some of the properties needed for drawing the bars.
-        let sectionWidth = this.state.canvasWidth / keyComponentsArray.length;
+        //For some of the properties needed for drawing the bars such as the bar widths and unit height per dollar amount...
+        let sectionWidth = this.state.canvasWidth / keyComponentsArray1.length;
         let sectionBorder = 0.05*sectionWidth;
         let unitHeight = this.state.canvasHeight /proportionalHeight;
         
@@ -89,56 +90,100 @@ class BarChart extends React.Component {
         unitHeight *= 0.85;  //Make it slightly smaller than the canvas to look a bit better
         console.log(centerHoritzonalAxis);
         console.log(maxAmount * (this.state.canvasHeight /proportionalHeight));
-
         
-
         let currentSection = 0;
 
-        let colourForThisList = this.randomPastelColourCode();
+        
         listToDisplay.forEach(element => {
             //draw bar
-            let x = (currentSection*sectionWidth) + sectionBorder;
-            let y;
-            let barHeight = unitHeight * Math.abs(element[barIndex]);
-            if(element[barIndex] > 0)y = centerHoritzonalAxis - barHeight;
-            else y = centerHoritzonalAxis;
-            this.context.fillStyle = colourForThisList;
-            this.context.fillRect(x, y, barWidth, barHeight);
+            let x1 = (currentSection*sectionWidth) + sectionBorder;
+            let y1;
+            let barHeight = unitHeight * Math.abs(element[index1]);
+            if(element[index1] > 0)y1 = centerHoritzonalAxis - barHeight;
+            else y1 = centerHoritzonalAxis;
+            this.context.fillStyle = colourForThisList1;
+            this.context.fillRect(x1, y1, barWidth, barHeight);
 
-            //draw the label
-            let labelString = element[labelIndex];
-            let amountString = element[barIndex];
-            if(element[barIndex] >= 0)amountString = '$' + amountString;
-            else amountString = '-$' + amountString;
-
-            //put the amountString just above the bar
-            this.context.fillStyle = '#85929E';
+            //Add the amount s.t. it's right above the bars
+            let amountString = element[index1];
+            if(element[index1] >= 0)amountString = '$' + amountString;
+            else amountString = '-$' + Math.abs(amountString);
+            this.context.fillStyle = '#616A6A';
             this.context.font = '20px Poppins, sans-serif';
             this.context.textAlign = 'center';
-            let text_x=x+(barWidth/2.1); 
-            let text_y=y*0.97;
-            this.context.fillText(amountString,text_x, text_y);
+            let amount_x=x1+(barWidth/2.1); 
+            let amount_y=y1*0.97;
+            this.context.fillText(amountString,amount_x, amount_y);
 
-            //put the labelString in a legend thingy
-
-
-
+            //Add the labelString just below the horizontal axis
+            if(numDatasets == 1){
+                let labelString = element[labelIndex];
+                this.context.fillStyle = '#616A6A';
+                this.context.font = '20px Poppins, sans-serif';
+                this.context.textAlign = 'center';
+                let label_x=amount_x; 
+                let label_y=centerHoritzonalAxis *1.05;
+                this.context.fillText(labelString,label_x, label_y);
+            }
             currentSection+=1;
+            //Draw the horizontal line for the axis
+            this.context.beginPath();
+            this.context.moveTo(0, centerHoritzonalAxis);
+            this.context.lineTo(this.state.canvasWidth, centerHoritzonalAxis);
+            this.context.stroke();
         });
+
+        if(numDatasets == 2){
+            currentSection = 0;
+            
+            listToDisplay.forEach(element => {
+                //draw bar
+               
+                let x2 = (currentSection*sectionWidth) + barWidth + sectionBorder;
+                let y2;
+                let barHeight = unitHeight * Math.abs(element[index2]);
+                if(element[index2] > 0)y2 = centerHoritzonalAxis - barHeight;
+                else y2 = centerHoritzonalAxis;
+                this.context.fillStyle = colourForThisList2;
+                this.context.fillRect(x2, y2, barWidth, barHeight);
+
+                //Add the amount s.t. it's right above the bars
+                let amountString = element[index2];
+                if(element[index2] >= 0)amountString = '$' + amountString;
+                else amountString = '-$' + Math.abs(amountString);
+                this.context.fillStyle = '#616A6A';
+                this.context.font = '20px Poppins, sans-serif';
+                this.context.textAlign = 'center';
+                let amount_x=x2+(barWidth/2.1); 
+                let amount_y=y2*0.97;
+                this.context.fillText(amountString,amount_x, amount_y);
+
+                 //Add the labelString just below the horizontal axis
+                let labelString = element[labelIndex];
+                this.context.fillStyle = '#616A6A';
+                this.context.font = '20px Poppins, sans-serif';
+                this.context.textAlign = 'center';
+                let label_x=amount_x-(barWidth/2); 
+                let label_y=centerHoritzonalAxis *1.05;
+                this.context.fillText(labelString,label_x, label_y);
+                currentSection+=1;
+                //Draw the horizontal line for the axis
+                this.context.beginPath();
+                this.context.moveTo(0, centerHoritzonalAxis);
+                this.context.lineTo(this.state.canvasWidth, centerHoritzonalAxis);
+                this.context.stroke();
+            });
+        }
+
+       
+        
+        
     }
 
   
 
     componentDidMount() {
-        console.log("did mount");
-        this.context = this.barChartRef.current.getContext('2d');
-        console.log(this.context)
-        let elem = document.getElementById('barChartCanvas');
-        let rect = elem.getBoundingClientRect();
-        const context = this.context;
-        this.drawBars("Gain/Loss", "Name");
-        Object.preventExtensions(this);
-    
+        this.drawBars();
     }
 
 
@@ -155,7 +200,7 @@ class BarChart extends React.Component {
         //this.state.slices = [];
 
         //redraw
-        this.drawBars("Gain/Loss","Name");
+        this.drawBars();
     }
     
     render() {
