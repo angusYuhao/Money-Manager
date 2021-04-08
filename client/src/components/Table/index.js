@@ -12,6 +12,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -141,7 +142,7 @@ class TableComp extends React.Component {
 
   render() {
 
-    const { headings, data, options, categories, addRow, editRow, removeRow, addCategory, removeCategory } = this.props;
+    const { headings, data, options, categories, addRow, editRow, removeRow, addCategory, removeCategory, tableType, sellStock } = this.props;
 
     return (
 
@@ -217,11 +218,21 @@ class TableComp extends React.Component {
 
                   <TableCell width="100vw" align="right">
 
-                    <IconButton
-                      aria-label="add"
-                      onClick={() => this.addRowHandler()}>
-                      <AddIcon />
-                    </IconButton>
+                    {tableType == "Spendings" ?
+
+                      <IconButton
+                        aria-label="add"
+                        onClick={() => this.addRowHandler()}>
+                        <AddIcon />
+                      </IconButton>
+                      :
+                      <Button
+                        aria-label="buy"
+                        onClick={() => this.addRowHandler()}>
+                        Buy
+                      </Button>
+
+                    }
 
                   </TableCell>
 
@@ -244,6 +255,8 @@ class TableComp extends React.Component {
                     rowForAdd={true}
                     addSnacks={this.addSnack.bind(this)}
                     toggleAdd={this.toggleAdd.bind(this)}
+                    tableType={tableType}
+                    sellStock={sellStock}
                   />
 
                   : null
@@ -261,6 +274,8 @@ class TableComp extends React.Component {
                     rowForAdd={false}
                     addSnacks={this.addSnack.bind(this)}
                     toggleAdd={this.toggleAdd.bind(this)}
+                    tableType={tableType}
+                    sellStock={sellStock}
                   />
                 )}
 

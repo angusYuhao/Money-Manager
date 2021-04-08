@@ -28,12 +28,18 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
+// imports for the mode switcher on the top right corner 
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import PieChartIcon from '@material-ui/icons/PieChart';
+
 import './spendings.css'
-// import { data } from './data'
 import noResultsFound from '../Images/noResultsFound.jpg';
 
 import TableComp from '../Table'
 import PieChart from '../Investments/PieChart'
+import BarChart from '../Investments/BarChart'
 
 // getting the config settings variable 
 import CONFIG from '../../config'
@@ -70,11 +76,11 @@ const useStyles = () => ({
     backgroundColor: deepPurple[100],
   },
   accountBalanceDiv: {
-    marginTop: "5%",
-    right: "10%",
+    marginTop: "10%",
+    bottom: "30%",
+    left: "12%",
     textAlign: "center",
-    position: "absolute",
-    top: "75%",
+    position: "relative",
     minWidth: "30vw",
     display: "inline-block",
     borderRadius: "25px",
@@ -163,7 +169,11 @@ class Spendings extends React.Component {
       // used for changing the colours of the items in the drawer 
       currentlySelectedMonth: { monthIndex: "", yearIndex: "" },
       // used for deleting a sheet for the specific month
-      monthToDelete: { monthIndex: "", yearIndex: "" }
+      monthToDelete: { monthIndex: "", yearIndex: "" },
+      // used for changing the current mode user is on (either pieChart, or barChart)
+      currentlySelectedMode: "pieChart",
+      // holds the data needed to display the bar graph 
+      arrayForBarGraph: []
     }
 
     /***************************************************************************************************************************
@@ -186,7 +196,7 @@ class Spendings extends React.Component {
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
     if (prevState.transactions_data != this.state.transactions_data) {
-      this.sumAccountBalance()
+      // this.sumAccountBalance()
       this.sumCategoriesAmount()
     }
   }
@@ -217,18 +227,21 @@ class Spendings extends React.Component {
         if (this.state.entire_data.length != 0) {
           this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
           this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+          this.state.accountBalance = this.state.entire_data["0"]["Data"]["0"]["Data"]["Total Amount"]
           this.state.currentlySelectedMonth["monthIndex"] = "0"
           this.state.currentlySelectedMonth["yearIndex"] = "0"
 
           this.setState({
             transactions_data: this.state.transactions_data,
             projectedSpendings: this.state.projectedSpendings,
+            accountBalance: this.state.accountBalance,
             currentlySelectedMonth: this.state.currentlySelectedMonth
           })
         }
 
         this.sumCategoriesAmount()
-        this.sumAccountBalance()
+        // this.sumAccountBalance()
+        this.updateArrayForBarGraph()
 
       })
       .catch(error => {
@@ -244,6 +257,29 @@ class Spendings extends React.Component {
       return sum
     }, 0)
     this.setState({ accountBalance: this.state.accountBalance })
+  }
+
+  updateArrayForBarGraph = () => {
+
+    const yearIndexSelected = this.state.currentlySelectedMonth.yearIndex
+    let arrayForBarGraph = []
+
+    if (yearIndexSelected) {
+
+      this.state.entire_data[yearIndexSelected]["Data"].map(obj => {
+
+        let newObj = new Object()
+        newObj["Month"] = this.numbersToMonth[obj["Month"]]
+        newObj["Actual"] = obj["Data"]["Total Amount"]
+        newObj["Projected"] = obj["Data"]["Projected Spendings"]
+        arrayForBarGraph.push(newObj)
+
+      })
+
+    }
+
+    this.setState({ arrayForBarGraph: arrayForBarGraph })
+
   }
 
   sumCategoriesAmount = () => {
@@ -335,8 +371,8 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
-        this.sumAccountBalance()
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
+        // this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
       .catch(error => {
@@ -370,8 +406,8 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
-        this.sumAccountBalance()
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
+        // this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
       .catch(error => {
@@ -405,7 +441,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
       })
       .catch(error => {
         console.log(error)
@@ -500,7 +536,30 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
+
         this.setState({ entire_data: data })
+
+        if (this.state.entire_data.length != 0) {
+          this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
+          this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+          this.state.accountBalance = this.state.entire_data["0"]["Data"]["0"]["Data"]["Total Amount"]
+          this.state.currentlySelectedMonth["monthIndex"] = "0"
+          this.state.currentlySelectedMonth["yearIndex"] = "0"
+
+          this.setState({
+            transactions_data: this.state.transactions_data,
+            projectedSpendings: this.state.projectedSpendings,
+            accountBalance: this.state.accountBalance,
+            currentlySelectedMonth: this.state.currentlySelectedMonth
+          })
+        }
+
+        else {
+          this.state.currentlySelectedMonth["monthIndex"] = ""
+          this.state.currentlySelectedMonth["yearIndex"] = ""
+          this.setState({ currentlySelectedMonth: this.state.currentlySelectedMonth })
+        }
+
       })
       .catch(error => {
         console.log(error)
@@ -587,23 +646,26 @@ class Spendings extends React.Component {
         // sorting data again so it's in order 
         // this.sortEntireData()
         this.setState({ entire_data: this.state.entire_data })
-        
+
         const yearIndex = this.getIndexFromYear(year, this.state.entire_data)
         const monthIndex = this.getIndexFromMonth(month, this.state.entire_data[yearIndex]["Data"])
-        
+
         this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
         this.state.projectedSpendings = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"]
+        this.state.accountBalance = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"]
         this.state.currentlySelectedMonth["monthIndex"] = monthIndex
         this.state.currentlySelectedMonth["yearIndex"] = yearIndex
 
         this.setState({
           transactions_data: this.state.transactions_data,
           projectedSpendings: this.state.projectedSpendings,
+          accountBalance: this.state.accountBalance,
           currentlySelectedMonth: this.state.currentlySelectedMonth
         })
 
         this.sumCategoriesAmount()
-        this.sumAccountBalance()
+        this.updateArrayForBarGraph()
+        // this.sumAccountBalance()
 
         // resetting form and closing menu 
         Object.keys(this.state.newSpendings).map(heading => {
@@ -629,9 +691,11 @@ class Spendings extends React.Component {
     this.setState({
       transactions_data: this.state.transactions_data,
       projectedSpendings: this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"],
+      accountBalance: this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"],
       currentlySelectedMonth: this.state.currentlySelectedMonth
     })
-    this.sumAccountBalance()
+    // this.sumAccountBalance()
+    this.updateArrayForBarGraph()
     this.sumCategoriesAmount()
   }
 
@@ -688,6 +752,17 @@ class Spendings extends React.Component {
       if (obj[type] == key) exists = true
     })
     return exists
+  }
+
+  // mode is either "barChart" or "pieChart"
+  updateSelectedMode(e, mode) {
+    if (mode == "barChart") this.updateArrayForBarGraph()
+    this.setState({ currentlySelectedMode: mode })
+  }
+
+  // @ EMILY this is the sell stock function, you should call your backend here, the stock is the entire object of the row, and the amount is how many shares you are selling
+  testSellStock(stock, amount) {
+    console.log(stock, amount)
   }
 
   render() {
@@ -839,6 +914,27 @@ class Spendings extends React.Component {
 
             </div>
 
+            <div className="SpendingsModeButtons">
+
+              <ToggleButtonGroup
+                value={this.state.currentlySelectedMode}
+                exclusive
+                aria-label="text alignment">
+
+                <ToggleButton value="pieChart" aria-label="pieChart"
+                  onClick={(e) => this.updateSelectedMode(e, "pieChart")}>
+                  Details &nbsp; <PieChartIcon value="pieChart" />
+                </ToggleButton>
+
+                <ToggleButton value="barChart" aria-label="barChart"
+                  onClick={(e) => this.updateSelectedMode(e, "barChart")}>
+                  Overview &nbsp; <BarChartIcon value="barChart" />
+                </ToggleButton>
+
+              </ToggleButtonGroup>
+
+            </div>
+
             {this.state.entire_data.length == 0 ?
 
               <div className="ContentNoMsgs" >
@@ -858,92 +954,122 @@ class Spendings extends React.Component {
 
               :
 
-              <div className="Content">
+              <div>
 
-                <div className="Chart">
+                {this.state.currentlySelectedMode == "pieChart" ?
 
-                  <PieChart
-                    listToDisplay={this.state.sumForCategories}
-                    pieChartSize={600}
-                    pieChartRadius={150}
-                  >
+                  <div className="Content">
 
-                  </PieChart>
+                    <div className="Chart">
 
-                  <div className={classes.accountBalanceDiv}>
-                    <Typography variant="h5" className={classes.accountBalance}>
-                      Total Amount: ${this.state.accountBalance}
-                      <br></br>
-                    Projected Spendings: ${this.state.projectedSpendings}
-                    </Typography>
+                      <PieChart
+                        listToDisplay={this.state.sumForCategories}
+                        pieChartSize={600}
+                        pieChartRadius={150}>
+                      </PieChart>
+
+                      <div className={classes.accountBalanceDiv}>
+                        <Typography variant="h5" className={classes.accountBalance}>
+                          Total Amount: ${this.state.accountBalance}
+                          <br></br>
+                          Projected Spendings: ${this.state.projectedSpendings}
+                        </Typography>
+                      </div>
+
+                    </div>
+
+                    <div className="SpendingsTable">
+
+                      <TableComp
+                        // use the TableContainer class to style the table itself 
+                        classes={{ TableContainer: 'TableContainer' }}
+                        headings={this.state.transactions_headings}
+                        data={this.state.transactions_data}
+                        options={this.state.transactions_options}
+                        categories={this.state.transactions_categories}
+                        addRow={this.addTransaction}
+                        editRow={this.editTransaction}
+                        removeRow={this.deleteTransaction}
+                        addCategory={this.addCategory}
+                        removeCategory={this.deleteCategory}
+                        tableType="Spendings"
+                        sellStock={this.testSellStock}
+                      />
+
+                      <div className="SpendingsSortButtons">
+
+                        <Grid container spacing={3}>
+
+                          <Grid item xs={4}>
+                            <Paper>
+                              <Button
+                                className="SortButton"
+                                variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
+                                color="primary"
+                                onClick={() => this.changeSort("Date")}>
+                                Sort By Date
+                                {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                              </Button>
+                            </Paper>
+                          </Grid>
+
+                          <Grid item xs={4}>
+                            <Paper>
+                              <Button
+                                className="SortButton"
+                                variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
+                                color="primary"
+                                onClick={() => this.changeSort("Amount")}>
+                                Sort By Amount
+                                {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                              </ Button>
+                            </Paper>
+                          </Grid>
+
+                          <Grid item xs={4}>
+                            <Paper>
+                              <Button
+                                className="SortButton"
+                                variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
+                                color="primary"
+                                onClick={() => this.changeSort("Category")}>
+                                Sort By Category
+                                {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                              </Button>
+                            </Paper>
+                          </Grid>
+
+                        </Grid>
+
+                      </div>
+
+                    </div>
+
+                  </div> :
+
+                  <div>
+
+                    <div>
+                      <Typography variant="h5" className="SpendingsBarChartTitle" >
+                        Spendings Overview of Year {this.getYearFromIndex(this.state.currentlySelectedMonth.yearIndex)}
+                      </Typography>
+                    </div>
+
+                    <div className="SpendingsBarChart">
+
+                      <BarChart
+                        listToDisplay={this.state.arrayForBarGraph}
+                        numDatasets={2}
+                        indices={["Actual", "Projected"]}
+                        labelIndex="Month"
+                        barChartWidth={1250}
+                        barChartHeight={500} />
+
+                    </div>
+
                   </div>
 
-                </div>
-
-                <div className="Table">
-
-                  <TableComp
-                    // use the TableContainer class to style the table itself 
-                    classes={{ TableContainer: 'TableContainer' }}
-                    headings={this.state.transactions_headings}
-                    data={this.state.transactions_data}
-                    options={this.state.transactions_options}
-                    categories={this.state.transactions_categories}
-                    addRow={this.addTransaction}
-                    editRow={this.editTransaction}
-                    removeRow={this.deleteTransaction}
-                    addCategory={this.addCategory}
-                    removeCategory={this.deleteCategory}
-                  />
-
-                  <div className="SortButtons">
-
-                    <Grid container spacing={3}>
-
-                      <Grid item xs={4}>
-                        <Paper>
-                          <Button
-                            className="SortButton"
-                            variant={this.state.sortBy == "Date" ? "contained" : "outlined"}
-                            color="primary"
-                            onClick={() => this.changeSort("Date")}>
-                            Sort By Date
-                          {this.state.sortDes["Date"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                          </Button>
-                        </Paper>
-                      </Grid>
-
-                      <Grid item xs={4}>
-                        <Paper>
-                          <Button
-                            className="SortButton"
-                            variant={this.state.sortBy == "Amount" ? "contained" : "outlined"}
-                            color="primary"
-                            onClick={() => this.changeSort("Amount")}>
-                            Sort By Amount
-                          {this.state.sortDes["Amount"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                          </ Button>
-                        </Paper>
-                      </Grid>
-
-                      <Grid item xs={4}>
-                        <Paper>
-                          <Button
-                            className="SortButton"
-                            variant={this.state.sortBy == "Category" ? "contained" : "outlined"}
-                            color="primary"
-                            onClick={() => this.changeSort("Category")}>
-                            Sort By Category
-                          {this.state.sortDes["Category"] ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                          </Button>
-                        </Paper>
-                      </Grid>
-
-                    </Grid>
-
-                  </div>
-
-                </div>
+                }
 
               </div>
 

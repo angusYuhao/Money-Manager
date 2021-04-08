@@ -9,6 +9,7 @@ const TransactionSchema = new mongoose.Schema({
 
 const TransactionsSchema = new mongoose.Schema({
     "Transactions": [TransactionSchema],
+    "Total Amount": Number,
     "Projected Spendings": Number
 })
 
