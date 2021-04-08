@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const {StockEntrySchema} = require('./investments');
 const { SpendingsSchema } = require("./spendings");
+const { RecommendationSchema } = require("./recommendation");
 const { postSchema } = require('./posts.js');
 
 // Making a Mongoose model a little differently: a Mongoose Schema
@@ -92,7 +93,8 @@ const UserSchema = new mongoose.Schema({
 	userUpvotedPosts: [Number],
 	userDownvotedPosts: [Number],
 	userSavedPosts: [Number],
-	userFollowers: [String]
+	userFollowers: [String],
+	userRecommendations: [RecommendationSchema]
 })
 
 // An example of Mongoose middleware.

@@ -114,6 +114,35 @@ app.get("/users/manage", async (req, res) => {
 
 })
 
+// route for FA to make a recommendation to a regular user 
+app.post("/users/manage/recommend/:targetUsername", async (req, res) => {
+
+    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    const userID = req.session.user
+
+    const targetUsername = req.params.targetUsername
+
+    try {
+
+        const FA = await User.findById(userID)
+        const FAName = FA.username
+        const targetUser = await User.findOne({ username: targetUsername })
+
+        const newRec = req.body
+        newRec["FAName"] = FAName
+
+        targetUser.userRecommendations.unshift(newRec)
+        await targetUser.save()
+        res.sendStatus(200).send()
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
 app.post("/users/login", (req, res) => {
     const username = req.body.userName;
     const password = req.body.password;
