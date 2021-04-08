@@ -69,6 +69,12 @@ const postSchema = new mongoose.Schema({
 		minlength: 1,
 		unique: false,
     },
+    time: {
+        type: Number,
+        required: true,
+        minLength: 1,
+        unique: false,
+    },
     comments: [commentSchema]
 })
 

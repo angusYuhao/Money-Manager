@@ -1001,6 +1001,7 @@ app.post('/community/posts', async (req, res) => {
         content: req.body.content,
         numUpvotes: req.body.numUpvotes,
         numDownvotes: req.body.numDownvotes,
+        time: req.body.time,
         comments: []
     })
 

@@ -282,9 +282,15 @@ class ForumList extends React.Component {
   // called when a new post is created
   addPost = (username, callback1, callback2) => {
 
+    console.log("haiufiadcoaidsjfdoijaiojfdoisafjoiajojfdsoifjadiofjao")
+
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
     const newID = (postList.length === 0) ? 1 : maxValue + 1
+
+    let d = new Date()
+    let postTime = d.getTime()
+    console.log("time====================================================:", postTime)
 
     const newPost = {
       author: username,
@@ -296,6 +302,7 @@ class ForumList extends React.Component {
       postID: newID,
       numUpvotes: 0,
       numDownvotes: 0,
+      time: postTime,
       comments: []
     }
 
@@ -482,6 +489,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -510,6 +518,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -547,6 +556,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -575,6 +585,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -612,6 +623,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -640,6 +652,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -677,6 +690,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
@@ -705,6 +719,7 @@ class ForumList extends React.Component {
                                 openManagePost={ this.state.openManagePost ? true : false }
                                 numUpvotes={ thread.numUpvotes }
                                 numDownvotes={ thread.numDownvotes }
+                                time={ thread.time }
                                 userInfo={ userInfo }
                                 FAInfo={ FAInfo }
                                 userInfoUpdater={ userInfoUpdater }
