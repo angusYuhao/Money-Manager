@@ -127,37 +127,9 @@ class ForumListItem extends React.Component {
   // update the state when the component is mounted
   componentDidMount() {
 
-    let d = new Date()
-    let openTime = d.getTime()
-    let displayTime = ""
-    if (openTime - this.props.time < 60000) {
-      displayTime = "now"
-    }
-    else if (openTime - this.props.time < 3600000) {
-      let temp = Math.floor((openTime - this.props.time) / 60000)
-      displayTime = temp.toString() + "mins ago"
-    }
-    else if (openTime - this.props.time < 86400000) {
-      let temp = Math.floor((openTime - this.props.time) / 3600000)
-      displayTime = temp.toString() + "hrs ago"
-    }
-    else if (openTime - this.props.time < 604800000) {
-      let temp = Math.floor((openTime - this.props.time) / 86400000)
-      displayTime = temp.toString() + "days ago"
-    }
-    else if (openTime - this.props.time < 2592000000) {
-      let temp = Math.floor((openTime - this.props.time) / 604800000)
-      displayTime = temp.toString() + "weeks ago"
-    }
-    else if (openTime - this.props.time < 31536000000) {
-      let temp = Math.floor((openTime - this.props.time) / 2592000000)
-      displayTime = temp.toString() + "mths ago"
-    }
-    else {
-      displayTime = "a long time ago"
-    }
+    
 
-    this.setState({ postID: this.props.postID, displayTime: displayTime }, () => this.prepareOpenPost(), () => this.forceUpdate())
+    this.setState({ postID: this.props.postID }, () => this.prepareOpenPost(), () => this.forceUpdate())
   }
 
   // update some states when the component updates
@@ -315,6 +287,40 @@ class ForumListItem extends React.Component {
     const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, app,
             deletePosts, openManagePost, numUpvotes, numDownvotes, time, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
 
+    let d = new Date()
+    let openTime = d.getTime()
+    let displayTime = ""
+
+    console.log("now  time:", openTime)
+    console.log("post time:", this.props.time)
+
+    if (openTime - this.props.time < 60000) {
+      displayTime = "now"
+    }
+    else if (openTime - this.props.time < 3600000) {
+      let temp = Math.floor((openTime - this.props.time) / 60000)
+      displayTime = temp.toString() + "mins ago"
+    }
+    else if (openTime - this.props.time < 86400000) {
+      let temp = Math.floor((openTime - this.props.time) / 3600000)
+      displayTime = temp.toString() + "hrs ago"
+    }
+    else if (openTime - this.props.time < 604800000) {
+      let temp = Math.floor((openTime - this.props.time) / 86400000)
+      displayTime = temp.toString() + "days ago"
+    }
+    else if (openTime - this.props.time < 2592000000) {
+      let temp = Math.floor((openTime - this.props.time) / 604800000)
+      displayTime = temp.toString() + "weeks ago"
+    }
+    else if (openTime - this.props.time < 31536000000) {
+      let temp = Math.floor((openTime - this.props.time) / 2592000000)
+      displayTime = temp.toString() + "mths ago"
+    }
+    else {
+      displayTime = "a long time ago"
+    }
+
     return (
       <div>
 
@@ -342,7 +348,7 @@ class ForumListItem extends React.Component {
                 : null }
 
                 {/* {display time} */}
-                <span className={ classes.timeText }>{ this.state.displayTime } </span>
+                <span className={ classes.timeText }>{ displayTime } </span>
 
                 {/* {shows the number of upvotes and downvotes} */}
                 <IconButton size="small" component="span" disabled>
