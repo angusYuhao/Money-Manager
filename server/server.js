@@ -3,6 +3,7 @@
 const log = console.log
 
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
+const ENV = "development" // used for setting session info manually when testing
 
 const { localMongoURI } = require('./db/config.js');
 const express = require("express")
@@ -67,6 +68,51 @@ app.use(
 /**************************
  ROUTES FOR USERS
  *************************/
+
+// route to get all the users that currently follow the FA 
+app.get("/users/manage", async (req, res) => {
+
+    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    const userID = req.session.user
+
+    try {
+
+        const user = await User.findById(userID) // FA user 
+        const userFollowers = user.userFollowers // usernames that follow the above FA 
+
+        // all the entirety User info of each users that follow the above FA
+        const userFollowersArray = await Promise.all(userFollowers.map(async username => {
+            const user = await User.findOne({ username: username })
+            return user
+        }))
+
+        let clientsArray = []
+
+        userFollowersArray.map(follower => {
+            const clientObj = new Object()
+            clientObj["username"] = follower.username
+            clientObj["firstName"] = follower.firstName
+            clientObj["lastName"] = follower.lastName
+            clientObj["email"] = follower.email
+            clientObj["birthday"] = follower.birthday
+            clientObj["occupation"] = follower.occupation
+            clientObj["salary"] = follower.salary
+            clientObj["gender"] = follower.gender
+            clientObj["totalSpendings"] = '$5,000'
+            clientObj["totalGain"] = '$10,000'
+            clientObj["totalLoss"] = '$100'
+            clientsArray.push(clientObj)
+        })
+
+        res.send(clientsArray)
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
 
 app.post("/users/login", (req, res) => {
     const username = req.body.userName;
@@ -550,7 +596,7 @@ app.delete('/users/profile/userFollows/:username/:FAusername', async (req, res) 
     try {
 
         let targetUser = await User.find({ username: targetUsername })
-        let FA = await User.findOne({ username: targetFAusername }) 
+        let FA = await User.findOne({ username: targetFAusername })
 
         // deleting the regular user from FA's userFollowers
         FA.userFollowers.pull(targetUser[0].username)
