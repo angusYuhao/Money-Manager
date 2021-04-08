@@ -488,7 +488,7 @@ class Profile extends React.Component {
     };
 
     // These code are taken from ForumList, check ForumList for more details
-    postComment = (target) => {
+    postComment = (target, callback) => {
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         
@@ -496,7 +496,7 @@ class Profile extends React.Component {
         const targetPostComments = targetPost[0].comments
     
         const newComment = {
-          commenter: this.state.commenter,
+          commenter: this.state.username,
           commentContent: target.comment
         }
     
@@ -508,6 +508,7 @@ class Profile extends React.Component {
         otherPosts.splice(targetPostIndex, 0, targetPost[0])
     
         this.setState({ posts: otherPosts })
+        callback({targetPostID, newComment})
     }
 
     // These code are taken from ForumList, check forumList for more details
@@ -525,7 +526,7 @@ class Profile extends React.Component {
     }
 
     // These code are taken from ForumList, check forumList for more details
-    addUpvote = (target) => {
+    addUpvote = (target, callback1, callback2) => {
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -537,10 +538,13 @@ class Profile extends React.Component {
         const userInfo = this.state.userInfo
         userInfo.userUpvotedPosts.push(targetPostID)
         this.setState({ userInfo: userInfo })
+
+        callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+        callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
     }
 
     // These code are taken from ForumList, check forumList for more details
-    minusUpvote = (target) => {
+    minusUpvote = (target, callback1, callback2) => {
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -553,10 +557,13 @@ class Profile extends React.Component {
         const index = userInfo.userUpvotedPosts.indexOf(targetPostID)
         if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
         this.setState({ userInfo: userInfo })
+
+        callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
+        callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
     }
 
     // These code are taken from ForumList, check forumList for more details
-    addDownvote = (target) => {
+    addDownvote = (target, callback1, callback2) => {
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -568,10 +575,13 @@ class Profile extends React.Component {
         const userInfo = this.state.userInfo
         userInfo.userDownvotedPosts.push(targetPostID)
         this.setState({ userInfo: userInfo })
+
+        callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
+        callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
     }
 
     // These code are taken from ForumList, check forumList for more details
-    minusDownvote = (target) => {
+    minusDownvote = (target, callback1, callback2) => {
         const targetPostID = target.postID
         const targetPostIndex = this.state.posts.findIndex(post => post.postID === targetPostID)
         const targetPost = this.state.posts.filter((p) => { return p.postID === targetPostID })
@@ -584,6 +594,9 @@ class Profile extends React.Component {
         const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
         if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
         this.setState({ userInfo: userInfo })
+
+        callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
+        callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
     }
 
     // changes the list of posts to display

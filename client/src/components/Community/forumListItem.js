@@ -223,24 +223,24 @@ class ForumListItem extends React.Component {
     callback({ username: newUserInfo.username, postID: this.state.postID, app: this.props.app })
   }
 
-  cleanupDownvote = () => {
-    // clean up downvote
-    if (this.state.downvoted === true) {
-      this.setState({ downvoted: false })
-      this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
-    }
-  }
+  // cleanupDownvote = () => {
+  //   // clean up downvote
+  //   if (this.state.downvoted === true) {
+  //     this.setState({ downvoted: false })
+  //     this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
+  //   }
+  // }
 
-  cleanupUpvote = () => {
-    // clean up upvote
-    if (this.state.upvoted === true) {
-      this.setState({ upvoted: false })
-      this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
-    }
-  }
+  // cleanupUpvote = () => {
+  //   // clean up upvote
+  //   if (this.state.upvoted === true) {
+  //     this.setState({ upvoted: false })
+  //     this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
+  //   }
+  // }
 
   // called when user upvotes the post
-  toggleUpvote = (callback) => {
+  toggleUpvote = () => {
 
     if (this.state.upvoted === false) {
       this.setState({ upvoted: true })
@@ -251,11 +251,11 @@ class ForumListItem extends React.Component {
       this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
     }
 
-    callback()
+    // callback()
   }
 
   // called when user downvotes the post
-  toggleDownvote = (callback) => {
+  toggleDownvote = () => {
 
     if (this.state.downvoted === false) {
       this.setState({ downvoted: true })
@@ -266,7 +266,7 @@ class ForumListItem extends React.Component {
       this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
     }
     
-    callback()
+    // callback()
   }
 
   // main render function
@@ -398,22 +398,22 @@ class ForumListItem extends React.Component {
 
             {/* {display upvote and downvote buttons} */}
             { this.state.downvoted ? 
-            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote(this.cleanupDownvote) } disabled>
+            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote() } disabled>
               <ThumbUpAltIcon />
             </IconButton>
             :
-            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote(this.cleanupDownvote) }>
+            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote() }>
               <ThumbUpAltIcon />
             </IconButton> }
             
             <span>{ numUpvotes }</span>
 
             { this.state.upvoted ?
-            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote(this.cleanupUpvote) } disabled>
+            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote() } disabled>
               <ThumbDownAltIcon />
             </IconButton>
             :
-            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote(this.cleanupUpvote) }>
+            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote() }>
               <ThumbDownAltIcon />
             </IconButton> }
             
