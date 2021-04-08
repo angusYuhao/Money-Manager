@@ -85,6 +85,9 @@ class AdminNavBar extends React.Component {
                 <Link to={'/community'} className={classes.tabs, classes.removeLine}>
                   <Tab label="Community" />
                 </Link>
+                <Link to={'/manage'} className={classes.tabs, classes.removeLine}>
+                  <Tab label="Manage" />
+                </Link>
 
               </Tabs>
 

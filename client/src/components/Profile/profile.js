@@ -596,6 +596,12 @@ class Profile extends React.Component {
                                         <Tab label="Community"/>
                                     </Link>
                                 </Tabs>
+
+                                <Tabs inkBarStyle={{background: 'black'}} centered>
+                                    <Link to={'/manage'} className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Manage"/>
+                                    </Link>
+                                </Tabs>
                             </Toolbar>
                         </AppBar>
                     }

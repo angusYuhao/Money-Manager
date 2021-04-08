@@ -175,6 +175,7 @@ class FinancialAdvisorForm extends React.Component {
                             :
                             <FormControl variant="outlined" className={classes.formControl}>
                             <CssTextField 
+                                    autoFocus
                                     value={ createdPassword } 
                                     onChange={ checkLength }
                                     id="outlined-required" 
@@ -222,6 +223,7 @@ class FinancialAdvisorForm extends React.Component {
                                 : 
                                 <FormControl variant="outlined" className={classes.formControl}>
                                 <CssTextField 
+                                        autoFocus
                                         fullWidth
                                         value={ confirmPassword } 
                                         onChange={ e => updateConfirmPassword(signup, e.target) }
