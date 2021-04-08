@@ -2,41 +2,44 @@ import React from 'react';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
-  withStyles,
-  Toolbar,
-  Typography,
-  Avatar,
-  Button,
-  Tooltip,
-  Dialog,
-  Chip,
-  Container,
-  Card,
-  Grid,
-  CardActions,
-  CardContent,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  ListItemIcon,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Select,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  createMuiTheme,
-  TextField,
-  ThemeProvider
+    withStyles,
+    Toolbar,
+    Typography,
+    Avatar,
+    Button,
+    Tooltip,
+    Dialog,
+    Chip,
+    Container,
+    Card,
+    Grid,
+    CardActions,
+    CardContent,
+    DialogContent,
+    DialogTitle,
+    DialogActions,
+    ListItemIcon,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    ListItemSecondaryAction,
+    IconButton,
+    Select,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    createMuiTheme,
+    TextField,
+    ThemeProvider
 } from '@material-ui/core';
 import { deepPurple, pink, indigo, red } from '@material-ui/core/colors';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PersonIcon from '@material-ui/icons/Person';
 import CloseIcon from '@material-ui/icons/Close';
 import BarChart from '../Investments/BarChart.js';
+
+import CONFIG from '../../config'
+const API_HOST = CONFIG.api_host
 
 const useStyles = theme => ({
     avatar: {
@@ -49,7 +52,7 @@ const useStyles = theme => ({
         margin: theme.spacing(1),
     },
     genderFemale: {
-        marginLeft: theme.spacing(1), 
+        marginLeft: theme.spacing(1),
         verticalAlign: "middle",
         color: pink[100]
     },
@@ -146,7 +149,7 @@ const theme = createMuiTheme({
 });
 
 class ClientItem extends React.Component {
-    
+
     state = {
         openClientDetail: false,
         closeDetail: true,
@@ -154,7 +157,7 @@ class ClientItem extends React.Component {
         recommendationText: "",
         actions: "",
         arrayForBarGraph: [],
-        textAdvice: undefined,
+        textAdvice: "",
     }
 
     componentDidMount() {
@@ -176,7 +179,7 @@ class ClientItem extends React.Component {
 
     openHandler = () => {
         this.setState({
-           openClientDetail: true,
+            openClientDetail: true,
         })
     }
 
@@ -189,7 +192,9 @@ class ClientItem extends React.Component {
     handleCloseRecommend = () => {
         this.setState({
             recommend: false,
-            textAdvice: "Give some advice to your clients!",
+            // textAdvice: "Give some advice to your clients!",
+            textAdvice: "",
+            actions: ""
         })
     }
 
@@ -213,9 +218,42 @@ class ClientItem extends React.Component {
         })
     }
 
+    // sends server request to have recommendation from FA -> regular user 
+    sendRecommend = (username) => {
+
+        // closes the popup 
+        this.handleCloseRecommend()
+
+        // no FA name here, will be added on server side 
+        const body = {
+            "Recommendation Action": this.state.actions,
+            "Recommendation Text": this.state.textAdvice
+        }
+
+        const url = `${API_HOST}/users/manage/recommend/${username}`
+        const request = new Request(url, {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        })
+
+        fetch(request)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+    }
+
     render() {
         const { classes, username, firstName, lastName, email, birthday,
-                occupation, salary, gender, totalSpendings, totalGain, totalLoss } = this.props;
+            occupation, salary, gender, totalSpendings, totalGain, totalLoss } = this.props;
         const name = firstName + " " + lastName;
         return (
             <ThemeProvider theme={theme}>
@@ -226,9 +264,9 @@ class ClientItem extends React.Component {
                         </ListItemAvatar>
                         <ListItemText>
                             <span className={classes.username}>{username}</span>
-                            { gender == "female" ?
+                            {gender == "female" ?
                                 <ListItemIcon className={classes.genderFemale}>
-                                    <PersonIcon className={classes.gender}/>
+                                    <PersonIcon className={classes.gender} />
                                 </ListItemIcon>
                                 :
                                 gender == "male" ?
@@ -239,25 +277,25 @@ class ClientItem extends React.Component {
                                     <ListItemIcon className={classes.genderOther}>
                                         <PersonIcon />
                                     </ListItemIcon>
-                            }   
+                            }
                         </ListItemText>
-                        
+
                         <ListItemSecondaryAction>
                             <Tooltip title="View profile">
                                 <IconButton edge="end" aria-label="visible" className={classes.view} onClick={this.openHandler}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </Tooltip>
-                            <Button variant="contained" 
-                                color="primary" 
+                            <Button variant="contained"
+                                color="primary"
                                 className={classes.sendButton}
                                 onClick={this.clickRecommend}>
-                              Recommend
+                                Recommend
                             </Button>
                         </ListItemSecondaryAction>
                     </ListItem>
 
-                    <Dialog open={ this.state.recommend } onClose={ this.handleCloseRecommend } aria-labelledby="reommend-dialog">
+                    <Dialog open={this.state.recommend} onClose={this.handleCloseRecommend} aria-labelledby="reommend-dialog">
                         <DialogTitle id="customized-dialog-title" onClose={this.handleCloseRecommend}>
                             Recommendations for clients
                         </DialogTitle>
@@ -265,46 +303,47 @@ class ClientItem extends React.Component {
                             <Grid container direction="column" spacing={1}>
                                 <FormControl variant="outlined" className={classes.formControl}>
                                     <InputLabel id="user-label">Recommended actions:</InputLabel>
-                                    <Select labelId="user-label" 
-                                            id="user"
-                                            value={this.state.actions}
-                                            name="actions"
-                                            label="Recommended actions"
-                                            onChange={this.handleInputChange}
+                                    <Select labelId="user-label"
+                                        id="user"
+                                        value={this.state.actions}
+                                        name="actions"
+                                        label="Recommended actions"
+                                        onChange={this.handleInputChange}
                                     >
-                                    <MenuItem value={"Mutual Funds"}>Mutual Funds</MenuItem>
-                                    <MenuItem value={"Bonds"}>Bonds</MenuItem>
-                                    <MenuItem value={"ETF"}>Exchange-Traded Funds (ETF)</MenuItem>
+                                        <MenuItem value={"Mutual Funds"}>Mutual Funds</MenuItem>
+                                        <MenuItem value={"Bonds"}>Bonds</MenuItem>
+                                        <MenuItem value={"ETF"}>Exchange-Traded Funds (ETF)</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <TextField  multiline
-                                            rows={4}
-                                            value={ this.state.textAdvice }
-                                            onChange={ this.handleInputChange }
-                                            id="outlined-basic" 
-                                            label="Recommendations" 
-                                            name="textAdvice"
-                                            defaultValue="Give some advice to your clients!"
-                                            variant="outlined" 
-                                            className={classes.textAdvice}/>
+                                <TextField multiline
+                                    rows={4}
+                                    value={this.state.textAdvice}
+                                    onChange={this.handleInputChange}
+                                    id="outlined-basic"
+                                    label="Recommendations"
+                                    name="textAdvice"
+                                    // defaultValue="Give some advice to your clients!"
+                                    placeholder="Give some advice to your clients!"
+                                    variant="outlined"
+                                    className={classes.textAdvice} />
                             </Grid>
                         </DialogContent>
 
                         <DialogActions>
-                        <   Button autoFocus onClick={this.handleCloseRecommend} color="primary">
+                            <   Button autoFocus onClick={this.handleCloseRecommend} color="primary">
                                 Cancel
                             </Button>
-                            <Button autoFocus onClick={this.handleCloseRecommend} color="primary">
+                            <Button autoFocus onClick={() => this.sendRecommend(username)} color="primary">
                                 Send
                             </Button>
                         </DialogActions>
                     </Dialog>
 
-                    <Dialog open={ this.state.openClientDetail } onClose={ this.handleClose } aria-labelledby="form-dialog-title" fullScreen>
+                    <Dialog open={this.state.openClientDetail} onClose={this.handleClose} aria-labelledby="form-dialog-title" fullScreen>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
                                 <Tooltip title="Close">
-                                    <IconButton edge="start" color="inherit" aria-label="close" onClick={ this.handleClose }>
+                                    <IconButton edge="start" color="inherit" aria-label="close" onClick={this.handleClose}>
                                         <CloseIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -317,9 +356,9 @@ class ClientItem extends React.Component {
                         <DialogContent className={classes.content}>
                             <Typography variant="h5" className={classes.dialogusername}>
                                 {name} : <Chip className={classes.dialogchip} label={username}></Chip>
-                                { gender == "female" ?
+                                {gender == "female" ?
                                     <ListItemIcon className={classes.genderFemale}>
-                                        <PersonIcon className={classes.gender}/>
+                                        <PersonIcon className={classes.gender} />
                                     </ListItemIcon>
                                     :
                                     gender == "male" ?
@@ -330,32 +369,32 @@ class ClientItem extends React.Component {
                                         <ListItemIcon className={classes.genderOther}>
                                             <PersonIcon />
                                         </ListItemIcon>
-                                }   
+                                }
                             </Typography>
 
                             <Container className={classes.container} maxWidth="md">
-                                <Card className={ classes.clientTop }>
-                                    <CardActions className={ classes.clientTopBar }>
+                                <Card className={classes.clientTop}>
+                                    <CardActions className={classes.clientTopBar}>
                                         <CardContent>
-                                            <Typography className={ classes.purpleText } > Email: 
-                                                <span className={classes.email_text}>{email}</span> 
+                                            <Typography className={classes.purpleText} > Email:
+                                                <span className={classes.email_text}>{email}</span>
                                             </Typography>
-                                            <Typography className={ classes.purpleText } > Birthday: 
+                                            <Typography className={classes.purpleText} > Birthday:
                                                 <span className={classes.birthday_text}>{birthday}</span>
                                             </Typography>
-                                            <Typography className={ classes.purpleText } > Occupation: 
+                                            <Typography className={classes.purpleText} > Occupation:
                                                 <span className={classes.occupation_text}>{occupation}</span>
                                             </Typography>
-                                            <Typography className={ classes.purpleText } > Salary: 
+                                            <Typography className={classes.purpleText} > Salary:
                                                 <span className={classes.salary_text}>{salary}</span>
                                             </Typography>
-                                            <Typography className={ classes.purpleText } > Total spendings: 
+                                            <Typography className={classes.purpleText} > Total spendings:
                                                 <span className={classes.spendings_text}>{totalSpendings}</span>
                                             </Typography>
-                                            <Typography className={ classes.purpleText } > Total gain: 
+                                            <Typography className={classes.purpleText} > Total gain:
                                                 <span className={classes.gain_text}>{totalGain}</span>
                                             </Typography>
-                                            <Typography className={ classes.text } > Total loss:
+                                            <Typography className={classes.text} > Total loss:
                                                 <span className={classes.loss_text}>{totalLoss}</span>
                                             </Typography>
                                         </CardContent>

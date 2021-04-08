@@ -3,6 +3,7 @@
 const log = console.log
 
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
+const ENV = "development" // used for setting session info manually when testing
 
 const { localMongoURI } = require('./db/config.js');
 const express = require("express")
@@ -67,6 +68,80 @@ app.use(
 /**************************
  ROUTES FOR USERS
  *************************/
+
+// route to get all the users that currently follow the FA 
+app.get("/users/manage", async (req, res) => {
+
+    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    const userID = req.session.user
+
+    try {
+
+        const user = await User.findById(userID) // FA user 
+        const userFollowers = user.userFollowers // usernames that follow the above FA 
+
+        // all the entirety User info of each users that follow the above FA
+        const userFollowersArray = await Promise.all(userFollowers.map(async username => {
+            const user = await User.findOne({ username: username })
+            return user
+        }))
+
+        let clientsArray = []
+
+        userFollowersArray.map(follower => {
+            const clientObj = new Object()
+            clientObj["username"] = follower.username
+            clientObj["firstName"] = follower.firstName
+            clientObj["lastName"] = follower.lastName
+            clientObj["email"] = follower.email
+            clientObj["birthday"] = follower.birthday
+            clientObj["occupation"] = follower.occupation
+            clientObj["salary"] = follower.salary
+            clientObj["gender"] = follower.gender
+            clientObj["totalSpendings"] = '$5,000'
+            clientObj["totalGain"] = '$10,000'
+            clientObj["totalLoss"] = '$100'
+            clientsArray.push(clientObj)
+        })
+
+        res.send(clientsArray)
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
+
+// route for FA to make a recommendation to a regular user 
+app.post("/users/manage/recommend/:targetUsername", async (req, res) => {
+
+    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    const userID = req.session.user
+
+    const targetUsername = req.params.targetUsername
+
+    try {
+
+        const FA = await User.findById(userID)
+        const FAName = FA.username
+        const targetUser = await User.findOne({ username: targetUsername })
+
+        const newRec = req.body
+        newRec["FAName"] = FAName
+
+        targetUser.userRecommendations.unshift(newRec)
+        await targetUser.save()
+        res.sendStatus(200).send()
+
+    }
+
+    catch (error) {
+        res.status(400).send()
+    }
+
+})
 
 app.post("/users/login", (req, res) => {
     const username = req.body.userName;
@@ -144,40 +219,40 @@ app.post("/users/signup", mongoChecker, async (req, res) => {
 /// a PATCH route for making *specific* changes to a resource.
 // modifies profile of user by username
 app.patch('/users/profile/:username', async (req, res) => {
-    
+
     const username = req.params.username;
 
     console.log("in patch", username)
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     // Find the fields to update and their values.
-	const fieldsToUpdate = {}
-	req.body.map((change) => {
-		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
-		fieldsToUpdate[propertyToChange] = change.value
-	})
+    const fieldsToUpdate = {}
+    req.body.map((change) => {
+        const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+        fieldsToUpdate[propertyToChange] = change.value
+    })
 
     // Update the student by their id.
-	try {
-		const updateProfile = await User.findOneAndUpdate({username: username}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
-		if (!updateProfile) {
-			res.status(404).send('Resource not found')
-		} else {   
-			res.send(updateProfile);
-		}
-	} catch (error) {
-		log(error)
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') // bad request for changing the student.
-		}
-	}
+    try {
+        const updateProfile = await User.findOneAndUpdate({ username: username }, { $set: fieldsToUpdate }, { new: true, useFindAndModify: false })
+        if (!updateProfile) {
+            res.status(404).send('Resource not found')
+        } else {
+            res.send(updateProfile);
+        }
+    } catch (error) {
+        log(error)
+        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+            res.status(500).send('Internal server error')
+        } else {
+            res.status(400).send('Bad Request') // bad request for changing the student.
+        }
+    }
 
 })
 
@@ -197,10 +272,10 @@ app.post("/users/profile/userPosts/:username", async (req, res) => {
     const targetUsername = req.params.username
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     // const newPost = new Post({
     //     postID: req.body.postID,
@@ -216,7 +291,7 @@ app.post("/users/profile/userPosts/:username", async (req, res) => {
     // console.log(req.body.postID)
     // console.log("im here!!!", newPost)
 
-    try{
+    try {
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -229,7 +304,7 @@ app.post("/users/profile/userPosts/:username", async (req, res) => {
             res.status(200).send("success")
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -275,7 +350,7 @@ app.delete('/users/profile/userPosts/:username/:postID', async (req, res) => {
             // }
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
         res.status(500).send('internal server error')
     }
@@ -287,12 +362,12 @@ app.post("/users/profile/userSavedPosts/:username", async (req, res) => {
     const targetUsername = req.params.username
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
-    try{
+    try {
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -305,7 +380,7 @@ app.post("/users/profile/userSavedPosts/:username", async (req, res) => {
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -344,7 +419,7 @@ app.delete('/users/profile/userSavedPosts/:username/:postID', async (req, res) =
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
         res.status(500).send('internal server error')
     }
@@ -357,12 +432,12 @@ app.post("/users/profile/userUpvotedPosts/:username", async (req, res) => {
     const targetUsername = req.params.username
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
-    try{
+    try {
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -375,7 +450,7 @@ app.post("/users/profile/userUpvotedPosts/:username", async (req, res) => {
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -414,7 +489,7 @@ app.delete('/users/profile/userUpvotedPosts/:username/:postID', async (req, res)
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
         res.status(500).send('internal server error')
     }
@@ -427,12 +502,12 @@ app.post("/users/profile/userDownvotedPosts/:username", async (req, res) => {
     const targetUsername = req.params.username
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
-    try{
+    try {
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -445,7 +520,7 @@ app.post("/users/profile/userDownvotedPosts/:username", async (req, res) => {
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -484,7 +559,7 @@ app.delete('/users/profile/userDownvotedPosts/:username/:postID', async (req, re
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
         res.status(500).send('internal server error')
     }
@@ -494,14 +569,21 @@ app.delete('/users/profile/userDownvotedPosts/:username/:postID', async (req, re
 app.post("/users/profile/userFollows/:username", async (req, res) => {
 
     const targetUsername = req.params.username
+    const FAUsername = req.body.FAusername
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
-    try{
+    try {
+
+        // saving the regular user into FA's userFollowers
+        let FA = await User.findOne({ username: FAUsername })
+        FA.userFollowers.push(targetUsername)
+        await FA.save()
+
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -514,7 +596,7 @@ app.post("/users/profile/userFollows/:username", async (req, res) => {
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -541,7 +623,14 @@ app.delete('/users/profile/userFollows/:username/:FAusername', async (req, res) 
     }
 
     try {
+
         let targetUser = await User.find({ username: targetUsername })
+        let FA = await User.findOne({ username: targetFAusername })
+
+        // deleting the regular user from FA's userFollowers
+        FA.userFollowers.pull(targetUser[0].username)
+        await FA.save()
+
         console.log("target user!!:", targetUsername)
         if (!targetUser) {
             res.status(404).send("resource not found")
@@ -553,7 +642,7 @@ app.delete('/users/profile/userFollows/:username/:FAusername', async (req, res) 
             res.status(200).send(targetUser[0])
         }
     }
-    catch(error) {
+    catch (error) {
         log(error)
         res.status(500).send('internal server error')
     }
@@ -580,11 +669,11 @@ app.post('/users/FAInfo', async (req, res) => {
 
     console.log("=========", newFAInfo)
 
-    try{
+    try {
         const result = await newFAInfo.save()
         res.status(200).send(result)
     }
-    catch(error) {
+    catch (error) {
         log(error)
         if (isMongoError(error)) {
             res.status(500).send("internal server error")
@@ -618,46 +707,46 @@ app.get('/users/FAInfo', async (req, res) => {
 
 // patch FAInfo
 app.patch('/users/FAInfo/:username', async (req, res) => {
-    
+
     const username = req.params.username;
 
     console.log("in FAInfo patch", username)
 
     // check mongoose connection
-	if (mongoose.connection.readyState != 1) {
-		log('mongoose connection issue!')
-		res.status(500).send('internal server error')
-	}
+    if (mongoose.connection.readyState != 1) {
+        log('mongoose connection issue!')
+        res.status(500).send('internal server error')
+    }
 
     // Find the fields to update and their values.
-	const fieldsToUpdate = {}
-	req.body.map((change) => {
-		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
-		fieldsToUpdate[propertyToChange] = change.value
-	})
+    const fieldsToUpdate = {}
+    req.body.map((change) => {
+        const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+        fieldsToUpdate[propertyToChange] = change.value
+    })
 
-	try {
-		const updateFAInfo = await FAInfo.findOneAndUpdate({FAName: username}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
-		if (!updateFAInfo) {
-			res.status(404).send('Resource not found')
-		} else {   
-			res.status(200).send(updateFAInfo);
-		}
-	} catch (error) {
-		log(error)
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') // bad request for changing the student.
-		}
-	}
+    try {
+        const updateFAInfo = await FAInfo.findOneAndUpdate({ FAName: username }, { $set: fieldsToUpdate }, { new: true, useFindAndModify: false })
+        if (!updateFAInfo) {
+            res.status(404).send('Resource not found')
+        } else {
+            res.status(200).send(updateFAInfo);
+        }
+    } catch (error) {
+        log(error)
+        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+            res.status(500).send('Internal server error')
+        } else {
+            res.status(400).send('Bad Request') // bad request for changing the student.
+        }
+    }
 
 })
 
 
 /**************************
  ROUTES FOR INVESTMENTS
- *************************/ 
+ *************************/
 let yhFinance = require("yahoo-finance");
 
 // gets the user's stock entries
@@ -692,11 +781,11 @@ app.get('/investments', async (req, res) => {
 function getLastWeek(fromDateStr) {
     let fromDate = new Date(fromDateStr);
     let lastWeek = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - 7);
-  
+
     let lastWeekMonth = (lastWeek.getMonth() + 1).toString();
-    if((lastWeek.getMonth() + 1) < 10) lastWeekMonth = '0' + lastWeekMonth;
+    if ((lastWeek.getMonth() + 1) < 10) lastWeekMonth = '0' + lastWeekMonth;
     let lastWeekDay = (lastWeek.getDate()).toString();
-    if(lastWeek.getDate() < 10) lastWeekDay = '0' + lastWeekDay; 
+    if (lastWeek.getDate() < 10) lastWeekDay = '0' + lastWeekDay;
     let lastWeekYear = (lastWeek.getFullYear()).toString();
     console.log(lastWeekMonth)
     console.log(lastWeekDay)
@@ -728,18 +817,18 @@ app.post('/investments', async (req, res) => {
     // stock_entry["Market Value"]= req.body["Market Value"];
     // stock_entry["Book Cost"]= req.body["Book Cost"];
     // stock_entry["Gain/Loss"]= req.body["Gain/Loss"];
-    let stock_entry =  new Object();
-    stock_entry["Last Traded Date"]= req.body["Last Traded Date"];
-    stock_entry["Name"]= req.body["Name"];
+    let stock_entry = new Object();
+    stock_entry["Last Traded Date"] = req.body["Last Traded Date"];
+    stock_entry["Name"] = req.body["Name"];
 
 
-    let isoDate= stock_entry["Last Traded Date"].replace('/', '-') 
-    let year = isoDate.substring(6,isoDate.length);
-    let monthDay = isoDate.substring(0,5);
+    let isoDate = stock_entry["Last Traded Date"].replace('/', '-')
+    let year = isoDate.substring(6, isoDate.length);
+    let monthDay = isoDate.substring(0, 5);
     isoDate = year.concat('-');//cuz there's no - in the original str behind year
     isoDate = isoDate.concat(monthDay);
     console.log(isoDate);
-   
+
     let fromDate = getLastWeek(isoDate);
 
     let closingPrice = 0;
@@ -752,25 +841,25 @@ app.post('/investments', async (req, res) => {
         symbol: stock_entry["Name"],
         from: fromDate,
         to: isoDate,
-    }, function(err, quotes) {
+    }, function (err, quotes) {
         //check if it's valid
         console.log('quotes')
         console.log(quotes)
-        if(Object.keys(quotes).length === 0) closingPrice = -1.0;
+        if (Object.keys(quotes).length === 0) closingPrice = -1.0;
         else closingPrice = quotes[0]['close'];
         console.log("CLOSING PRICE")
         console.log(closingPrice);
     });
 
-    
+
 
     User.findByUserNamePassword(username, pw).then((user) => {
-		if(!user){
+        if (!user) {
             res.status(400).send('User not found')
-        }else if(closingPrice == -1.0){
+        } else if (closingPrice == -1.0) {
             res.status(400).send('Invalid stock entry')
-        }else{
-            
+        } else {
+
 
 
             let obj = user.investments.filter(obj => {
@@ -780,40 +869,40 @@ app.post('/investments', async (req, res) => {
                 //The stock with the same ticker is already in the table!!! so update that row
 
                 let newStocksList = user.investments.filter(res => res["Name"] != req.body.Name);
-                let index = user.investments.findIndex(function(item, i){
+                let index = user.investments.findIndex(function (item, i) {
                     return item["Name"] === req.body["Name"]
                 });
 
 
                 stock_entry["Price"] = closingPrice;
-                stock_entry["Average Cost"]= ( parseFloat(req.body["Quantity"] * closingPrice ) + parseFloat(obj["Book Cost"]))/(parseFloat( obj["Quantity"]) + parseFloat(req.body["Quantity"]));
-                stock_entry["Quantity"]= parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
-                stock_entry["Market Value"]= stock_entry["Price"] * stock_entry["Quantity"];
-                stock_entry["Book Cost"]= stock_entry["Average Cost"] * stock_entry["Quantity"];
-                stock_entry["Gain/Loss"]= stock_entry["Market Value"] - stock_entry["Book Cost"];
+                stock_entry["Average Cost"] = (parseFloat(req.body["Quantity"] * closingPrice) + parseFloat(obj["Book Cost"])) / (parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]));
+                stock_entry["Quantity"] = parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
+                stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
+                stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
+                stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
                 console.log(stock_entry);
                 newStocksList.splice(index, 0, stock_entry);
                 user.investments = newStocksList;
-            }else{
+            } else {
                 //Not in the table, so add it to the table
                 user.investments.unshift(stock_entry);
             }
 
             console.log(user.investments);
-		    
+
             user.save().then((result) => {
                 console.log(user.investments);
-				res.send(user.investments);
-			}).catch((error) => {
-				log(error) // log server error to the console, not to the client.
-				if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-					res.status(500).send('Internal server error')
-				} else {
-					res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
-				}
-			})
+                res.send(user.investments);
+            }).catch((error) => {
+                log(error) // log server error to the console, not to the client.
+                if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+                    res.status(500).send('Internal server error')
+                } else {
+                    res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                }
+            })
         }
-	})
+    })
 })
 
 // DELETE investments/<stock name>/
@@ -876,19 +965,19 @@ app.patch('/investments/:name', async (req, res) => {
     newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
     console.log(newStockEntry._id)
     User.findByUserNamePassword(username, pw).then((user) => {
-		if (!user) {
-			res.status(404).send('User not found')  // could not find this restaurant
-		} else {
+        if (!user) {
+            res.status(404).send('User not found')  // could not find this restaurant
+        } else {
             let listExclusingCurrent = user.investments.filter(res => res["Name"] != oldStockEntry["Name"]);
-            if( listExclusingCurrent.some(item =>(item["Name"] === newStockEntry["Name"] ))){
-                
+            if (listExclusingCurrent.some(item => (item["Name"] === newStockEntry["Name"]))) {
+
                 console.log("Duplicate")
                 res.send("duplicate");
                 return;
             }
-            for(let i = 0; i< user.investments.length;i++){
+            for (let i = 0; i < user.investments.length; i++) {
                 console.log(user.investments[i]._id)
-                if(user.investments[i]["Name"] == stockNameToEdit){
+                if (user.investments[i]["Name"] == stockNameToEdit) {
                     console.log(user.investments[i])
                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                     newStocksList.splice(i, 0, newStockEntry);
@@ -1155,14 +1244,14 @@ require("dotenv").config();
 // const timePeriod = require("./constants");
 
 app.post("/stock", cors(), async (req, res) => {
-  const body = JSON.parse(JSON.stringify(req.body));
-  const { ticker, type } = body;
-  console.log("stocks-api.js 14 | body", body.ticker);
-  const request = await fetch(
-    `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=8N55YD54SG1F6RCN`
-  );
-  const data = await request.json();
-  res.json({ data: data });
+    const body = JSON.parse(JSON.stringify(req.body));
+    const { ticker, type } = body;
+    console.log("stocks-api.js 14 | body", body.ticker);
+    const request = await fetch(
+        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=8N55YD54SG1F6RCN`
+    );
+    const data = await request.json();
+    res.json({ data: data });
 });
 
 

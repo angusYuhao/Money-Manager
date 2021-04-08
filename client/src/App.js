@@ -122,6 +122,7 @@ class App extends React.Component {
                                       FAIntro={currentUser.FAIntro}
                                       FAFields={currentUser.FAFields}
                                       FAPoints={currentUser.FAPoints}
+                                      userInfo={currentUser}
                                       {...props} app={this} />
                           }
                     </div>                   // ... spread operator - provides all of the props in the props object
