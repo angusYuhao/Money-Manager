@@ -75,6 +75,7 @@ export const addPostdb = (forumListState) => {
         content: forumListState.content,
         numUpvotes: 0,
         numDownvotes: 0,
+        time: forumListState.time,
         comments: []
     };
 

@@ -63,6 +63,14 @@ const styles =  theme => ({
   followButtonGrid: {
     padding: 20,
   },
+  timeText: {
+    color: '#555555',
+    fontSize: 13,
+  },
+  postTitle: {
+    color: deepPurple[800],
+    fontSize: 20,
+  },
 });
 
 // define theme
@@ -105,6 +113,7 @@ class ForumListItem extends React.Component {
     comment: "",
     upvoted: false,
     downvoted: false,
+    displayTime: "none",
     authorFAInfo: {
       FAName: "",
       FAFirstname: "",
@@ -117,6 +126,8 @@ class ForumListItem extends React.Component {
 
   // update the state when the component is mounted
   componentDidMount() {
+
+    
 
     this.setState({ postID: this.props.postID }, () => this.prepareOpenPost(), () => this.forceUpdate())
   }
@@ -274,7 +285,41 @@ class ForumListItem extends React.Component {
 
     // save props
     const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, app,
-            deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
+            deletePosts, openManagePost, numUpvotes, numDownvotes, time, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
+
+    let d = new Date()
+    let openTime = d.getTime()
+    let displayTime = ""
+
+    console.log("now  time:", openTime)
+    console.log("post time:", this.props.time)
+
+    if (openTime - this.props.time < 60000) {
+      displayTime = "now"
+    }
+    else if (openTime - this.props.time < 3600000) {
+      let temp = Math.floor((openTime - this.props.time) / 60000)
+      displayTime = temp.toString() + "mins ago"
+    }
+    else if (openTime - this.props.time < 86400000) {
+      let temp = Math.floor((openTime - this.props.time) / 3600000)
+      displayTime = temp.toString() + "hrs ago"
+    }
+    else if (openTime - this.props.time < 604800000) {
+      let temp = Math.floor((openTime - this.props.time) / 86400000)
+      displayTime = temp.toString() + "days ago"
+    }
+    else if (openTime - this.props.time < 2592000000) {
+      let temp = Math.floor((openTime - this.props.time) / 604800000)
+      displayTime = temp.toString() + "weeks ago"
+    }
+    else if (openTime - this.props.time < 31536000000) {
+      let temp = Math.floor((openTime - this.props.time) / 2592000000)
+      displayTime = temp.toString() + "mths ago"
+    }
+    else {
+      displayTime = "a long time ago"
+    }
 
     return (
       <div>
@@ -292,7 +337,7 @@ class ForumListItem extends React.Component {
               <React.Fragment>
 
                 {/* {post title and the author's username} */}
-                <span>{ postTitle } :: </span>
+                <span className={ classes.postTitle }>{ postTitle } :: </span>
                 <span> { postAuthor } </span>
 
                 {/* {draw the green check mark if the author is a financial advisor} */}
@@ -301,6 +346,9 @@ class ForumListItem extends React.Component {
                     <CheckCircleIcon className={ classes.checkCircle } fontSize="small" />
                   </IconButton>
                 : null }
+
+                {/* {display time} */}
+                <span className={ classes.timeText }>{ displayTime } </span>
 
                 {/* {shows the number of upvotes and downvotes} */}
                 <IconButton size="small" component="span" disabled>
