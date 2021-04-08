@@ -10,6 +10,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
 
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -24,6 +27,18 @@ const useStyles = () => ({
     },
     noBottomBorderTableCell: {
         borderBottom: "0px"
+    },
+    menu_list: {
+        width: "15vw",
+        marginLeft: "1vw",
+        marginRight: "1vw"
+    },
+    menu_item: {
+        width: "15vw",
+        marginTop: "5%",
+    },
+    menu_item_text: {
+        float: "right"
     }
 })
 
@@ -44,7 +59,17 @@ class TableRowComp extends React.Component {
             // holds an array (same length as headings) that will show if there is an error or not 
             // if cell is empty (for adding) => null, if error => true, if no error => false 
             error: this.props.rowForAdd ? Array.from({ length: this.props.headings.length }, () => null) :
-                Array.from({ length: this.props.headings.length }, () => false)
+                Array.from({ length: this.props.headings.length }, () => false),
+            // the menu position used for when selling stocks
+            menuPosition: null,
+            // holds the amount of shares for the stock in the row that you wanna sell
+            sellAmount: ""
+        }
+
+        // disable hover to edit and delete for investment table
+        if (this.props.tableType == "Investments") {
+            this.state.hover = true
+            this.setState({ hover: this.state.hover })
         }
 
     }
@@ -274,15 +299,66 @@ class TableRowComp extends React.Component {
 
     }
 
+    displaySellStock = (e) => {
+        this.setState({ menuPosition: e.currentTarget })
+    }
+
+    hideSellStock = () => {
+        this.setState({ menuPosition: null })
+    }
+
+    updateSellAmount = (e) => {
+        if (isNaN(e.target.value)) return
+        this.state.sellAmount = e.target.value
+        this.setState({ sellAmount: this.state.sellAmount })
+    }
+
     render() {
 
-        const { headings, row, options, categories, addRow, editRow, removeRow, rowForAdd, addSnacks, toggleAdd } = this.props;
+        const { headings, row, options, categories, addRow, editRow, removeRow, rowForAdd, addSnacks, toggleAdd, tableType, sellStock, classes } = this.props;
 
         return (
             <TableRow hover
-                onMouseEnter={() => this.displayIcons()}
-                onMouseLeave={() => this.hideIcons()}
+                onMouseEnter={() => {
+                    if (tableType == "Spendings") this.displayIcons()
+                }}
+                onMouseLeave={() => {
+                    if (tableType == "Spendings") this.hideIcons()
+                }}
             >
+
+                <Menu
+                    id="long-menu"
+                    anchorEl={this.state.menuPosition}
+                    open={Boolean(this.state.menuPosition)}
+                    onClose={() => this.hideSellStock()}
+                    classes={{ list: classes.menu_list }}
+                >
+
+                    <TextField
+                        onKeyDown={e => e.stopPropagation()}
+                        id="standard-basic"
+                        label="Amount"
+                        classes={{ root: classes.menu_item }}
+                        value={this.state.sellAmount}
+                        onChange={(e) => this.updateSellAmount(e)}
+                    />
+
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        classes={{ root: classes.menu_item }}
+                        size="small"
+                        onClick={() => {
+                            if (this.state.sellAmount) sellStock(row, this.state.sellAmount)
+                            this.state.sellAmount = ""
+                            this.hideSellStock()
+                        }}
+                    >
+                        Confirm sell
+                  </Button>
+
+                </Menu>
 
                 {headings.map((heading, index) =>
 
@@ -319,28 +395,44 @@ class TableRowComp extends React.Component {
                                     <DoneIcon />
                                 </IconButton>
                                 :
-                                <IconButton
-                                    aria-label="edit"
-                                    onClick={() => this.toggleEdit()}
-                                >
-                                    <EditIcon />
-                                </IconButton>
+
+                                (tableType == "Spendings" ?
+
+                                    <IconButton
+                                        aria-label="edit"
+                                        onClick={() => this.toggleEdit()}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    :
+                                    <Button
+                                        aria-label="sell"
+                                        classes={{ text: classes.menu_item_text }}
+                                        onClick={(e) => this.displaySellStock(e)}>
+                                        Sell
+                                  </Button>
+                                )
 
                             }
 
-                            <IconButton
-                                aria-label="delete"
-                                onClick={() => {
-                                    if (rowForAdd) toggleAdd()
-                                    else {
-                                        removeRow(row)
-                                        addSnacks("deleteSuccess")
-                                        this.clearState()
-                                    }
-                                    if (this.state.edit) this.toggleEdit()
-                                }} >
-                                <DeleteIcon />
-                            </IconButton>
+                            {tableType == "Spendings" ?
+
+                                <IconButton
+                                    aria-label="delete"
+                                    onClick={() => {
+                                        if (rowForAdd) toggleAdd()
+                                        else {
+                                            removeRow(row)
+                                            addSnacks("deleteSuccess")
+                                            this.clearState()
+                                        }
+                                        if (this.state.edit) this.toggleEdit()
+                                    }} >
+                                    <DeleteIcon />
+                                </IconButton>
+                                :
+                                null
+
+                            }
 
                         </div>
 

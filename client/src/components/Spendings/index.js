@@ -760,6 +760,11 @@ class Spendings extends React.Component {
     this.setState({ currentlySelectedMode: mode })
   }
 
+  // @ EMILY this is the sell stock function, you should call your backend here, the stock is the entire object of the row, and the amount is how many shares you are selling
+  testSellStock(stock, amount) {
+    console.log(stock, amount)
+  }
+
   render() {
 
     const { loggedIn, classes } = this.props
@@ -987,6 +992,8 @@ class Spendings extends React.Component {
                         removeRow={this.deleteTransaction}
                         addCategory={this.addCategory}
                         removeCategory={this.deleteCategory}
+                        tableType="Investments"
+                        sellStock={this.testSellStock}
                       />
 
                       <div className="SpendingsSortButtons">
