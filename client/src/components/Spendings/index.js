@@ -992,7 +992,7 @@ class Spendings extends React.Component {
                         removeRow={this.deleteTransaction}
                         addCategory={this.addCategory}
                         removeCategory={this.deleteCategory}
-                        tableType="Investments"
+                        tableType="Spendings"
                         sellStock={this.testSellStock}
                       />
 
