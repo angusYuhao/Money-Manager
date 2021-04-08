@@ -92,6 +92,7 @@ const UserSchema = new mongoose.Schema({
 	userUpvotedPosts: [Number],
 	userDownvotedPosts: [Number],
 	userSavedPosts: [Number],
+	userFollowers: [String]
 })
 
 // An example of Mongoose middleware.
