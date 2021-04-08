@@ -179,6 +179,35 @@ export const addFAInfo = (formComp) => {
     });
 }
 
+// get all FAInfos
+export const getFAInfo = (profile) => {
+
+    const url = `${API_HOST}/users/FAInfo`;
+
+    fetch(url)
+    .then((res) => {
+        if (res.status === 200) {
+            // get post successful
+            console.log("got FAInfo")
+            return res.json()
+        }
+        else {
+            // get post failed
+            console.log("failed to get FAInfo")
+        }
+    })
+    .then((json) => {
+        console.log(json)
+        profile.setState({
+            FAInfo: json
+        })
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// update the FAInfo when user changes it in profile page
 export const updateFAInfo = (pathObj) => {
     const url = `${API_HOST}/users/FAInfo/${pathObj[0].username}`;
 

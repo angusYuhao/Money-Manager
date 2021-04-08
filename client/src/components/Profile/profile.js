@@ -29,7 +29,7 @@ import { followingData, followerData } from './data';
 import Followers from './followers.js';
 import Following from './following.js';
 import HandleClosing from './handleClosing.js';
-import { logout, updateFAInfo, updateProfile, updateProfileField } from '../../actions/user.js';
+import { logout, updateFAInfo, updateProfile, updateProfileField, getFAInfo } from '../../actions/user.js';
 import { getPostsdb } from '../Community/actions.js';
 
 const drawerWidth = 400;
@@ -244,16 +244,41 @@ class Profile extends React.Component {
             userInfo: {
                 username: "",
                 usertype: "",
+                userSavedPosts: [],
                 userUpvotedPosts: [],
                 userDownvotedPosts: [],
                 userFollows: [],
             },
             posts: [],
             displayPostCat: "My Posts",
+            FAInfo: [
+                {
+                    FAName: "",
+                    FAFirstname: "",
+                    FALastname: "",
+                    FAIntro: "",
+                    FAFields: "",
+                    FAPoints: ""
+                }
+            ]
         }
     }
 
     componentDidMount() {
+
+        let usertype = "RU"
+        if (this.props.user.userLevel === "Financial Advisor") {
+            usertype = "FA"
+        }
+        const newUserInfo = {
+            username: this.props.user.username,
+            usertype: usertype,
+            userSavedPosts: this.props.user.userSavedPosts,
+            userUpvotedPosts: this.props.user.userUpvotedPosts,
+            userDownvotedPosts: this.props.user.userDownvotedPosts,
+            userFollows: this.props.user.userFollows
+        }
+
         this.setState({
             avatar: this.props.user.username[0],
             username: this.props.user.username,
@@ -266,8 +291,10 @@ class Profile extends React.Component {
             FAIntro: this.props.user.FAIntro,
             FAPoints: this.props.user.FAPoints,
             FAFields: this.props.user.FAFields,
+            userInfo: newUserInfo,
         })
         getPostsdb(this)
+        getFAInfo(this)
     }
 
     // Check the state of the edit, and changes UI accordingly
@@ -787,7 +814,7 @@ class Profile extends React.Component {
                                         </div>
                                         )
                                     }
-                                    else if (this.state.displayPostCat === "Saved Posts" && thread.author === user.username) {
+                                    else if (this.state.displayPostCat === "Saved Posts" && this.state.userInfo.userSavedPosts.includes(thread.postID)) {
                                         return (
                                         <div>
                                             <ForumListItem postTitle={ thread.title }
@@ -812,7 +839,7 @@ class Profile extends React.Component {
                                         </div>
                                         )
                                     }
-                                    if (this.state.displayPostCat === "My Posts" && thread.author === user.username) {
+                                    else if (this.state.displayPostCat === "Followed Posts" && this.state.userInfo.userFollows.includes(thread.author)) {
                                         return (
                                         <div>
                                             <ForumListItem postTitle={ thread.title }

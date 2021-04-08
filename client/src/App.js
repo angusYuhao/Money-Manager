@@ -145,7 +145,10 @@ class App extends React.Component {
                 FAName={currentUser.FAName}
                 FAIntro={currentUser.FAIntro}
                 FAFields={currentUser.FAFields}
-                FAPoints={currentUser.FAPoints} />)} />
+                FAPoints={currentUser.FAPoints}
+                userInfo={currentUser}
+                app={this} />)}
+                 />
 
             <Route exact path='/contact'
               render={() => (<Contact

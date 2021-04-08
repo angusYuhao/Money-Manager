@@ -311,7 +311,7 @@ app.post("/users/profile/userSavedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userSavedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -381,7 +381,7 @@ app.post("/users/profile/userUpvotedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userUpvotedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -451,7 +451,7 @@ app.post("/users/profile/userDownvotedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userDownvotedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -520,7 +520,7 @@ app.post("/users/profile/userFollows/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userFollows[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -601,6 +601,27 @@ app.post('/users/FAInfo', async (req, res) => {
         else {
             res.status(400).send("bad request")
         }
+    }
+})
+
+// get list of all FAInfo
+app.get('/users/FAInfo', async (req, res) => {
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('internal server error')
+        return
+    }
+
+    try {
+        const allFAInfo = await FAInfo.find()
+        console.log(allFAInfo)
+        res.send(allFAInfo)
+    }
+    catch (error) {
+        log(error)
+        res.status(500).send("internal server error")
     }
 })
 
