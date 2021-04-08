@@ -171,7 +171,9 @@ class Spendings extends React.Component {
       // used for deleting a sheet for the specific month
       monthToDelete: { monthIndex: "", yearIndex: "" },
       // used for changing the current mode user is on (either pieChart, or barChart)
-      currentlySelectedMode: "pieChart"
+      currentlySelectedMode: "pieChart",
+      // holds the data needed to display the bar graph 
+      arrayForBarGraph: []
     }
 
     /***************************************************************************************************************************
@@ -239,6 +241,7 @@ class Spendings extends React.Component {
 
         this.sumCategoriesAmount()
         // this.sumAccountBalance()
+        this.updateArrayForBarGraph()
 
       })
       .catch(error => {
@@ -254,6 +257,29 @@ class Spendings extends React.Component {
       return sum
     }, 0)
     this.setState({ accountBalance: this.state.accountBalance })
+  }
+
+  updateArrayForBarGraph = () => {
+
+    const yearIndexSelected = this.state.currentlySelectedMonth.yearIndex
+    let arrayForBarGraph = []
+
+    if (yearIndexSelected) {
+
+      this.state.entire_data[yearIndexSelected]["Data"].map(obj => {
+
+        let newObj = new Object()
+        newObj["Month"] = this.numbersToMonth[obj["Month"]]
+        newObj["Actual"] = obj["Data"]["Total Amount"]
+        newObj["Projected"] = obj["Data"]["Projected Spendings"]
+        arrayForBarGraph.push(newObj)
+
+      })
+
+    }
+
+    this.setState({ arrayForBarGraph: arrayForBarGraph })
+
   }
 
   sumCategoriesAmount = () => {
@@ -510,7 +536,30 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
+
         this.setState({ entire_data: data })
+
+        if (this.state.entire_data.length != 0) {
+          this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
+          this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+          this.state.accountBalance = this.state.entire_data["0"]["Data"]["0"]["Data"]["Total Amount"]
+          this.state.currentlySelectedMonth["monthIndex"] = "0"
+          this.state.currentlySelectedMonth["yearIndex"] = "0"
+
+          this.setState({
+            transactions_data: this.state.transactions_data,
+            projectedSpendings: this.state.projectedSpendings,
+            accountBalance: this.state.accountBalance,
+            currentlySelectedMonth: this.state.currentlySelectedMonth
+          })
+        }
+
+        else {
+          this.state.currentlySelectedMonth["monthIndex"] = ""
+          this.state.currentlySelectedMonth["yearIndex"] = ""
+          this.setState({ currentlySelectedMonth: this.state.currentlySelectedMonth })
+        }
+
       })
       .catch(error => {
         console.log(error)
@@ -615,6 +664,7 @@ class Spendings extends React.Component {
         })
 
         this.sumCategoriesAmount()
+        this.updateArrayForBarGraph()
         // this.sumAccountBalance()
 
         // resetting form and closing menu 
@@ -645,6 +695,7 @@ class Spendings extends React.Component {
       currentlySelectedMonth: this.state.currentlySelectedMonth
     })
     // this.sumAccountBalance()
+    this.updateArrayForBarGraph()
     this.sumCategoriesAmount()
   }
 
@@ -705,6 +756,7 @@ class Spendings extends React.Component {
 
   // mode is either "barChart" or "pieChart"
   updateSelectedMode(e, mode) {
+    if (mode == "barChart") this.updateArrayForBarGraph()
     this.setState({ currentlySelectedMode: mode })
   }
 
@@ -999,7 +1051,7 @@ class Spendings extends React.Component {
                     <div className="SpendingsBarChart">
 
                       <BarChart
-                        listToDisplay={[{ "Month": "Janurary", "Actual": 1023, "Projected": 2000 },]}
+                        listToDisplay={this.state.arrayForBarGraph}
                         numDatasets={2}
                         indices={["Actual", "Projected"]}
                         labelIndex="Month"
