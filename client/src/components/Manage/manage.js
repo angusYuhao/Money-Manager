@@ -99,7 +99,6 @@ const useStyles = theme => ({
         { this.state.clients.map((client) => {
           return (
             <div>
-              <Divider />
               <ClientItem username={client.username}
                         firstName={client.firstName}
                         lastName={client.lastName}
@@ -112,6 +111,7 @@ const useStyles = theme => ({
                         totalGain={client.totalGain}
                         totalLoss={client.totalLoss}
               />
+              <Divider variant="middle"/>
             </div>
           )
         })}
