@@ -533,7 +533,7 @@ class ForumList extends React.Component {
     else if (sidebarToggle === "Followed Posts") {
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
-            if (this.state.postFilter === "" && userInfo.userFollows.includes((FAInfo.filter((FA) => {return FA.FAName === thread.author}))[0])) {
+            if (this.state.postFilter === "" && app.state.currentUser.userFollows.includes(thread.author)) {
               return (
                 <div>
                   <ForumListItem postTitle={ thread.title }
@@ -561,7 +561,7 @@ class ForumList extends React.Component {
                 </div>
               )
             }
-            else if (this.state.postFilter === thread.category && userInfo.userFollows.includes((FAInfo.filter((FA) => {return FA.FAName === thread.author}))[0])) {
+            else if (this.state.postFilter === thread.category && app.state.currentUser.userFollows.includes(thread.author)) {
               return (
                 <div>
                   <ForumListItem postTitle={ thread.title }
