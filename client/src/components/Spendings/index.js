@@ -194,7 +194,7 @@ class Spendings extends React.Component {
   componentDidUpdate(undefined, prevState) {
     // only update the account balance if any transaction has been modified
     if (prevState.transactions_data != this.state.transactions_data) {
-      this.sumAccountBalance()
+      // this.sumAccountBalance()
       this.sumCategoriesAmount()
     }
   }
@@ -225,18 +225,20 @@ class Spendings extends React.Component {
         if (this.state.entire_data.length != 0) {
           this.state.transactions_data = this.state.entire_data["0"]["Data"]["0"]["Data"]["Transactions"]
           this.state.projectedSpendings = this.state.entire_data["0"]["Data"]["0"]["Data"]["Projected Spendings"]
+          this.state.accountBalance = this.state.entire_data["0"]["Data"]["0"]["Data"]["Total Amount"]
           this.state.currentlySelectedMonth["monthIndex"] = "0"
           this.state.currentlySelectedMonth["yearIndex"] = "0"
 
           this.setState({
             transactions_data: this.state.transactions_data,
             projectedSpendings: this.state.projectedSpendings,
+            accountBalance: this.state.accountBalance,
             currentlySelectedMonth: this.state.currentlySelectedMonth
           })
         }
 
         this.sumCategoriesAmount()
-        this.sumAccountBalance()
+        // this.sumAccountBalance()
 
       })
       .catch(error => {
@@ -343,8 +345,8 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
-        this.sumAccountBalance()
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
+        // this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
       .catch(error => {
@@ -378,8 +380,8 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
-        this.sumAccountBalance()
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
+        // this.sumAccountBalance()
         this.sumCategoriesAmount()
       })
       .catch(error => {
@@ -413,7 +415,7 @@ class Spendings extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data })
+        this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
       })
       .catch(error => {
         console.log(error)
@@ -601,17 +603,19 @@ class Spendings extends React.Component {
 
         this.state.transactions_data = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Transactions"]
         this.state.projectedSpendings = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"]
+        this.state.accountBalance = this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"]
         this.state.currentlySelectedMonth["monthIndex"] = monthIndex
         this.state.currentlySelectedMonth["yearIndex"] = yearIndex
 
         this.setState({
           transactions_data: this.state.transactions_data,
           projectedSpendings: this.state.projectedSpendings,
+          accountBalance: this.state.accountBalance,
           currentlySelectedMonth: this.state.currentlySelectedMonth
         })
 
         this.sumCategoriesAmount()
-        this.sumAccountBalance()
+        // this.sumAccountBalance()
 
         // resetting form and closing menu 
         Object.keys(this.state.newSpendings).map(heading => {
@@ -637,9 +641,10 @@ class Spendings extends React.Component {
     this.setState({
       transactions_data: this.state.transactions_data,
       projectedSpendings: this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"],
+      accountBalance: this.state.entire_data[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"],
       currentlySelectedMonth: this.state.currentlySelectedMonth
     })
-    this.sumAccountBalance()
+    // this.sumAccountBalance()
     this.sumCategoriesAmount()
   }
 
@@ -999,14 +1004,14 @@ class Spendings extends React.Component {
                         indices={["Actual", "Projected"]}
                         labelIndex="Month"
                         barChartWidth={1250}
-                        barChartHeight={500}/>
+                        barChartHeight={500} />
 
                     </div>
 
                   </div>
 
                 }
-                
+
               </div>
 
             }

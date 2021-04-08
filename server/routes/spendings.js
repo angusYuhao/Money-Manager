@@ -6,6 +6,15 @@ mongoose.set('useFindAndModify', false); // for some deprecation issues
 
 const { User } = require("../models/user");
 
+function sumAccountBalance(arr) {
+    const accountBalance = arr.reduce((total, current) => {
+        let sum = parseFloat(total) + parseFloat(current["Amount"])
+        sum = sum.toFixed(2)
+        return sum
+    }, 0)
+    return accountBalance
+}
+
 function sortDataByKey(a, b) {
     // keys can be either month or year, want the latest to be on top 
     const keyA = "Year" in a ? parseInt(a["Year"]) : parseInt(a["Month"])
@@ -118,12 +127,17 @@ routes.post('/transaction/:yearIndex/:monthIndex', async (req, res) => {
     try {
         const user = await User.findById(userID)
         user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].push(newTransaction)
+
         user.spendings.map((yearObj, index) => {
             user.spendings[index]["Data"].sort(sortDataByKey)
         })
         user.spendings.sort(sortDataByKey)
+
+        const accountBalance = sumAccountBalance(user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"] = accountBalance
+
         const updatedSpendings = await user.save()
-        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings })
+        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings, accountBalance: accountBalance })
     }
 
     catch (error) {
@@ -147,8 +161,12 @@ routes.patch('/transaction/:yearIndex/:monthIndex', async (req, res) => {
         const user = await User.findById(userID)
         const index = user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].findIndex(t => t._id.equals(editTransaction._id))
         user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"][index] = editTransaction
+
+        const accountBalance = sumAccountBalance(user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"] = accountBalance
+
         const updatedSpendings = await user.save()
-        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings })
+        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings, accountBalance: accountBalance })
     }
 
     catch (error) {
@@ -171,12 +189,17 @@ routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
     try {
         const user = await User.findById(userID)
         user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"].pull(_id)
+
         user.spendings.map((yearObj, index) => {
             user.spendings[index]["Data"].sort(sortDataByKey)
         })
         user.spendings.sort(sortDataByKey)
+
+        const accountBalance = sumAccountBalance(user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"])
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"] = accountBalance
+
         const updatedSpendings = await user.save()
-        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings })
+        res.send({ transaction: updatedSpendings.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"], entire_data: updatedSpendings.spendings, accountBalance: accountBalance })
     }
 
     catch (error) {
@@ -187,7 +210,7 @@ routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 
 // deletes a sheet for the spendings
 routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
-    
+
     if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
     const userID = req.session.user
 
@@ -198,13 +221,16 @@ routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
 
         const user = await User.findById(userID)
         user.spendings[yearIndex]["Data"].splice(monthIndex, 1)
+
         if (user.spendings[yearIndex]["Data"].length == 0) {
             user.spendings.splice(yearIndex, 1)
         }
+
         user.spendings.map((yearObj, index) => {
             user.spendings[index]["Data"].sort(sortDataByKey)
         })
         user.spendings.sort(sortDataByKey)
+
         const updatedSpendings = await user.save()
         res.send(updatedSpendings.spendings)
 
@@ -258,6 +284,7 @@ routes.post('/sheet', async (req, res) => {
 
         user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Transactions"] = []
         user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Projected Spendings"] = projectedSpendings
+        user.spendings[yearIndex]["Data"][monthIndex]["Data"]["Total Amount"] = 0
         user.spendings.map((yearObj, index) => {
             user.spendings[index]["Data"].sort(sortDataByKey)
         })
