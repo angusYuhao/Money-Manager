@@ -267,6 +267,7 @@ class RegularUserForm extends React.Component {
                         :
                         <FormControl variant="outlined" className={classes.formControl}>
                         <CssTextField 
+                                autoFocus
                                 value={ createdPassword } 
                                 onChange={ checkLength }
                                 helperText="Good password!"
@@ -315,6 +316,7 @@ class RegularUserForm extends React.Component {
                         <FormControl variant="outlined" className={classes.formControl}>
                         <CssTextField 
                                 fullWidth
+                                autoFocus
                                 value={ confirmPassword }
                                 helperText="The password matches!" 
                                 onChange={ e => updateConfirmPassword(signup, e.target) }

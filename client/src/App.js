@@ -15,6 +15,7 @@ import Contact from './components/ContactUs/contact.js';
 import Sent from './components/ContactUs/sent.js';
 import About from './components/AboutUs/about.js';
 import Profile from './components/Profile/profile.js';
+import Manage from './components/Manage/manage.js';
 import { checkSession } from "./actions/user.js";
 
 class App extends React.Component {
@@ -111,7 +112,17 @@ class App extends React.Component {
                         {!currentUser ? 
                           <Login {...props} app={this} /> 
                           : 
-                          <Spendings loggedIn={this.state.loggedIn} {...props} app={this} />
+                          currentUser.userLevel == "Regular User" ?
+                            <Spendings loggedIn={this.state.loggedIn} {...props} app={this} />
+                            :
+                            <Community loggedIn={this.state.loggedIn}
+                                      username={currentUser.username}
+                                      usertype={currentUser.userLevel}
+                                      FAName={currentUser.FAName}
+                                      FAIntro={currentUser.FAIntro}
+                                      FAFields={currentUser.FAFields}
+                                      FAPoints={currentUser.FAPoints}
+                                      {...props} app={this} />
                           }
                     </div>                   // ... spread operator - provides all of the props in the props object
                     
@@ -132,10 +143,45 @@ class App extends React.Component {
                 password={this.state.password}
               />)} /> */}
 
-            <Route exact path='/investments'
+              <Route
+                exact path={["/investments", "/manage"]}
+                render={ props => (
+                    <div className="app">
+                        { /* Different componenets rendered depending on if someone is logged in. */}
+                        {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          currentUser.userLevel == "Regular User" ?
+                            <Investments loggedIn={this.state.loggedIn} {...props} app={this} />
+                            :
+                            <Manage loggedIn={this.state.loggedIn}
+                                            user={currentUser}
+                                            {...props} 
+                                            app={this}/>
+                          }
+                    </div>                   // ... spread operator - provides all of the props in the props object
+                    
+                )}
+            />
+            {/* <Route exact path='/investments'
               render={() => (<Investments
                 loggedIn={this.state.loggedIn}
-              />)} />
+            />)} />
+
+            { currentUser ?
+              null
+              :
+              !currentUser && currentUser.userLevel == "Financial Advisor" ?
+                <Route exact path='/recommendations'
+                render={props => (<Investments
+                  loggedIn={this.state.loggedIn}
+                  user={currentUser}
+                  {...props} 
+                  app={this}
+                />)} />
+                :
+                null
+            } */}
 
             <Route exact path='/community'
               render={() => (<Community
@@ -169,11 +215,7 @@ class App extends React.Component {
               />)} />
 
           </Switch>
-
-
         </BrowserRouter>
-
-
       </div>
 
     )

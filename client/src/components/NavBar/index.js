@@ -31,7 +31,7 @@ const useStyles = theme => ({
     margin: 10,
   },
   username: {
-    marginLeft: theme.spacing(80),
+    marginLeft: theme.spacing(85),
   },
   avatar: {
     marginLeft: theme.spacing(2),

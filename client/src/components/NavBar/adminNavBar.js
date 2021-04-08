@@ -31,7 +31,7 @@ const useStyles = theme => ({
     margin: 10,
   },
   username: {
-    marginLeft: theme.spacing(120),
+    marginLeft: theme.spacing(105),
   },
   avatar: {
     marginLeft: theme.spacing(2),
@@ -84,6 +84,9 @@ class AdminNavBar extends React.Component {
 
                 <Link to={'/community'} className={classes.tabs, classes.removeLine}>
                   <Tab label="Community" />
+                </Link>
+                <Link to={'/manage'} className={classes.tabs, classes.removeLine}>
+                  <Tab label="Manage" />
                 </Link>
 
               </Tabs>

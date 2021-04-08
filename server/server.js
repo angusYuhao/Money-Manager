@@ -2,15 +2,6 @@
 "use strict"
 const log = console.log
 
-
-
-
-
-
-
-
-
-
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
 
 const { localMongoURI } = require('./db/config.js');
