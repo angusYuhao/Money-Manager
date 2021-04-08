@@ -390,7 +390,7 @@ class ForumList extends React.Component {
     this.props.userInfoUpdater(userInfo)
 
     callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
-    callback2({username: userInfo.username, postID: targetPostID})
+    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
   }
 
   // called when user deletes their upvote from a post
@@ -410,7 +410,7 @@ class ForumList extends React.Component {
     this.props.userInfoUpdater(userInfo)
 
     callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
-    callback2({username: userInfo.username, postID: targetPostID})
+    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
   }
 
   // called when user downvotes a post
@@ -428,8 +428,10 @@ class ForumList extends React.Component {
     userInfo.userDownvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
+    // console.log("kill me", this.props.app)
+
     callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
-    callback2({username: userInfo.username, postID: targetPostID})
+    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
   }
 
   // called when user deletes a downvote from a post
@@ -448,15 +450,15 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
     
-    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numDownvotes})
-    callback2({username: userInfo.username, postID: targetPostID})
+    callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
+    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
   }
 
   // main render function
   render() {
 
     // pass in props
-    const { userInfo, FAInfo, userInfoUpdater, sidebarToggle } = this.props
+    const { userInfo, FAInfo, userInfoUpdater, sidebarToggle, app } = this.props
     const { classes } = this.props
 
     // mainList is the list of posts to display, here we display different versions of the list based on some parameters
@@ -488,7 +490,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -515,7 +518,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -529,7 +533,7 @@ class ForumList extends React.Component {
     else if (sidebarToggle === "Followed Posts") {
       mainList = <List className={ classes.forumList }>
         { this.state.posts.map((thread) => {
-            if (this.state.postFilter === "" && userInfo.userFollows.includes((FAInfo.filter((FA) => {return FA.FAName === thread.author}))[0])) {
+            if (this.state.postFilter === "" && app.state.currentUser.userFollows.includes(thread.author)) {
               return (
                 <div>
                   <ForumListItem postTitle={ thread.title }
@@ -551,12 +555,13 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
             }
-            else if (this.state.postFilter === thread.category && userInfo.userFollows.includes((FAInfo.filter((FA) => {return FA.FAName === thread.author}))[0])) {
+            else if (this.state.postFilter === thread.category && app.state.currentUser.userFollows.includes(thread.author)) {
               return (
                 <div>
                   <ForumListItem postTitle={ thread.title }
@@ -578,7 +583,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -614,7 +620,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -641,7 +648,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -677,7 +685,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )
@@ -704,7 +713,8 @@ class ForumList extends React.Component {
                                 addDownvote={ this.addDownvote }
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }/>
+                                postComment={ this.postComment }
+                                app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
               )

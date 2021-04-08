@@ -107,6 +107,8 @@ class ForumListItem extends React.Component {
     downvoted: false,
     authorFAInfo: {
       FAName: "",
+      FAFirstname: "",
+      FALastname: "",
       FAIntro: "",
       FAFields: [],
       FAPoints: 0,
@@ -187,7 +189,8 @@ class ForumListItem extends React.Component {
     let newUserInfo = this.props.userInfo
     newUserInfo.userFollows.push(this.state.authorFAInfo)
     this.props.userInfoUpdater(newUserInfo)
-    callback({username: newUserInfo.username, FAusername: this.state.authorFAInfo.FAName})
+    console.log(this.props.app)
+    callback({username: newUserInfo.username, FAusername: this.state.authorFAInfo.FAName, app: this.props.app})
   }
 
   // called when the user unfollows the post author (financial advisor)
@@ -197,7 +200,8 @@ class ForumListItem extends React.Component {
     const newUserFollows = newUserInfo.userFollows.filter((UF) => { return UF !== this.state.authorFAInfo })
     newUserInfo.userFollows = newUserFollows
     this.props.userInfoUpdater(newUserInfo)
-    callback({username: newUserInfo.username, FAusername: this.state.authorFAInfo.FAName})
+    console.log(this.props.app)
+    callback({username: newUserInfo.username, FAusername: this.state.authorFAInfo.FAName, app: this.props.app})
   }
 
   // called when user saves the post
@@ -206,7 +210,7 @@ class ForumListItem extends React.Component {
     let newUserInfo = this.props.userInfo
     newUserInfo.userSavedPosts.push(this.state.postID)
     this.props.userInfoUpdater(newUserInfo)
-    callback({ username: newUserInfo.username, postID: this.state.postID })
+    callback({ username: newUserInfo.username, postID: this.state.postID, app: this.props.app })
   }
 
   // called when user unsaves the post
@@ -216,27 +220,27 @@ class ForumListItem extends React.Component {
     const newUserSavedPosts = newUserInfo.userSavedPosts.filter((US) => { return US !== this.state.postID })
     newUserInfo.userSavedPosts = newUserSavedPosts
     this.props.userInfoUpdater(newUserInfo)
-    callback({ username: newUserInfo.username, postID: this.state.postID })
+    callback({ username: newUserInfo.username, postID: this.state.postID, app: this.props.app })
   }
 
-  cleanupDownvote = () => {
-    // clean up downvote
-    if (this.state.downvoted === true) {
-      this.setState({ downvoted: false })
-      this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
-    }
-  }
+  // cleanupDownvote = () => {
+  //   // clean up downvote
+  //   if (this.state.downvoted === true) {
+  //     this.setState({ downvoted: false })
+  //     this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
+  //   }
+  // }
 
-  cleanupUpvote = () => {
-    // clean up upvote
-    if (this.state.upvoted === true) {
-      this.setState({ upvoted: false })
-      this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
-    }
-  }
+  // cleanupUpvote = () => {
+  //   // clean up upvote
+  //   if (this.state.upvoted === true) {
+  //     this.setState({ upvoted: false })
+  //     this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
+  //   }
+  // }
 
   // called when user upvotes the post
-  toggleUpvote = (callback) => {
+  toggleUpvote = () => {
 
     if (this.state.upvoted === false) {
       this.setState({ upvoted: true })
@@ -247,11 +251,11 @@ class ForumListItem extends React.Component {
       this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
     }
 
-    callback()
+    // callback()
   }
 
   // called when user downvotes the post
-  toggleDownvote = (callback) => {
+  toggleDownvote = () => {
 
     if (this.state.downvoted === false) {
       this.setState({ downvoted: true })
@@ -262,14 +266,14 @@ class ForumListItem extends React.Component {
       this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
     }
     
-    callback()
+    // callback()
   }
 
   // main render function
   render() {
 
     // save props
-    const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, 
+    const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, app,
             deletePosts, openManagePost, numUpvotes, numDownvotes, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
 
     return (
@@ -394,22 +398,22 @@ class ForumListItem extends React.Component {
 
             {/* {display upvote and downvote buttons} */}
             { this.state.downvoted ? 
-            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote(this.cleanupDownvote) } disabled>
+            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote() } disabled>
               <ThumbUpAltIcon />
             </IconButton>
             :
-            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote(this.cleanupDownvote) }>
+            <IconButton color={ this.state.upvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleUpvote() }>
               <ThumbUpAltIcon />
             </IconButton> }
             
             <span>{ numUpvotes }</span>
 
             { this.state.upvoted ?
-            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote(this.cleanupUpvote) } disabled>
+            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote() } disabled>
               <ThumbDownAltIcon />
             </IconButton>
             :
-            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote(this.cleanupUpvote) }>
+            <IconButton color={ this.state.downvoted ? "primary" : "secondary" } component="span" onClick={ () => this.toggleDownvote() }>
               <ThumbDownAltIcon />
             </IconButton> }
             
@@ -494,14 +498,15 @@ class ForumListItem extends React.Component {
 
             {/* {display financial advisor's fields of expertise} */}
             <DialogContentText align="center">
-              { this.state.authorFAInfo.FAFields.map((field) => {
+              {/* { this.state.authorFAInfo.FAFields.map((field) => {
                 return (
                   <span>
-                    <Chip label={ field } size="small" color="secondary" />
+                    
                     { this.state.authorFAInfo.FAFields[this.state.authorFAInfo.FAFields.length - 1] === field ? null : <span> : </span> }
                   </span>
                 )
-              }) }
+              }) } */}
+              <Chip label={ this.state.authorFAInfo.FAFields } size="small" color="secondary" />
             </DialogContentText>
 
             {/* {display community points} */}
@@ -515,7 +520,7 @@ class ForumListItem extends React.Component {
           {/* {display follow/unfollow button} */}
           <Grid container justify="space-evenly" className={ classes.followButtonGrid }>
 
-            { userInfo.userFollows.includes(this.state.authorFAInfo) ? 
+            { app.state.currentUser.userFollows.includes(this.state.authorFAInfo.FAName) ? 
             <Button color="primary" variant="contained" onClick={ () => this.handleUserUnfollowFA(deleteUserFollowdb) }>
               Unfollow
             </Button> : 

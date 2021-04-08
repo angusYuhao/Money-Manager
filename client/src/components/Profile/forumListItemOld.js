@@ -30,6 +30,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import Comment from "./../Community/comment.js"
+import { UpdatePostVotesdb, addUserUpvotedPostdb, deleteUserUpvotedPostdb, addUserDownvotedPostdb, deleteUserDownvotedPostdb, addCommentdb } from '../Community/actions.js'
 
 const styles =  theme => ({
   closePostButton: {
@@ -114,43 +115,42 @@ class ForumListItem extends React.Component {
     }
 
     handlePostComment = () => {
-      this.props.postComment(this.state)
+      this.props.postComment(this.state, addCommentdb)
       this.setState({ comment: "" })
     }
 
+    // cleanupUpvote = () => {
+    //   // clean up upvote
+    //   if (this.state.upvoted === true) {
+    //     this.setState({ upvoted: false })
+    //     this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
+    //   }
+    // }
+  
+    // called when user upvotes the post
     toggleUpvote = () => {
-
-      // clean up downvote
-      if (this.state.downvoted === true) {
-        this.setState({ downvoted: false })
-        this.props.minusDownvote(this.state)
-      }
-
+  
       if (this.state.upvoted === false) {
         this.setState({ upvoted: true })
-        this.props.addUpvote(this.state)
+        this.props.addUpvote(this.state, UpdatePostVotesdb, addUserUpvotedPostdb)
       }
       else {
         this.setState({ upvoted: false })
-        this.props.minusUpvote(this.state)
+        this.props.minusUpvote(this.state, UpdatePostVotesdb, deleteUserUpvotedPostdb)
       }
+  
     }
-
+  
+    // called when user downvotes the post
     toggleDownvote = () => {
-
-      // clean up upvote
-      if (this.state.upvoted === true) {
-        this.setState({ upvoted: false })
-        this.props.minusUpvote(this.state)
-      }
-
+  
       if (this.state.downvoted === false) {
         this.setState({ downvoted: true })
-        this.props.addDownvote(this.state)
+        this.props.addDownvote(this.state, UpdatePostVotesdb, addUserDownvotedPostdb)
       }
       else {
         this.setState({ downvoted: false })
-        this.props.minusDownvote(this.state)
+        this.props.minusDownvote(this.state, UpdatePostVotesdb, deleteUserDownvotedPostdb)
       }
       
     }

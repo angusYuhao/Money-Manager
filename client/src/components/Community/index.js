@@ -13,6 +13,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 
+import { getFAInfodb } from './actions.js';
+
 // styles definiton
 const useStyles = theme => ({
   root: {
@@ -111,10 +113,10 @@ class Community extends React.Component {
     let newUserInfo = {
       username: this.props.username,
       usertype: usertype,
-      userUpvotedPosts: [],
-      userDownvotedPosts: [],
-      userSavedPosts: [],
-      userFollows: [],
+      userUpvotedPosts: this.props.userInfo.userUpvotedPosts,
+      userDownvotedPosts: this.props.userInfo.userDownvotedPosts,
+      userSavedPosts: this.props.userInfo.userSavedPosts,
+      userFollows: this.props.userInfo.userFollows,
       FAName: "",
       FAIntro: "",
       FAFields: "",
@@ -129,6 +131,7 @@ class Community extends React.Component {
     }
 
     this.setState({ userInfo: newUserInfo })
+    getFAInfodb(this)
   }
 
   // called in children components to update the userInfo state in this component
@@ -159,7 +162,7 @@ class Community extends React.Component {
   render() {
 
     // pass in relevant information as props
-    const { classes, username, usertype, FAName, FAIntro, FAFields, FAPoints, loggedIn } = this.props
+    const { classes, username, usertype, FAName, FAIntro, FAFields, FAPoints, loggedIn, app } = this.props
 
     return (
 
@@ -185,7 +188,8 @@ class Community extends React.Component {
           <ForumList userInfo={ this.state.userInfo }
                     FAInfo={ this.state.tempFAInfo }
                     sidebarToggle={ this.state.sidebarToggle }
-                    userInfoUpdater={ this.userInfoUpdater }/>
+                    userInfoUpdater={ this.userInfoUpdater }
+                    app={app}/>
         </Grid>
 
       </ThemeProvider> : <Redirect to="/login" />

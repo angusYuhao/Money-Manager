@@ -302,7 +302,7 @@ app.post("/users/profile/userSavedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userSavedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -372,7 +372,7 @@ app.post("/users/profile/userUpvotedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userUpvotedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -442,7 +442,7 @@ app.post("/users/profile/userDownvotedPosts/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userDownvotedPosts[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -511,7 +511,7 @@ app.post("/users/profile/userFollows/:username", async (req, res) => {
             await targetUser[0].save()
             let ret = targetUser[0].userFollows[0]
             console.log("the ret value", ret)
-            res.status(200).send("success")
+            res.status(200).send(targetUser[0])
         }
     }
     catch(error) {
@@ -593,6 +593,65 @@ app.post('/users/FAInfo', async (req, res) => {
             res.status(400).send("bad request")
         }
     }
+})
+
+// get list of all FAInfo
+app.get('/users/FAInfo', async (req, res) => {
+
+    // check mongoose connection
+    if (mongoose.connection.readyState != 1) {
+        log('Issue with mongoose connection')
+        res.status(500).send('internal server error')
+        return
+    }
+
+    try {
+        const allFAInfo = await FAInfo.find()
+        console.log(allFAInfo)
+        res.send(allFAInfo)
+    }
+    catch (error) {
+        log(error)
+        res.status(500).send("internal server error")
+    }
+})
+
+// patch FAInfo
+app.patch('/users/FAInfo/:username', async (req, res) => {
+    
+    const username = req.params.username;
+
+    console.log("in FAInfo patch", username)
+
+    // check mongoose connection
+	if (mongoose.connection.readyState != 1) {
+		log('mongoose connection issue!')
+		res.status(500).send('internal server error')
+	}
+
+    // Find the fields to update and their values.
+	const fieldsToUpdate = {}
+	req.body.map((change) => {
+		const propertyToChange = change.path.substr(1) // getting rid of the '/' character
+		fieldsToUpdate[propertyToChange] = change.value
+	})
+
+	try {
+		const updateFAInfo = await FAInfo.findOneAndUpdate({FAName: username}, {$set: fieldsToUpdate}, {new: true, useFindAndModify: false})
+		if (!updateFAInfo) {
+			res.status(404).send('Resource not found')
+		} else {   
+			res.status(200).send(updateFAInfo);
+		}
+	} catch (error) {
+		log(error)
+		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+			res.status(500).send('Internal server error')
+		} else {
+			res.status(400).send('Bad Request') // bad request for changing the student.
+		}
+	}
+
 })
 
 

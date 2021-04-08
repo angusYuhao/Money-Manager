@@ -305,10 +305,16 @@ export const addUserSavedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("added post to user profile userSavedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to add post to user profile userSavedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -330,10 +336,16 @@ export const deleteUserSavedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("deleted post from user profile userSavedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to delete post from user profile userSavedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -365,10 +377,16 @@ export const addUserUpvotedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("added post to user profile userUpvotedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to add post to user profile userUpvotedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -390,10 +408,16 @@ export const deleteUserUpvotedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("deleted post from user profile userUpvotedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to delete post from user profile userUpvotedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -425,10 +449,16 @@ export const addUserDownvotedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("added post to user profile userDownvotedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to add post to user profile userDownvotedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -450,10 +480,16 @@ export const deleteUserDownvotedPostdb = (postInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("deleted post from user profile userDownvotedPosts")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to delete post from user profile userDownvotedPosts")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            postInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -484,10 +520,17 @@ export const addUserFollowdb = (followInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("added FA to user profile userFollows")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to add FA to user profile userFollows")
+        }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            // console.log("please", json)
+            followInfo.app.setState({ currentUser: json })
         }
     })
     .catch((error) => {
@@ -498,7 +541,7 @@ export const addUserFollowdb = (followInfo) => {
 // delete a FA from user's profile userFollows
 export const deleteUserFollowdb = (followInfo) => {
 
-    const url = `${API_HOST}/users/profile/userDownvotedPosts/${followInfo.username}/${followInfo.FAusername}`;
+    const url = `${API_HOST}/users/profile/userFollows/${followInfo.username}/${followInfo.FAusername}`;
 
     const request = new Request(url, {
         method: "delete"
@@ -509,11 +552,45 @@ export const deleteUserFollowdb = (followInfo) => {
         if (res.status === 200) {
             // add post successful
             console.log("deleted FA from user profile userFollows")
+            return res.json()
         }
         else {
             // add post failed
             console.log("failed to delete FA from user profile userFollows")
         }
+    })
+    .then(json => {
+        if (json !== undefined) {
+            followInfo.app.setState({ currentUser: json })
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
+
+// get all FAInfos
+export const getFAInfodb = (index) => {
+
+    const url = `${API_HOST}/users/FAInfo`;
+
+    fetch(url)
+    .then((res) => {
+        if (res.status === 200) {
+            // get post successful
+            console.log("got FAInfo")
+            return res.json()
+        }
+        else {
+            // get post failed
+            console.log("failed to get FAInfo")
+        }
+    })
+    .then((json) => {
+        console.log(json)
+        index.setState({
+            tempFAInfo: json
+        })
     })
     .catch((error) => {
         console.log(error)
