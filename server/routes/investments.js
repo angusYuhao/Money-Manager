@@ -96,6 +96,7 @@ routes.post('/', mongoChecker, authenticate, async (req, res) => {
         if (Object.keys(quotes).length === 0) {
             console.log(quotes);
             console.log("Incorrect buy entry!");
+            res.send("tickerError")
             return;
         } else closingPrice = quotes[0]['close'];
         console.log("CLOSING PRICE")

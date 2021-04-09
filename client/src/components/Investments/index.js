@@ -14,6 +14,9 @@ import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Alert } from '@material-ui/lab';
+
 
 // getting the config settings variable 
 import CONFIG from '../../config'
@@ -68,6 +71,13 @@ class Investments extends React.Component {
       "Gain/Loss": false,
     },
     openDrawer: false,
+
+    //Snacks for alert
+    snacks: [],
+    // the message that the snack should currently display
+    currentSnackMsg: undefined,
+    // true -> displays the snack, false -> hides the snack
+    displaySnack: false,
 
     //Pie chart values
     //These sizes were chosen to have a good ratio between the account 
@@ -173,6 +183,20 @@ class Investments extends React.Component {
 
   //For re-ensuring the sum is up to date:
   componentDidUpdate(undefined, prevState) {
+
+     // if there is a snack message to be shown but we currently don't have the snack opened 
+     if (this.state.snacks.length && !this.state.currentSnackMsg) {
+      this.setState({ currentSnackMsg: this.state.snacks[0] })
+      this.setState({ snacks: this.state.snacks.slice(1) })
+      this.setState({ displaySnack: true })
+    }
+
+    // if there is a snack message to be shown and we are already displaying a snack, close the active one 
+    else if (this.state.snacks.length && this.state.currentSnackMsg && this.state.displaySnack) {
+      this.setState({ displaySnack: false })
+    }
+
+
     // only update the account balance if any transaction has been modified
     if (prevState.stocklist_data != this.state.stocklist_data) {
       this.totalMoneyInvested();
@@ -185,6 +209,34 @@ class Investments extends React.Component {
       return ttl +  stock["Book Cost"];  
     }, 0);
     this.setState({total: Math.round(this.state.total*100)/100})
+  }
+
+  // adds a message to the snack array 
+  addSnack(message) {
+    this.state.snacks.push(message)
+    this.setState({ snacks: this.state.snacks })
+  }
+
+  snackBarOnClose() {
+    this.setState({ displaySnack: false })
+  }
+
+  snackBarOnExited() {
+    this.setState({ currentSnackMsg: undefined })
+  }
+
+    // renders different helper messages depending on the error or success 
+  renderHelperMsg() {
+    switch (this.state.currentSnackMsg) {
+      case "tickerError":
+        return "Invalid stock name(ticker). Please try again."
+      case "negError":
+        return "Invalid quantity. Please only use positive quantities."
+      case "invalidSell":
+        return "Invalid quantity to sell. You can sell a maximum of your total number of stocks."
+      case "invalidBuy":
+        return "Invalid stock entry to buy. Please check the stock name/ticker and date."
+    }
   }
 
 
@@ -222,6 +274,7 @@ class Investments extends React.Component {
       })
       .catch(error => {
         console.log(error)
+        this.setState({ displaySnack: true })
       })
       console.log(this.state.stocklist_data)
     // this.state.stocklist_data.unshift(newStock)
@@ -256,6 +309,7 @@ class Investments extends React.Component {
       })
       .catch(error => {
         console.log(error)
+        this.setState({ displaySnack: true })
       })
   }
 
@@ -284,6 +338,7 @@ class Investments extends React.Component {
       })
       .catch(error => {
         console.log(error)
+        this.displaySnack = true;
       })
 };
   
@@ -364,7 +419,20 @@ class Investments extends React.Component {
         <Calculator/>
         </div> */}
       </div>
+      <Snackbar
+        open={this.state.displaySnack}
+        autoHideDuration={2000}
+        onClose={() => this.snackBarOnClose()}
+        onExited={() => this.snackBarOnExited()}
+      >
 
+        <Alert
+          severity="error"
+          variant="filled">
+          {this.renderHelperMsg()}
+        </Alert>
+
+      </Snackbar>
      
 
     </div>
