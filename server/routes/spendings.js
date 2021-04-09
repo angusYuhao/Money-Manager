@@ -1,9 +1,5 @@
 const routes = require('express').Router()
 
-const config = require('../config')
-const ENV = config.ENV
-const TEST_USER_ID = config.TEST_USER_ID
-
 const actions = require('./actions')
 const mongoChecker = actions.mongoChecker
 const authenticate = actions.authenticate

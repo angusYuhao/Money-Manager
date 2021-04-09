@@ -1,5 +1,9 @@
 const routes = require('express').Router()
-const ENV = "development" // used for setting session info manually when testing
+
+const actions = require('./actions')
+const mongoChecker = actions.mongoChecker
+const authenticate = actions.authenticate
+const isMongoError = actions.isMongoError
 
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
@@ -9,14 +13,7 @@ const log = console.log
 const { Post } = require("../models/posts");
 
 // get all posts
-routes.get('/posts', async (req, res) => {
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('Issue with mongoose connection')
-        res.status(500).send('internal server error')
-        return
-    }
+routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
 
     try {
         const allPosts = await Post.find()
@@ -30,16 +27,9 @@ routes.get('/posts', async (req, res) => {
 })
 
 // get posts by username
-routes.get('/posts/:username', async (req, res) => {
+routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('Issue with mongoose connection')
-        res.status(500).send('internal server error')
-        return
-    }
+    const targetUsername = req.session.username
 
     try {
         const postsByUsername = await Post.find({ username: targetUsername })
@@ -57,18 +47,11 @@ routes.get('/posts/:username', async (req, res) => {
 })
 
 // add new post
-routes.post('/posts', async (req, res) => {
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('Issue with mongoose connection')
-        res.status(500).send('internal server error')
-        return
-    }
+routes.post('/posts', mongoChecker, authenticate, async (req, res) => {
 
     const newPost = new Post({
         postID: req.body.postID,
-        author: req.body.author,
+        author: req.session.username,
         authorUsertype: req.body.authorUsertype,
         title: req.body.title,
         category: req.body.category,
@@ -83,6 +66,7 @@ routes.post('/posts', async (req, res) => {
 
     try {
         const result = await newPost.save()
+        console.log(result)
         res.status(200).send(result)
     }
     catch (error) {
@@ -97,17 +81,11 @@ routes.post('/posts', async (req, res) => {
 })
 
 // delete a post
-routes.delete('/posts/:postID', async (req, res) => {
+routes.delete('/posts/:postID', mongoChecker, authenticate, async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetPost = await Post.findOneAndDelete({ postID: targetPostID })
@@ -133,17 +111,11 @@ routes.delete('/posts/:postID', async (req, res) => {
  ...
 ]
 */
-routes.patch('/posts/:postID', async (req, res) => {
+routes.patch('/posts/:postID', mongoChecker, authenticate, async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log("in patch", targetPostID)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     // Find the fields to update and their values.
     const fieldsToUpdate = {}
@@ -171,17 +143,11 @@ routes.patch('/posts/:postID', async (req, res) => {
 })
 
 // add new comment to a post
-routes.post('/posts/:postID', async (req, res) => {
+routes.post('/posts/:postID', mongoChecker, authenticate, async (req, res) => {
 
     const targetPostID = req.params.postID
 
     console.log(targetPostID)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetPost = await Post.find({ postID: targetPostID })
