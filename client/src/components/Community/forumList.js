@@ -32,7 +32,7 @@ import ENV from '../../config.js'
 const API_HOST = ENV.api_host
 
 // define styles
-const styles =  theme => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
     marginLeft: 50,
@@ -70,18 +70,18 @@ const styles =  theme => ({
 // define theme
 const theme = createMuiTheme({
   palette: {
-      primary: {
-          main: deepPurple[800],
-      },
-      secondary: {
-          main: deepPurple[100],
-      }
+    primary: {
+      main: deepPurple[800],
+    },
+    secondary: {
+      main: deepPurple[100],
+    }
   },
   typography: {
-      fontFamily: [
-          'Poppins',
-          'sans-serif',
-      ].join(','),
+    fontFamily: [
+      'Poppins',
+      'sans-serif',
+    ].join(','),
   },
 });
 
@@ -126,86 +126,7 @@ class ForumList extends React.Component {
     commenter: "",
     commentContent: "",
     recommendations: [],
-    posts: [
-      {author: 'Angus Wang', 
-        authorUsertype: "FA",
-        title: 'welcome to communtiy', 
-        content: 'this is the first community thread', 
-        // authorAvatar: null,
-        category: "Announcement",
-        postID: 1,
-        numUpvotes: 5,
-        numDownvotes: 1,
-        comments: [
-        {commenter: "Angus Wang",
-          commentContent: "a great start to a great forum!"},
-        {commenter: "Ian Chen",
-          commentContent: "Is there a way to upvote this thread twice? This is honestly the best thing ever"}
-        ]
-      },
-      {author: 'Winston Churchil', 
-        authorUsertype: "RU",
-        title: 'victory is at hand', 
-        content: "We are weeks away from winning the war, thanks to my personal genius and our nation's strength. Brothers and sisters, we will soon be remembered as heros of our time, the greatest generation if I might add!", 
-        // authorAvatar: null,
-        category: "Announcement",
-        postID: 2,
-        numUpvotes: 4,
-        numDownvotes: 2,
-        comments: [
-        {commenter: "Joseph Stalin",
-          commentContent: "The Soviet Union is the reason this war is won! How dare you not include us is this post"},
-        {commenter: "Anne Xie",
-          commentContent: "How are you guys still alive? I thought you guys died decades ago"}
-        ]
-      },
-      {author: 'Angela Merkel', 
-        authorUsertype: "FA",
-        title: 'Bitcoin is gonna fail', 
-        content: "There's no way that bitcoin is going to grow much longer. I predict that bitcoin value will collapse by the end of this year!", 
-        // authorAvatar: null,
-        category: "Opinion",
-        postID: 3,
-        numUpvotes: 30,
-        numDownvotes: 5,
-        comments: [
-        {commenter: "Emily Huang",
-          commentContent: "Where did you get to this conclusion? In my opinion bitcoin is far from failing, in fact, I think it'll grow another 10 fold!"},
-        {commenter: "Carl Marx",
-          commentContent: "Stop talking about capitalism in the posts. We all know that all nations will eventually become communist as they develop to their final form. Communism is inevitable and most desirable!"}
-        ]
-      },
-      {author: 'Bill Gates', 
-        authorUsertype: "FA",
-        title: 'What do you think about the future of Microsoft?', 
-        content: "Microsoft has been a great company all these year, but we are running out of steam in the recent years. Does anyone have some suggestions for Windows 10 and Microsoft's other products?", 
-        // authorAvatar: null,
-        category: "Question",
-        postID: 4,
-        numUpvotes: 40,
-        numDownvotes: 20,
-        comments: [
-        {commenter: "Ian Chen",
-          commentContent: "Windows 10 really sucks. Anyone who values productivity should switch to macOS!"},
-        {commenter: "Claude Debussy",
-          commentContent: "I honestly think Microsoft should just focus on Minecraft. The game is awesome and honestly it seems to be the best Microsoft product now"}
-        ]
-      },
-      {author: 'The Queen', 
-        authorUsertype: "RU",
-        title: 'How should I get into stocks?', 
-        content: 'I know I am really old, but I am still interested in getting into stocks and other ways of investing? Any experts on this platform willing to help your queen? You rewards will be in the millions!', 
-        // authorAvatar: null,
-        category: "Question",
-        postID: 5,
-        numUpvotes: 1,
-        numDownvotes: 50,
-        comments: [
-        {commenter: "Prince Charles",
-          commentContent: "How are you still alive and kicking?"}
-        ]
-      }
-    ]
+    posts: []
   }
 
   componentDidMount() {
@@ -294,7 +215,7 @@ class ForumList extends React.Component {
 
     const posts = this.state.posts
 
-    switch(order) {
+    switch (order) {
       case "Oldest":
         posts.sort((a, b) => a.postID > b.postID ? 1 : -1)
         break;
@@ -305,7 +226,7 @@ class ForumList extends React.Component {
         posts.sort((a, b) => a.numUpvotes < b.numUpvotes ? 1 : -1)
         break;
       case "BestRated":
-        posts.sort((a, b) => a.numUpvotes-a.numDownvotes < b.numUpvotes-b.numDownvotes ? 1 : -1)
+        posts.sort((a, b) => a.numUpvotes - a.numDownvotes < b.numUpvotes - b.numDownvotes ? 1 : -1)
 
     }
 
@@ -318,7 +239,7 @@ class ForumList extends React.Component {
     console.log("haiufiadcoaidsjfdoijaiojfdoisafjoiajojfdsoifjadiofjao")
 
     const postList = this.state.posts
-    const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
+    const maxValue = Math.max.apply(Math, postList.map(function (p) { return p.postID; }))
     const newID = (postList.length === 0) ? 1 : maxValue + 1
 
     let d = new Date()
@@ -382,7 +303,7 @@ class ForumList extends React.Component {
     otherPosts.splice(targetPostIndex, 0, targetPost[0])
 
     this.setState({ posts: otherPosts })
-    callback({targetPostID, newComment})
+    callback({ targetPostID, newComment })
   }
 
   // called when user deletes a post
@@ -411,7 +332,7 @@ class ForumList extends React.Component {
     }
 
     callback1(targetPostID)
-    callback2({username: userInfo.username, postID: targetPostID})
+    callback2({ username: userInfo.username, postID: targetPostID })
   }
 
   // called when user upvotes a post
@@ -429,8 +350,8 @@ class ForumList extends React.Component {
     userInfo.userUpvotedPosts.push(targetPostID)
     this.props.userInfoUpdater(userInfo)
 
-    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
-    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
+    callback1({ postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes })
+    callback2({ username: userInfo.username, postID: targetPostID, app: this.props.app })
   }
 
   // called when user deletes their upvote from a post
@@ -449,8 +370,8 @@ class ForumList extends React.Component {
     if (index !== -1) userInfo.userUpvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
 
-    callback1({postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes})
-    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
+    callback1({ postID: targetPostID, path: "numUpvotes", value: targetPost[0].numUpvotes })
+    callback2({ username: userInfo.username, postID: targetPostID, app: this.props.app })
   }
 
   // called when user downvotes a post
@@ -470,8 +391,8 @@ class ForumList extends React.Component {
 
     // console.log("kill me", this.props.app)
 
-    callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
-    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
+    callback1({ postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes })
+    callback2({ username: userInfo.username, postID: targetPostID, app: this.props.app })
   }
 
   // called when user deletes a downvote from a post
@@ -489,9 +410,9 @@ class ForumList extends React.Component {
     const index = userInfo.userDownvotedPosts.indexOf(targetPostID)
     if (index !== -1) userInfo.userDownvotedPosts.splice(index, 1)
     this.props.userInfoUpdater(userInfo)
-    
-    callback1({postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes})
-    callback2({username: userInfo.username, postID: targetPostID, app: this.props.app})
+
+    callback1({ postID: targetPostID, path: "numDownvotes", value: targetPost[0].numDownvotes })
+    callback2({ username: userInfo.username, postID: targetPostID, app: this.props.app })
   }
 
   // main render function
@@ -506,366 +427,352 @@ class ForumList extends React.Component {
 
     // case when the side bar is set to home
     if (sidebarToggle === "Home") {
-      mainList = <List className={ classes.forumList }>
-        { this.state.posts.map((thread) => {
-            if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === "" : this.state.postFilter === "" && thread.author === userInfo.username) : this.state.postFilter === "") {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-            else if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === thread.category : this.state.postFilter === thread.category && thread.author === userInfo.username) : this.state.postFilter === thread.category) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-          })
+      mainList = <List className={classes.forumList}>
+        {this.state.posts.map((thread) => {
+          if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === "" : this.state.postFilter === "" && thread.author === userInfo.username) : this.state.postFilter === "") {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+          else if (this.state.openManagePost ? (userInfo.usertype === "FA" ? this.state.postFilter === thread.category : this.state.postFilter === thread.category && thread.author === userInfo.username) : this.state.postFilter === thread.category) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+        })
         }
       </List>
     }
 
     // case when the side bar is set to Followed Posts
     else if (sidebarToggle === "Followed Posts") {
-      mainList = <List className={ classes.forumList }>
-        { this.state.posts.map((thread) => {
-            if (this.state.postFilter === "" && app.state.currentUser.userFollows.includes(thread.author)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-            else if (this.state.postFilter === thread.category && app.state.currentUser.userFollows.includes(thread.author)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-          })
+      mainList = <List className={classes.forumList}>
+        {this.state.posts.map((thread) => {
+          if (this.state.postFilter === "" && app.state.currentUser.userFollows.includes(thread.author)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+          else if (this.state.postFilter === thread.category && app.state.currentUser.userFollows.includes(thread.author)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+        })
         }
       </List>
     }
 
     // case when the side bar is set to Liked Posts
     else if (sidebarToggle === "Liked Posts") {
-      mainList = <List className={ classes.forumList }>
-        { this.state.posts.map((thread) => {
-            if (this.state.postFilter === "" && userInfo.userUpvotedPosts.includes(thread.postID)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-            else if (this.state.postFilter === thread.category && userInfo.userUpvotedPosts.includes(thread.postID)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-          })
+      mainList = <List className={classes.forumList}>
+        {this.state.posts.map((thread) => {
+          if (this.state.postFilter === "" && userInfo.userUpvotedPosts.includes(thread.postID)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+          else if (this.state.postFilter === thread.category && userInfo.userUpvotedPosts.includes(thread.postID)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+        })
         }
       </List>
     }
 
     // case when the side bar is set to Saved Posts
     else if (sidebarToggle === "Saved Posts") {
-      mainList = <List className={ classes.forumList }>
-        { this.state.posts.map((thread) => {
-            if (this.state.postFilter === "" && userInfo.userSavedPosts.includes(thread.postID)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-            else if (this.state.postFilter === thread.category && userInfo.userSavedPosts.includes(thread.postID)) {
-              return (
-                <div>
-                  <ForumListItem postTitle={ thread.title }
-                                postAuthor={ thread.author }
-                                postAuthorUsertype={ thread.authorUsertype}
-                                postTextContent={ thread.content }
-                                // avatar={ thread.authorAvatar }
-                                category={ thread.category }
-                                comments={ thread.comments }
-                                postID={ thread.postID }
-                                openManagePost={ this.state.openManagePost ? true : false }
-                                numUpvotes={ thread.numUpvotes }
-                                numDownvotes={ thread.numDownvotes }
-                                time={ thread.time }
-                                userInfo={ userInfo }
-                                FAInfo={ FAInfo }
-                                userInfoUpdater={ userInfoUpdater }
-                                addUpvote={ this.addUpvote }
-                                minusUpvote={ this.minusUpvote }
-                                addDownvote={ this.addDownvote }
-                                minusDownvote={ this.minusDownvote }
-                                deletePosts={ this.deletePosts }
-                                postComment={ this.postComment }
-                                app={app}/>
-                  { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
-                </div>
-              )
-            }
-          })
+      mainList = <List className={classes.forumList}>
+        {this.state.posts.map((thread) => {
+          if (this.state.postFilter === "" && userInfo.userSavedPosts.includes(thread.postID)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+          else if (this.state.postFilter === thread.category && userInfo.userSavedPosts.includes(thread.postID)) {
+            return (
+              <div>
+                <ForumListItem postTitle={thread.title}
+                  postAuthor={thread.author}
+                  postAuthorUsertype={thread.authorUsertype}
+                  postTextContent={thread.content}
+                  // avatar={ thread.authorAvatar }
+                  category={thread.category}
+                  comments={thread.comments}
+                  postID={thread.postID}
+                  openManagePost={this.state.openManagePost ? true : false}
+                  numUpvotes={thread.numUpvotes}
+                  numDownvotes={thread.numDownvotes}
+                  time={thread.time}
+                  userInfo={userInfo}
+                  FAInfo={FAInfo}
+                  userInfoUpdater={userInfoUpdater}
+                  addUpvote={this.addUpvote}
+                  minusUpvote={this.minusUpvote}
+                  addDownvote={this.addDownvote}
+                  minusDownvote={this.minusDownvote}
+                  deletePosts={this.deletePosts}
+                  postComment={this.postComment}
+                  app={app} />
+                { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
+              </div>
+            )
+          }
+        })
         }
       </List>
     }
 
     return (
-        <div className={ classes.root }>
-          <Container maxWidth="xl">
+      <div className={classes.root}>
+        <Container maxWidth="xl">
 
-            {/* {top bar of forum list} */}
-            { sidebarToggle === "Recommendations Inbox" ?
-            <Card className={ classes.forumTopChunk }>
+          {/* {top bar of forum list} */}
+          <Card className={classes.forumTopChunk}>
 
-              <CardActions className={ classes.forumTopBar }>
+            <CardActions className={classes.forumTopBar}>
 
-                {/* {page title} */}
-                <CardContent>
-                  <span className={ classes.purpleText } > { sidebarToggle } </span>
-                </CardContent>
-                
-              </CardActions>
-              
-            </Card> 
-            :
-            <Card className={ classes.forumTopChunk }>
+              {/* {page title} */}
+              <CardContent>
+                <span className={classes.purpleText} > {sidebarToggle} </span>
+              </CardContent>
 
-              <CardActions className={ classes.forumTopBar }>
+              {/* {drop down to filter posts based on category} */}
+              <FormControl className={classes.filter}>
+                <InputLabel>Filter Posts</InputLabel>
+                <Select onChange={this.handleFilterInputChange}>
+                  <MenuItem value="">None</MenuItem>
+                  <MenuItem value="Announcement">Announcement</MenuItem>
+                  <MenuItem value="Question">Question</MenuItem>
+                  <MenuItem value="Opinion">Opinion</MenuItem>
+                </Select>
+              </FormControl>
 
-                {/* {page title} */}
-                <CardContent>
-                  <span className={ classes.purpleText } > { sidebarToggle } </span>
-                </CardContent>
+              {/* {drop down to reorder posts} */}
+              <FormControl className={classes.filter}>
+                <InputLabel>Sort By</InputLabel>
+                <Select onChange={this.handleSortInputChange}>
+                  <MenuItem value="Oldest">Oldest</MenuItem>
+                  <MenuItem value="Newest">Newest</MenuItem>
+                  <MenuItem value="MostUpvotes">Most Upvotes</MenuItem>
+                  <MenuItem value="BestRated">Best Rated</MenuItem>
+                </Select>
+              </FormControl>
 
-                {/* {drop down to filter posts based on category} */}
-                <FormControl className={ classes.filter }> 
-                  <InputLabel>Filter Posts</InputLabel>
-                  <Select onChange={ this.handleFilterInputChange }>
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="Announcement">Announcement</MenuItem>
-                    <MenuItem value="Question">Question</MenuItem>
-                    <MenuItem value="Opinion">Opinion</MenuItem>
-                  </Select>
-                </FormControl>
+              <Grid Container justify="flex-end">
 
-                {/* {drop down to reorder posts} */}
-                <FormControl className={ classes.filter }>
-                  <InputLabel>Sort By</InputLabel>
-                  <Select onChange={ this.handleSortInputChange }>
-                    <MenuItem value="Oldest">Oldest</MenuItem>
-                    <MenuItem value="Newest">Newest</MenuItem>
-                    <MenuItem value="MostUpvotes">Most Upvotes</MenuItem>
-                    <MenuItem value="BestRated">Best Rated</MenuItem>
-                  </Select>
-                </FormControl>
+                {/* {add post button} */}
+                {this.state.openManagePost === true || this.state.openNewPost === true || sidebarToggle !== "Home" ?
+                  <Tooltip title="Add Post">
+                    <Fab color="primary" size="small" onClick={this.handleClickOpen} disabled>
+                      <AddIcon fontSize="large" />
+                    </Fab>
+                  </Tooltip>
+                  :
+                  <Tooltip title="Add Post">
+                    <Fab color="primary" size="small" onClick={this.handleClickOpen}>
+                      <AddIcon fontSize="large" />
+                    </Fab>
+                  </Tooltip>
+                }
 
-                <Grid Container justify="flex-end">
-
-                  {/* {add post button} */}
-                  { this.state.openManagePost === true || this.state.openNewPost === true || sidebarToggle !== "Home" ? 
-                    <Tooltip title="Add Post">
-                      <Fab color="primary" size="small" onClick={ this.handleClickOpen } disabled>
-                        <AddIcon fontSize="large"/>
-                      </Fab>
-                    </Tooltip>
-                    :
-                    <Tooltip title="Add Post">
-                      <Fab color="primary" size="small" onClick={ this.handleClickOpen }>
-                        <AddIcon fontSize="large"/>
-                      </Fab>
-                    </Tooltip>
-                  }
-
-                  {/* {manage post button} */}
-                  { this.state.openManagePost ? 
-                    <Button className={ classes.forumBarButton } color="primary" variant="contained" onClick={ this.handleClickManageDone }>
-                      Done
-                    </Button> : (sidebarToggle === "Home" ? 
-                    <Button className={ classes.forumBarButton } color="primary" variant="contained" onClick={ this.handleClickManage }>
+                {/* {manage post button} */}
+                {this.state.openManagePost ?
+                  <Button className={classes.forumBarButton} color="primary" variant="contained" onClick={this.handleClickManageDone}>
+                    Done
+                    </Button> : (sidebarToggle === "Home" ?
+                    <Button className={classes.forumBarButton} color="primary" variant="contained" onClick={this.handleClickManage}>
                       Manage Posts
-                    </Button> : 
-                    <Button className={ classes.forumBarButton } color="primary" variant="contained" disabled>
+                    </Button> :
+                    <Button className={classes.forumBarButton} color="primary" variant="contained" disabled>
                       Manage Posts
-                    </Button> )
-                  }
+                    </Button>)
+                }
 
-                </Grid>
-                
-              </CardActions>
-              
-              {/* {new post drop down entries} */}
-              { this.state.openNewPost ? 
+              </Grid>
+
+            </CardActions>
+
+            {/* {new post drop down entries} */}
+            {this.state.openNewPost ?
               <React.Fragment>
 
                 <CardContent>
 
                   {/* {enter post title} */}
                   <TextField
-                    value={ this.state.title }
-                    onChange={ this.handleInputChange }
+                    value={this.state.title}
+                    onChange={this.handleInputChange}
                     size="small"
                     variant="outlined"
                     margin="dense"
@@ -878,12 +785,12 @@ class ForumList extends React.Component {
                   <br></br>
                   <Typography>Category:</Typography>
                   <br></br>
-                  
+
                   {/* {enter post category} */}
                   <ButtonGroup color="primary" aria-label="outlined primary button group" fullWidth>
-                    <Button variant={ this.state.category === "Announcement" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Announcement") }>Announcement</Button>
-                    <Button variant={ this.state.category === "Question" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Question") }>Question</Button>
-                    <Button variant={ this.state.category === "Opinion" ? "contained" : "outlined"} onClick={ () => this.changeCategory("Opinion") }>Opinion</Button>
+                    <Button variant={this.state.category === "Announcement" ? "contained" : "outlined"} onClick={() => this.changeCategory("Announcement")}>Announcement</Button>
+                    <Button variant={this.state.category === "Question" ? "contained" : "outlined"} onClick={() => this.changeCategory("Question")}>Question</Button>
+                    <Button variant={this.state.category === "Opinion" ? "contained" : "outlined"} onClick={() => this.changeCategory("Opinion")}>Opinion</Button>
                   </ButtonGroup>
 
                   <br></br>
@@ -891,8 +798,8 @@ class ForumList extends React.Component {
 
                   {/* {enter post contents} */}
                   <TextField
-                    value={ this.state.content }
-                    onChange={ this.handleInputChange }
+                    value={this.state.content}
+                    onChange={this.handleInputChange}
                     multiline
                     rows="5"
                     variant="outlined"
@@ -907,17 +814,18 @@ class ForumList extends React.Component {
                 {/* {cancel and post buttons} */}
                 <CardActions>
 
-                  <Button onClick={ this.handleClose } color="primary">
+                  <Button onClick={this.handleClose} color="primary">
                     Cancel
                   </Button>
 
-                  <Button onClick={ () => this.addPost(userInfo.username, addPostdb, addUserPostdb) } color="primary" disabled={ this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
+                  <Button onClick={() => this.addPost(userInfo.username, addPostdb, addUserPostdb)} color="primary" disabled={this.state.title !== "" && this.state.content !== "" && this.state.category !== "" ? false : true}>
                     Post
                   </Button>
 
                 </CardActions>
 
               </React.Fragment>
+
               : null }
               
             </Card> }

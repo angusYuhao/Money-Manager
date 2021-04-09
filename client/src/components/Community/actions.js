@@ -68,7 +68,7 @@ export const addPostdb = (forumListState) => {
 
     const newPost = {
         postID: forumListState.postID,
-        author: forumListState.author,
+        // author: forumListState.author,
         authorUsertype: forumListState.authorUsertype,
         title: forumListState.title,
         category: forumListState.category,

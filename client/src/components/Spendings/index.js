@@ -276,6 +276,8 @@ class Spendings extends React.Component {
 
       })
 
+      arrayForBarGraph.reverse() // used so the bar graphs will be in order from left to right
+
     }
 
     this.setState({ arrayForBarGraph: arrayForBarGraph })
