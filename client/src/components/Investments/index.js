@@ -361,7 +361,7 @@ class Investments extends React.Component {
                     labelIndex = "Name" 
                     barChartWidth = {this.state.barChartWidth} 
                     barChartHeight = {this.state.barChartHeight}/> */}
-          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 0, "earnings": 110}]} 
+          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 0, "earnings": 0}]} 
                     numDatasets = {2} indices = {["spendings", "earnings"]} 
                     labelIndex = "name" 
                     barChartWidth = {this.state.barChartWidth} 
