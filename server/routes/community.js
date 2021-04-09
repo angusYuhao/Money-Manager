@@ -4,6 +4,9 @@ const ENV = "development" // used for setting session info manually when testing
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
 
+const log = console.log
+
+const { Post } = require("../models/posts");
 
 // get all posts
 routes.get('/posts', async (req, res) => {
