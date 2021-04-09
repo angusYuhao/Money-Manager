@@ -17,7 +17,6 @@ import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import ForumListItem from "./forumListItem.js"
-import sidebar from './sidebar.js';
 import InboxListItem from './InboxListItem.js';
 import FAListItem from './FAListItem.js';
 
