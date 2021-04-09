@@ -61,7 +61,12 @@ export const login = (loginComp, app) => {
             if (json.currentUser !== undefined) {
                 app.setState({ currentUser: json.currentUser, signedUpUser: false });
                 console.log("inside json");
-                loginComp.props.history.push('/spendings')
+                
+                if(json.currentUser.userLevel == "Regular User") {
+                    loginComp.props.history.push('/spendings')
+                } else if(json.currentUser.userLevel == "Financial Advisor") {
+                    loginComp.props.history.push('/community')
+                }
             } 
         })
         .catch(error => {
