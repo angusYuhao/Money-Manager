@@ -106,7 +106,7 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
             
             <Route
-                exact path={["/login", "/spendings", "/community"]}
+                exact path={["/login", "/spendings"]}
                 render={ props => (
                     <div className="app">
                         { /* Different componenets rendered depending on if someone is logged in. */}
@@ -135,6 +135,26 @@ class App extends React.Component {
               render={props => (<SignUp {...props} app={this}/>)} />
 
             <Route exact path='/community'
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Community
+                            loggedIn={this.state.loggedIn}
+                            username={currentUser.username}
+                            usertype={currentUser.userLevel}
+                            FAName={currentUser.FAName}
+                            FAIntro={currentUser.FAIntro}
+                            FAFields={currentUser.FAFields}
+                            FAPoints={currentUser.FAPoints}
+                            userInfo={currentUser}
+                            app={this} />
+                  }
+                </div>
+              )}
+            />
+            {/* <Route exact path='/community'
               render={() => (<Community
                 loggedIn={this.state.loggedIn}
                 username={currentUser.username}
@@ -145,7 +165,7 @@ class App extends React.Component {
                 FAPoints={currentUser.FAPoints}
                 userInfo={currentUser}
                 app={this} />)}
-              />
+              /> */}
 
               <Route
                 exact path={["/investments", "/manage"]}
