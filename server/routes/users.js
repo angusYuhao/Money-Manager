@@ -3,6 +3,8 @@ const ENV = "development" // used for setting session info manually when testing
 
 const actions = require('./actions')
 const mongoChecker = actions.mongoChecker
+const authenticate = actions.authenticate
+const isMongoError = actions.isMongoError
 
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
@@ -11,9 +13,8 @@ const { User } = require("../models/user");
 const { FAInfo } = require("../models/FAInfo");
 
 // route to get all the users that currently follow the FA 
-routes.get("/manage", async (req, res) => {
+routes.get("/manage", mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
     const userID = req.session.user
 
     try {
@@ -56,9 +57,8 @@ routes.get("/manage", async (req, res) => {
 })
 
 // route for FA to make a recommendation to a regular user 
-routes.post("/manage/recommend/:targetUsername", async (req, res) => {
+routes.post("/manage/recommend/:targetUsername", mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
     const userID = req.session.user
 
     const targetUsername = req.params.targetUsername
@@ -159,17 +159,11 @@ routes.post("/signup", mongoChecker, async (req, res) => {
 
 /// a PATCH route for making *specific* changes to a resource.
 // modifies profile of user by username
-routes.patch('/profile/:username', async (req, res) => {
+routes.patch('/profile', mongoChecker, authenticate, async (req, res) => {
 
-    const username = req.params.username;
+    const username = req.session.username;
 
     console.log("in patch", username)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     // Find the fields to update and their values.
     const fieldsToUpdate = {}
@@ -208,15 +202,9 @@ routes.get("/check-session", (req, res) => {
 });
 
 // add a post to user's profile userPosts
-routes.post("/profile/userPosts/:username", async (req, res) => {
+routes.post("/profile/userPosts", mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
+    const targetUsername = req.session.username
 
     // const newPost = new Post({
     //     postID: req.body.postID,
@@ -257,19 +245,13 @@ routes.post("/profile/userPosts/:username", async (req, res) => {
 })
 
 // delete a post from user's profile userPosts
-routes.delete('/profile/userPosts/:username/:postID', async (req, res) => {
+routes.delete('/profile/userPosts/:postID', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
     console.log("target user:", targetUsername)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -298,15 +280,9 @@ routes.delete('/profile/userPosts/:username/:postID', async (req, res) => {
 })
 
 // add a post to user's profile userSavedPosts
-routes.post("/profile/userSavedPosts/:username", async (req, res) => {
+routes.post("/profile/userSavedPosts", mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
+    const targetUsername = req.session.username
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -333,19 +309,13 @@ routes.post("/profile/userSavedPosts/:username", async (req, res) => {
 })
 
 // delete a post from user's profile userSavedPosts
-routes.delete('/profile/userSavedPosts/:username/:postID', async (req, res) => {
+routes.delete('/profile/userSavedPosts/:postID', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
     console.log("target user:", targetUsername)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -368,15 +338,9 @@ routes.delete('/profile/userSavedPosts/:username/:postID', async (req, res) => {
 
 
 // add a post to user's profile userUpvotedPosts
-routes.post("/profile/userUpvotedPosts/:username", async (req, res) => {
+routes.post("/profile/userUpvotedPosts", mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
+    const targetUsername = req.session.username
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -403,19 +367,13 @@ routes.post("/profile/userUpvotedPosts/:username", async (req, res) => {
 })
 
 // delete a post from user's profile userUpvotedPosts
-routes.delete('/profile/userUpvotedPosts/:username/:postID', async (req, res) => {
+routes.delete('/profile/userUpvotedPosts/:postID', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
     console.log("target user:", targetUsername)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -438,15 +396,9 @@ routes.delete('/profile/userUpvotedPosts/:username/:postID', async (req, res) =>
 
 
 // add a post to user's profile userDownvotedPosts
-routes.post("/profile/userDownvotedPosts/:username", async (req, res) => {
+routes.post("/profile/userDownvotedPosts", mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
+    const targetUsername = req.session.username
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -473,19 +425,13 @@ routes.post("/profile/userDownvotedPosts/:username", async (req, res) => {
 })
 
 // delete a post from user's profile userDownvotedPosts
-routes.delete('/profile/userDownvotedPosts/:username/:postID', async (req, res) => {
+routes.delete('/profile/userDownvotedPosts/:postID', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const targetPostID = req.params.postID
 
     console.log("delete id:", targetPostID)
     console.log("target user:", targetUsername)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
         let targetUser = await User.find({ username: targetUsername })
@@ -507,16 +453,10 @@ routes.delete('/profile/userDownvotedPosts/:username/:postID', async (req, res) 
 })
 
 // add a FA to user's profile userFollows
-routes.post("/profile/userFollows/:username", async (req, res) => {
+routes.post("/profile/userFollows", mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const FAUsername = req.body.FAusername
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
 
@@ -549,19 +489,13 @@ routes.post("/profile/userFollows/:username", async (req, res) => {
 })
 
 // delete a FA from user's profile userFollows
-routes.delete('/profile/userFollows/:username/:FAusername', async (req, res) => {
+routes.delete('/profile/userFollows/:FAusername', mongoChecker, authenticate, async (req, res) => {
 
-    const targetUsername = req.params.username
+    const targetUsername = req.session.username
     const targetFAusername = req.params.FAusername
 
     console.log("delete FA:", targetFAusername)
     console.log("target user:", targetUsername)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     try {
 
@@ -591,13 +525,7 @@ routes.delete('/profile/userFollows/:username/:FAusername', async (req, res) => 
 
 
 // add FAInfo into FAInfo database
-routes.post('/FAInfo', async (req, res) => {
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
+routes.post('/FAInfo', mongoChecker, authenticate, async (req, res) => {
 
     const newFAInfo = new FAInfo({
         FAName: req.body.FAName,
@@ -626,14 +554,7 @@ routes.post('/FAInfo', async (req, res) => {
 })
 
 // get list of all FAInfo
-routes.get('/FAInfo', async (req, res) => {
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('Issue with mongoose connection')
-        res.status(500).send('internal server error')
-        return
-    }
+routes.get('/FAInfo', mongoChecker, authenticate, async (req, res) => {
 
     try {
         const allFAInfo = await FAInfo.find()
@@ -647,17 +568,11 @@ routes.get('/FAInfo', async (req, res) => {
 })
 
 // patch FAInfo
-routes.patch('/FAInfo/:username', async (req, res) => {
+routes.patch('/FAInfo/', mongoChecker, authenticate, async (req, res) => {
 
-    const username = req.params.username;
+    const username = req.session.username;
 
     console.log("in FAInfo patch", username)
-
-    // check mongoose connection
-    if (mongoose.connection.readyState != 1) {
-        log('mongoose connection issue!')
-        res.status(500).send('internal server error')
-    }
 
     // Find the fields to update and their values.
     const fieldsToUpdate = {}

@@ -213,7 +213,7 @@ export const addCommentdb = (comment) => {
 // add a post to a user's profile
 export const addUserPostdb = (forumListState) => {
 
-    const url = `${API_HOST}/users/profile/userPosts/${forumListState.author}`;
+    const url = `${API_HOST}/users/profile/userPosts`;
 
     const newPost = {
         postID: forumListState.postID,
@@ -255,7 +255,7 @@ export const addUserPostdb = (forumListState) => {
 // delete a post from user profile
 export const deleteUserPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userPosts/${postInfo.username}/${postInfo.postID}`;
+    const url = `${API_HOST}/users/profile/userPosts/${postInfo.postID}`;
 
     const request = new Request(url, {
         method: "delete"
@@ -286,7 +286,7 @@ export const deleteUserPostdb = (postInfo) => {
 // add a post to a user's profile userSavedPosts
 export const addUserSavedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userSavedPosts/${postInfo.username}`;
+    const url = `${API_HOST}/users/profile/userSavedPosts`;
 
     const newPost = {
         postID: postInfo.postID,
@@ -326,7 +326,7 @@ export const addUserSavedPostdb = (postInfo) => {
 // delete a post from user profile userSavedPosts
 export const deleteUserSavedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userSavedPosts/${postInfo.username}/${postInfo.postID}`;
+    const url = `${API_HOST}/users/profile/userSavedPosts/${postInfo.postID}`;
 
     const request = new Request(url, {
         method: "delete"
@@ -358,7 +358,7 @@ export const deleteUserSavedPostdb = (postInfo) => {
 // add a post to a user's profile userUpvotedPosts
 export const addUserUpvotedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userUpvotedPosts/${postInfo.username}`;
+    const url = `${API_HOST}/users/profile/userUpvotedPosts`;
 
     const newPost = {
         postID: postInfo.postID,
@@ -398,7 +398,7 @@ export const addUserUpvotedPostdb = (postInfo) => {
 // delete a post from user profile userUpvotedPosts
 export const deleteUserUpvotedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userUpvotedPosts/${postInfo.username}/${postInfo.postID}`;
+    const url = `${API_HOST}/users/profile/userUpvotedPosts/${postInfo.postID}`;
 
     const request = new Request(url, {
         method: "delete"
@@ -430,7 +430,7 @@ export const deleteUserUpvotedPostdb = (postInfo) => {
 // add a post to a user's profile userDownvotedPosts
 export const addUserDownvotedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userDownvotedPosts/${postInfo.username}`;
+    const url = `${API_HOST}/users/profile/userDownvotedPosts`;
 
     const newPost = {
         postID: postInfo.postID,
@@ -470,7 +470,7 @@ export const addUserDownvotedPostdb = (postInfo) => {
 // delete a post from user profile userDownvotedPosts
 export const deleteUserDownvotedPostdb = (postInfo) => {
 
-    const url = `${API_HOST}/users/profile/userDownvotedPosts/${postInfo.username}/${postInfo.postID}`;
+    const url = `${API_HOST}/users/profile/userDownvotedPosts/${postInfo.postID}`;
 
     const request = new Request(url, {
         method: "delete"
@@ -501,7 +501,7 @@ export const deleteUserDownvotedPostdb = (postInfo) => {
 // add a FA to user's profile userFollows
 export const addUserFollowdb = (followInfo) => {
 
-    const url = `${API_HOST}/users/profile/userFollows/${followInfo.username}`;
+    const url = `${API_HOST}/users/profile/userFollows`;
 
     const newFollow = {
         FAusername: followInfo.FAusername,
@@ -542,7 +542,7 @@ export const addUserFollowdb = (followInfo) => {
 // delete a FA from user's profile userFollows
 export const deleteUserFollowdb = (followInfo) => {
 
-    const url = `${API_HOST}/users/profile/userFollows/${followInfo.username}/${followInfo.FAusername}`;
+    const url = `${API_HOST}/users/profile/userFollows/${followInfo.FAusername}`;
 
     const request = new Request(url, {
         method: "delete"
