@@ -104,7 +104,7 @@ class App extends React.Component {
             <Route exact path='/'
               render={() => (<Home
                 loggedIn={this.state.loggedIn} />)} />
-
+            
             <Route
                 exact path={["/login", "/spendings"]}
                 render={ props => (
@@ -130,20 +130,42 @@ class App extends React.Component {
                     
                 )}
             />
-             {/* <Route exact path='/login'
-               render={() => (<Login
-                 loginHandler={this.loginHandler}
-               />)} /> */}
 
             <Route exact path='/signup'
               render={props => (<SignUp {...props} app={this}/>)} />
 
-            {/* <Route exact path='/spendings'
-              render={() => (<Spendings
+            <Route exact path='/community'
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Community
+                            loggedIn={this.state.loggedIn}
+                            username={currentUser.username}
+                            usertype={currentUser.userLevel}
+                            FAName={currentUser.FAName}
+                            FAIntro={currentUser.FAIntro}
+                            FAFields={currentUser.FAFields}
+                            FAPoints={currentUser.FAPoints}
+                            userInfo={currentUser}
+                            app={this} />
+                  }
+                </div>
+              )}
+            />
+            {/* <Route exact path='/community'
+              render={() => (<Community
                 loggedIn={this.state.loggedIn}
-                username={this.state.username}
-                password={this.state.password}
-              />)} /> */}
+                username={currentUser.username}
+                usertype={currentUser.userLevel}
+                FAName={currentUser.FAName}
+                FAIntro={currentUser.FAIntro}
+                FAFields={currentUser.FAFields}
+                FAPoints={currentUser.FAPoints}
+                userInfo={currentUser}
+                app={this} />)}
+              /> */}
 
               <Route
                 exact path={["/investments", "/manage"]}
@@ -165,46 +187,24 @@ class App extends React.Component {
                     
                 )}
             />
-            {/* <Route exact path='/investments'
-              render={() => (<Investments
-                loggedIn={this.state.loggedIn}
-            />)} />
-
-            { currentUser ?
-              null
-              :
-              !currentUser && currentUser.userLevel == "Financial Advisor" ?
-                <Route exact path='/recommendations'
-                render={props => (<Investments
-                  loggedIn={this.state.loggedIn}
-                  user={currentUser}
-                  {...props} 
-                  app={this}
-                />)} />
-                :
-                null
-            } */}
-
-            <Route exact path='/community'
-              render={() => (<Community
-                loggedIn={this.state.loggedIn}
-                username={currentUser.username}
-                usertype={currentUser.userLevel}
-                FAName={currentUser.FAName}
-                FAIntro={currentUser.FAIntro}
-                FAFields={currentUser.FAFields}
-                FAPoints={currentUser.FAPoints}
-                userInfo={currentUser}
-                app={this} />)}
-                 />
 
             <Route exact path='/contact'
               render={() => (<Contact
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/resources'
-              render={() => (<Resources
-                loggedIn={this.state.loggedIn} />)} />
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Resources
+                            loggedIn={this.state.loggedIn}
+                          />
+                  }
+                </div>
+              )}
+            />
 
             <Route exact path='/sent'
               render={() => (<Sent
@@ -215,13 +215,22 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/profile'
-              render={props => (<Profile
-                handleLogOut={this.handleLogOut}
-                loggedIn={this.state.loggedIn}
-                user={currentUser}
-                app={this}
-                {...props}
-              />)} />
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Profile
+                            handleLogOut={this.handleLogOut}
+                            loggedIn={this.state.loggedIn}
+                            user={currentUser}
+                            app={this}
+                            {...props}
+                          />
+                  }
+                </div>
+              )}
+            />
 
           </Switch>
         </BrowserRouter>
