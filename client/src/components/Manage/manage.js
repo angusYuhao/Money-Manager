@@ -109,6 +109,7 @@ class Manage extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
+        console.log("clients stuff:", data)
         this.setState({ clients: data })
       })
       .catch(error => {
