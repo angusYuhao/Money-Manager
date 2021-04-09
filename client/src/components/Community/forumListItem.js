@@ -119,15 +119,13 @@ class ForumListItem extends React.Component {
       FAFirstname: "",
       FALastname: "",
       FAIntro: "",
-      FAFields: [],
+      FAFields: null,
       FAPoints: 0,
     }
   }
 
   // update the state when the component is mounted
   componentDidMount() {
-
-    
 
     this.setState({ postID: this.props.postID }, () => this.prepareOpenPost(), () => this.forceUpdate())
   }
@@ -291,8 +289,8 @@ class ForumListItem extends React.Component {
     let openTime = d.getTime()
     let displayTime = ""
 
-    console.log("now  time:", openTime)
-    console.log("post time:", this.props.time)
+    // console.log("now  time:", openTime)
+    // console.log("post time:", this.props.time)
 
     if (openTime - this.props.time < 60000) {
       displayTime = "now"
