@@ -10,6 +10,7 @@ import {
   ThemeProvider
 } from '@material-ui/core';
 import { deepPurple } from '@material-ui/core/colors';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = theme => ({
   root: {
@@ -18,20 +19,15 @@ const useStyles = theme => ({
   title: {
     flexGrow: 1,
     cursor: 'pointer',
+    width: '180px',
   },
   tabs: {
     marginLeft: theme.spacing(3),
-  },
-  signInButton: {
-    float: 'right',
-    marginRight: 10,
-  },
-  logInButton: {
-    float: 'right',
-    margin: 10,
+    marginRight: theme.spacing(3),
+    width: '150px',
   },
   username: {
-    marginLeft: theme.spacing(85),
+    marginLeft: theme.spacing(60),
   },
   avatar: {
     marginLeft: theme.spacing(2),
@@ -41,9 +37,6 @@ const useStyles = theme => ({
     textDecoration: 'none',
     color: 'black'
   },
-  appbar: {
-    zIndex: theme.zIndex.drawer + 1,
-  }
 })
 
 const theme = createMuiTheme({
@@ -92,6 +85,10 @@ class NavBar extends React.Component {
 
                 <Link to={'/community'} className={classes.tabs, classes.removeLine}>
                   <Tab label="Community" />
+                </Link>
+
+                <Link to={'/resources'} className={classes.tabs, classes.removeLine}>
+                  <Tab label="Resources" />
                 </Link>
 
               </Tabs>

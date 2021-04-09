@@ -21,6 +21,7 @@ const useStyles = theme => ({
   },
   tabs: {
     marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
   },
   signInButton: {
     float: 'right',
@@ -31,7 +32,7 @@ const useStyles = theme => ({
     margin: 10,
   },
   username: {
-    marginLeft: theme.spacing(105),
+    marginLeft: theme.spacing(100),
   },
   avatar: {
     marginLeft: theme.spacing(2),
