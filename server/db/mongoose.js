@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const config = require('../config')
 const ENV = config.ENV
 
-const configDB = (ENV !== "production") ? require('./db/config.js') : null;
+const configDB = (ENV !== "production") ? require('./config.js') : null;
 
 // const { localMongoURI } = require('./config')
 
