@@ -145,14 +145,14 @@ class SignUp extends React.Component {
       [name]: value
     })
 
-    if(value.length >= 8) {
+    if(value.length >= 4) {
       this.state.passwordLengthError = false;
       this.state.firstTime = false;
       console.log("good password")
     } else {
       this.state.passwordLengthError = true;
       this.state.firstTime = false;
-      console.log("The minimum number of characters for password is 8!")
+      console.log("The minimum number of characters for password is 4!")
     }
   }
 

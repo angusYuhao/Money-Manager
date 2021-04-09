@@ -57,11 +57,6 @@ const theme = createMuiTheme({
 // class definition
 class Community extends React.Component {
   
-  // constructor
-  constructor(props) {
-    super(props);
-    this.userInfoUpdater = this.userInfoUpdater.bind(this)
-  }
   // ===state===
   // tempFAInfo: stores information about registered Financial Advisor, this will be fetched from a database
   // userInfo: stores information about the current user, this is constructed when the class is mounted
@@ -101,6 +96,11 @@ class Community extends React.Component {
     sidebarToggle: "Home",
   }
 
+  // constructor
+  constructor(props) {
+    super(props);
+    this.userInfoUpdater = this.userInfoUpdater.bind(this)
+  }
   // construct the userInfo state variable (info is passed as a prop)
   componentDidMount() {
 
