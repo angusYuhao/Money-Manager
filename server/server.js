@@ -4,7 +4,7 @@ const log = console.log
 
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
 
-const config = require('./config')
+const config = require('config')
 const ENV = config.ENV
 
 const configDB = (ENV !== "production") ? require('./db/config.js') : null;
