@@ -60,8 +60,6 @@ class Community extends React.Component {
   // constructor
   constructor(props) {
     super(props);
-    console.log("Did it come here????");
-    this.props.history.push("/community");
     this.userInfoUpdater = this.userInfoUpdater.bind(this)
   }
   // ===state===
