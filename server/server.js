@@ -914,11 +914,10 @@ app.post('/investments', async (req, res) => {
                     stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
 
                     console.log(stock_entry);
+                    
                     user.investments.unshift(stock_entry);
                 }
-
                 console.log(user.investments);
-
                 user.save().then((result) => {
                     console.log(user.investments);
                     res.send(user.investments);

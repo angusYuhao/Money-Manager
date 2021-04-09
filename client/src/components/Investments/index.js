@@ -399,9 +399,9 @@ class Investments extends React.Component {
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
         </div>
 
-        <div className = "Calculator">
+        {/* <div className = "Calculator">
         <Calculator/>
-        </div>
+        </div> */}
       </div>
 
      
