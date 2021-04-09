@@ -11,7 +11,6 @@ mongoose.set('useFindAndModify', false); // for some deprecation issues
 
 const { User } = require("../models/user");
 const { FAInfo } = require("../models/FAInfo");
-const { authenticate } = require('./actions');
 
 routes.get("/info", mongoChecker, authenticate, async (req, res) => {
     
