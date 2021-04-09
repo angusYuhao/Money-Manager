@@ -134,7 +134,7 @@ routes.get("/logout", (req, res) => {
     // Remove the session
     req.session.destroy(error => {
         if (error) {
-            res.status(500).send(error);
+            res.status(500).send("Internal server error");
         } else {
             res.send()
         }
@@ -285,7 +285,7 @@ routes.delete('/profile/userPosts/:postID', mongoChecker, authenticate, async (r
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -310,7 +310,7 @@ routes.post("/profile/userSavedPosts", mongoChecker, authenticate, async (req, r
     catch (error) {
         console.log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -342,7 +342,7 @@ routes.delete('/profile/userSavedPosts/:postID', mongoChecker, authenticate, asy
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -368,7 +368,7 @@ routes.post("/profile/userUpvotedPosts", mongoChecker, authenticate, async (req,
     catch (error) {
         console.log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -400,7 +400,7 @@ routes.delete('/profile/userUpvotedPosts/:postID', mongoChecker, authenticate, a
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -426,7 +426,7 @@ routes.post("/profile/userDownvotedPosts", mongoChecker, authenticate, async (re
     catch (error) {
         console.log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -458,7 +458,7 @@ routes.delete('/profile/userDownvotedPosts/:postID', mongoChecker, authenticate,
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -490,7 +490,7 @@ routes.post("/profile/userFollows", mongoChecker, authenticate, async (req, res)
     catch (error) {
         console.log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -529,7 +529,7 @@ routes.delete('/profile/userFollows/:FAusername', mongoChecker, authenticate, as
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -555,7 +555,7 @@ routes.post('/FAInfo', mongoChecker, authenticate, async (req, res) => {
     catch (error) {
         log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -573,7 +573,7 @@ routes.get('/FAInfo', mongoChecker, authenticate, async (req, res) => {
     }
     catch (error) {
         log(error)
-        res.status(500).send("internal server error")
+        res.status(500).send("Internal server error")
     }
 })
 

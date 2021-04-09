@@ -66,7 +66,7 @@ routes.get('/transactions', mongoChecker, authenticate, async (req, res) => {
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -87,12 +87,12 @@ routes.post('/categories', mongoChecker, authenticate, async (req, res) => {
             res.send(updatedCategories.spendings_categories)
         }
         else {
-            res.status(400).send()
+            res.status(500).send()
         }
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -112,7 +112,7 @@ routes.delete('/categories', mongoChecker, authenticate, async (req, res) => {
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -144,7 +144,7 @@ routes.post('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate, a
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -173,7 +173,7 @@ routes.patch('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate, 
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -206,7 +206,7 @@ routes.delete('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate,
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -240,7 +240,7 @@ routes.delete('/sheet/:yearIndex/:monthIndex', mongoChecker, authenticate, async
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
@@ -298,7 +298,7 @@ routes.post('/sheet', mongoChecker, authenticate, async (req, res) => {
     }
 
     catch (error) {
-        res.status(400).send()
+        res.status(500).send()
     }
 
 })
