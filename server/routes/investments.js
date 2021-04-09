@@ -106,6 +106,7 @@ routes.post('/', async (req, res) => {
         console.log('quotes')
         console.log(quotes)
         if (Object.keys(quotes).length === 0){
+            console.log(quotes);
             console.log("Incorrect buy entry!");
             return;
         }else closingPrice = quotes[0]['close'];
