@@ -29,6 +29,9 @@ export const getPostsdb = (forumList) => {
         })
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            forumList.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -100,6 +103,9 @@ export const addPostdb = (forumListState) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            forumListState.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -130,6 +136,9 @@ export const deletePostdb = (postID) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postID.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -169,6 +178,9 @@ export const UpdatePostVotesdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -206,6 +218,9 @@ export const addCommentdb = (comment) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            comment.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -248,6 +263,9 @@ export const addUserPostdb = (forumListState) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            forumListState.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -278,6 +296,9 @@ export const deleteUserPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -319,6 +340,9 @@ export const addUserSavedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -350,6 +374,9 @@ export const deleteUserSavedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -391,6 +418,9 @@ export const addUserUpvotedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -422,6 +452,9 @@ export const deleteUserUpvotedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -463,6 +496,9 @@ export const addUserDownvotedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -494,6 +530,9 @@ export const deleteUserDownvotedPostdb = (postInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            postInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -535,6 +574,9 @@ export const addUserFollowdb = (followInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            followInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -566,6 +608,9 @@ export const deleteUserFollowdb = (followInfo) => {
         }
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            followInfo.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -594,6 +639,9 @@ export const getFAInfodb = (index) => {
         })
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            index.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -622,6 +670,9 @@ export const getRecommendationsdb = (info) => {
         })
     })
     .catch((error) => {
+        if(error == "Internal server error") {
+            info.props.history.push('/error')
+        }
         console.log(error)
     });
 };

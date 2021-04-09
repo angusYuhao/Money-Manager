@@ -217,7 +217,6 @@ class Spendings extends React.Component {
 
       .then(res => res.json())
       .then(data => {
-
         this.setState({ entire_data: data.spendings, transactions_categories: data.categories })
 
         // initialize transactions_data
@@ -245,6 +244,7 @@ class Spendings extends React.Component {
 
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -263,8 +263,7 @@ class Spendings extends React.Component {
 
     const yearIndexSelected = this.state.currentlySelectedMonth.yearIndex
     let arrayForBarGraph = []
-
-    if (yearIndexSelected >= 0) {
+    if (yearIndexSelected >= 0 && this.state.entire_data.length != 0) {
 
       this.state.entire_data[yearIndexSelected]["Data"].map(obj => {
 
@@ -378,6 +377,7 @@ class Spendings extends React.Component {
         this.sumCategoriesAmount()
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -413,6 +413,7 @@ class Spendings extends React.Component {
         this.sumCategoriesAmount()
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
     /********************************************************************************
@@ -446,6 +447,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -477,6 +479,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_categories: data })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
     /********************************************************************************
@@ -509,6 +512,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_categories: data })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -566,6 +570,7 @@ class Spendings extends React.Component {
 
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
   }
@@ -679,6 +684,7 @@ class Spendings extends React.Component {
         this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
