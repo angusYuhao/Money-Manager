@@ -159,64 +159,93 @@ app.post('/investments', async (req, res) => {
         //check if it's valid
         console.log('quotes')
         console.log(quotes)
-        if (Object.keys(quotes).length === 0) closingPrice = -1.0;
-        else closingPrice = quotes[0]['close'];
+        if (Object.keys(quotes).length === 0){
+            console.log("Incorrect buy entry!");
+            return;
+        }else closingPrice = quotes[0]['close'];
         console.log("CLOSING PRICE")
         console.log(closingPrice);
-    });
-
-
-
-    User.findByUserNamePassword(username, pw).then((user) => {
-        if (!user) {
-            res.status(400).send('User not found')
-        } else if (closingPrice == -1.0) {
-            res.status(400).send('Invalid stock entry')
-        } else {
-
-
-
-            let obj = user.investments.filter(obj => {
-                return obj["Name"] === req.body["Name"];
-            })
-            if (typeof obj != "undefined") {
-                //The stock with the same ticker is already in the table!!! so update that row
-
-                let newStocksList = user.investments.filter(res => res["Name"] != req.body.Name);
-                let index = user.investments.findIndex(function (item, i) {
-                    return item["Name"] === req.body["Name"]
-                });
-
-
-                stock_entry["Price"] = closingPrice;
-                stock_entry["Average Cost"] = (parseFloat(req.body["Quantity"] * closingPrice) + parseFloat(obj["Book Cost"])) / (parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]));
-                stock_entry["Quantity"] = parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
-                stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
-                stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
-                stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
-                console.log(stock_entry);
-                newStocksList.splice(index, 0, stock_entry);
-                user.investments = newStocksList;
+        User.findByUserNamePassword(username, pw).then((user) => {
+            if (!user) {
+                res.status(400).send('User not found')
+            } else if (closingPrice == -1.0) {
+                res.status(400).send('Invalid stock entry')
             } else {
-                //Not in the table, so add it to the table
-                user.investments.unshift(stock_entry);
-            }
 
-            console.log(user.investments);
+                // let obj = user.investments.filter(obj => {
+                //     return obj["Name"] === req.body["Name"];
+                // })
 
-            user.save().then((result) => {
-                console.log(user.investments);
-                res.send(user.investments);
-            }).catch((error) => {
-                log(error) // log server error to the console, not to the client.
-                if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-                    res.status(500).send('Internal server error')
+                let obj = user.investments.find(x => x["Name"] === req.body["Name"]);
+                console.log(obj)
+
+                console.log(obj);
+                if (typeof obj != "undefined") {
+                    //The stock with the same ticker is already in the table!!! so update that row
+
+                    let newStocksList = user.investments.filter(res => res["Name"] != req.body["Name"]);
+                    let index = user.investments.findIndex(function (item, i) {
+                        return item["Name"] === req.body["Name"]
+                    });
+                    //assign the values, making sure to round to 2 decimal palces if necessary
+                    stock_entry["Quantity"] = parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
+                    stock_entry["Price"] = Math.round(closingPrice * 100) / 100;
+                    stock_entry["Price"] = Math.round(stock_entry["Price"] * 100)/100;
+
+                    stock_entry["Average Cost"] = (parseFloat(req.body["Quantity"] * closingPrice) + parseFloat(obj["Book Cost"])) / (parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]));
+                    stock_entry["Average Cost"] = Math.round(stock_entry["Average Cost"] * 100)/100;
+                    
+                    stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
+                    stock_entry["Market Value"] = Math.round(stock_entry["Market Value"] * 100)/100;
+                    
+                    stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
+                    stock_entry["Book Cost"] = Math.round(stock_entry["Book Cost"] * 100)/100;
+
+                    stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
+                    stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
+
+                    console.log(stock_entry);
+                    newStocksList.splice(index, 0, stock_entry);
+                    user.investments = newStocksList;
                 } else {
-                    res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                    //Not in the table, so add it to the table
+                    console.log(stock_entry);
+                    stock_entry["Quantity"] =  parseFloat(req.body["Quantity"]);
+                    stock_entry["Price"] = closingPrice;
+                    stock_entry["Price"] = Math.round(stock_entry["Price"] * 100)/100;
+
+
+                    stock_entry["Average Cost"] = closingPrice;
+                    stock_entry["Average Cost"] = Math.round(stock_entry["Average Cost"] * 100)/100;
+
+                    stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
+                    stock_entry["Market Value"] = Math.round(stock_entry["Market Value"] * 100)/100;
+
+                    stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
+                    stock_entry["Book Cost"] = Math.round(stock_entry["Book Cost"] * 100)/100;
+
+                    stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
+                    stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
+
+                    console.log(stock_entry);
+                    
+                    user.investments.unshift(stock_entry);
                 }
-            })
-        }
-    })
+                console.log(user.investments);
+                user.save().then((result) => {
+                    console.log(user.investments);
+                    res.send(user.investments);
+                }).catch((error) => {
+                    log(error) // log server error to the console, not to the client.
+                    if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+                        res.status(500).send('Internal server error')
+                    } else {
+                        res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                    }
+                })
+            }
+        })
+    });
 })
 
 // DELETE investments/<stock name>/

@@ -236,7 +236,7 @@ class Investments extends React.Component {
     // this.setState({ stocklist_data: this.state.stocklist_data })
     // this.totalMoneyInvested();
     newStock._id = oldStock._id
-    const stockname = oldStock.Name
+    const stockname = oldStock["Name"]
 
     const url = `${API_HOST}/investments/${stockname}/`
     const request = new Request(url, {
@@ -269,7 +269,7 @@ class Investments extends React.Component {
     // this.setState({ stocklist_data: keepTransactions })
     // this.totalMoneyInvested();
 
-    const stockname = stockToDelete.Name;
+    const stockname = stockToDelete["Name"];
 
     const url = `${API_HOST}/investments/${stockname}/`
     const request = new Request(url, {
@@ -361,7 +361,7 @@ class Investments extends React.Component {
                     labelIndex = "Name" 
                     barChartWidth = {this.state.barChartWidth} 
                     barChartHeight = {this.state.barChartHeight}/> */}
-          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 1023, "earnings": 2000}]} 
+          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 0, "earnings": 0}]} 
                     numDatasets = {2} indices = {["spendings", "earnings"]} 
                     labelIndex = "name" 
                     barChartWidth = {this.state.barChartWidth} 
@@ -381,6 +381,8 @@ class Investments extends React.Component {
             addRow={this.addStock}
             editRow={this.editStock}
             removeRow={this.deleteStock}
+            tableType='Investments'
+            // sellStock=
           />
         </div>
 
@@ -397,9 +399,9 @@ class Investments extends React.Component {
           sortDes = {this.state.sortDes} sortBy = {this.state.sortBy}/>
         </div>
 
-        <div className = "Calculator">
+        {/* <div className = "Calculator">
         <Calculator/>
-        </div>
+        </div> */}
       </div>
 
      
