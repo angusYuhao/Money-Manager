@@ -4,10 +4,10 @@ const log = console.log
 
 const env = process.env.NODE_ENV // read the environment variable (will be 'production' in production mode)
 
-const config = require('../config')
+const config = require('./config')
 const ENV = config.ENV
 
-const { localMongoURI } = (ENV !== "production") ? require('./db/config.js') : null;
+const configDB = (ENV !== "production") ? require('./db/config.js') : null;
 const express = require("express")
 const path = require('path')
 
@@ -49,8 +49,8 @@ app.use(
             httpOnly: true
         },
         // store the sessions on the database in production
-        store: ENV === 'production' ? MongoStore.create({
-            mongoUrl: process.env.MONGODB_URI || localMongoURI
+        store: ENV === "production" ? MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI || configDB.localMongoURI
         }) : null
     })
 );
