@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "npx nodemon server.js"
+    "server": "npx nodemon ./server/server.js",
+    "build-run": "cd client && npm run build && cd .. && node ./server/server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "start": "node ./server/server.js"
   },
   "keywords": [],
   "author": "",
