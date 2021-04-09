@@ -89,7 +89,9 @@ class BarChart extends React.Component {
 
         //For some of the properties needed for drawing the bars such as the bar widths and unit height per dollar amount...
         //Note: take out the rightmost 170 for the legend
-        let sectionWidth = (this.state.canvasWidth - 170)/ keyComponentsArray[0].length;
+        let left_border = 10; //leave a left border
+        let right_border = 170;
+        let sectionWidth = (this.state.canvasWidth - right_border)/ keyComponentsArray[0].length;
         let sectionBorder = 0.05*sectionWidth;
         let unitHeight = this.state.canvasHeight /proportionalHeight;
         let barWidth = (sectionWidth/numDatasets)- (2*sectionBorder);
@@ -99,7 +101,7 @@ class BarChart extends React.Component {
             let currentSection = 0;
             listToDisplay.forEach(element => {
                 //Draw the bar
-                let x = (currentSection*sectionWidth+(barWidth * i)) + sectionBorder;
+                let x = (currentSection*sectionWidth+(barWidth * i)) + sectionBorder + left_border;
                 let y;
                 let barHeight = unitHeight * Math.abs(element[indices[i]]);
                 if(element[indices[i]] > 0)y = centerHoritzonalAxis - barHeight;
@@ -115,7 +117,7 @@ class BarChart extends React.Component {
                 if(element[indices[i]] >= 0)amountString = '$' + amountString;
                 else amountString = '-$' + Math.abs(amountString);
                 
-                let amount_x=x+(barWidth/2.1); 
+                let amount_x=x+(barWidth/2.1) +(0.5*left_border); 
                 let amount_y=y*0.97;
                 labelsForAboveBars[i].push(amountString);
                 xPosForAboveBars[i].push(amount_x);
@@ -128,9 +130,9 @@ class BarChart extends React.Component {
                 if(i == numDatasets -1){
                     let labelString = element[labelIndex];
                     this.context.fillStyle = '#616A6A';
-                    this.context.font = '20px Poppins, sans-serif';
+                    this.context.font = '15px Poppins, sans-serif';
                     this.context.textAlign = 'center';
-                    let label_x = (currentSection*sectionWidth) + (sectionWidth / 2.5 );
+                    let label_x = (currentSection*sectionWidth) + (sectionWidth / 2.5 )+left_border;
                     let label_y=centerHoritzonalAxis *1.05;
                     this.context.fillText(labelString,label_x, label_y);                    
                 }
@@ -146,7 +148,7 @@ class BarChart extends React.Component {
             for(let j = 0; j < keyComponentsArray[0].length; j++){
                 this.context = this.barChartRef.current.getContext('2d');
                 this.context.fillStyle = '#616A6A';
-                this.context.font = '20px Poppins, sans-serif';
+                this.context.font = '15px Poppins, sans-serif';
                 this.context.textAlign = 'center';
                 this.context.fillText(labelsForAboveBars[i][j],xPosForAboveBars[i][j], yPosForABoveBars[i][j]);
             }
@@ -158,7 +160,7 @@ class BarChart extends React.Component {
         this.context = this.barChartRef.current.getContext('2d');
         this.context.beginPath();
         this.context.moveTo(0, centerHoritzonalAxis);
-        this.context.lineTo(this.state.canvasWidth-170, centerHoritzonalAxis);
+        this.context.lineTo(this.state.canvasWidth-right_border, centerHoritzonalAxis);
         this.context.stroke();
 
 
@@ -169,6 +171,7 @@ class BarChart extends React.Component {
             this.context.fillStyle = colourForThisList[i];
             this.context.fillRect(legend_x, legend_y, 10, 10);
             this.context.fillStyle = '#616A6A';
+            this.context.font = '15px Poppins, sans-serif';
             this.context.textAlign = 'left';
             this.context.fillText(indices[i],legend_x + 13, legend_y+10, 175);
         }
