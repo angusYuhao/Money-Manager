@@ -52,11 +52,6 @@ const theme = createMuiTheme({
 class Investments extends React.Component {
 
   state = {
-    //general account data: upon signup, pass in this info
-    accountName: "TFSA",
-    accountNumber: "ABCDEFG",
-    currency: "USD$",
-
     //general stock data
     stockList_headings: ["Last Traded Date", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Date", "Any", "Number", "Number", "Number", "Number", "Number", "Number"],
@@ -187,9 +182,9 @@ class Investments extends React.Component {
 
   totalMoneyInvested = () => {
     this.state.total = this.state.stocklist_data.reduce( (ttl, stock) => {
-      return ttl +  parseFloat(stock["Book Cost"]) 
+      return ttl +  stock["Book Cost"];  
     }, 0);
-    this.setState({total: this.state.total})
+    this.setState({total: Math.round(this.state.total*100)/100})
   }
 
 
@@ -318,7 +313,7 @@ class Investments extends React.Component {
         </div>
 
         <div className = "GeneralInfo">
-          <GeneralCard total = {this.state.total} accountName = {this.state.accountName} accountNumber = {this.state.accountNumber} currency = {this.state.currency}/>
+          <GeneralCard total = {this.state.total} accountName = {user.accountName} accountNumber = {user.accountNumber} currency = {user.investmentCurrency}/>
         </div>
       </div>
 
