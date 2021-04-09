@@ -183,7 +183,7 @@ app.post('/investments', async (req, res) => {
                 let obj = user.investments.find(x => x["Name"] === req.body["Name"]);
                 console.log(obj)
 
-                console.log(obj);
+               
                 if (typeof obj != "undefined") {
                     //The stock with the same ticker is already in the table!!! so update that row
 
@@ -208,12 +208,14 @@ app.post('/investments', async (req, res) => {
                     stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
                     stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
 
-                    console.log(stock_entry);
+                    
                     newStocksList.splice(index, 0, stock_entry);
                     user.investments = newStocksList;
+                    console.log("!")
+
+                    console.log(user.investments);
                 } else {
                     //Not in the table, so add it to the table
-                    console.log(stock_entry);
                     stock_entry["Quantity"] =  parseFloat(req.body["Quantity"]);
                     stock_entry["Price"] = closingPrice;
                     stock_entry["Price"] = Math.round(stock_entry["Price"] * 100)/100;
@@ -230,12 +232,12 @@ app.post('/investments', async (req, res) => {
 
                     stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
                     stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
-
-                    console.log(stock_entry);
                     
                     user.investments.unshift(stock_entry);
+                    console.log("!!")
+                    console.log(user.investments);
                 }
-                console.log(user.investments);
+                
                 user.save().then((result) => {
                     console.log(user.investments);
                     res.send(user.investments);
