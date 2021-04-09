@@ -13,6 +13,7 @@ import { Typography,
         Avatar,
         ThemeProvider, 
         List,
+        Container,
         Dialog,
         DialogTitle,
         Divider,
@@ -54,6 +55,13 @@ const useStyles = theme => ({
     },
     content: {
         marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: "75vw",
     },
     numberGroup: {
         paddingLeft: theme.spacing(10),
@@ -165,9 +173,6 @@ const useStyles = theme => ({
     dialogue_cursor: {
         cursor: 'move'
     },
-    postSection: {
-        paddingLeft: '10%'
-    }
 })
 
 const theme = createMuiTheme({
@@ -280,7 +285,6 @@ class Profile extends React.Component {
         }
 
         this.setState({
-            avatar: this.props.user.username[0],
             username: this.props.user.username,
             email: this.props.user.email,
             occupation: this.props.user.occupation,
@@ -673,8 +677,7 @@ class Profile extends React.Component {
                         <div className={classes.drawerContainer}>
                             <Avatar align="center"
                                     name="avatar"
-                                    value={this.state.avatar}
-                                    className={classes.avatar}>{ this.state.avatar }</Avatar>
+                                    className={classes.avatar}>{ user.username[0].toUpperCase() }</Avatar>
 
                             { this.state.edit ? 
                                 <Edit 
@@ -736,7 +739,7 @@ class Profile extends React.Component {
                     </Drawer>
                    
                     <main className={classes.content}>
-                        <Grid container direction="row" className={classes.numberGroup}>
+                        {/* <Grid container direction="row" className={classes.numberGroup}>
                             <div className={classes.group}>
                                 <Button variant="contained" color="primary" className={classes.followersButton} onClick={ this.handleFollowersOpen }>
                                     Followers
@@ -795,10 +798,9 @@ class Profile extends React.Component {
                                     { this.state.posts.length }
                                 </Button>
                             </div>    
-                        </Grid>
+                        </Grid> */}
 
-                        <div className={ classes.postSection }>
-                            <br></br>
+                        <Container maxWidth="xl" className={ classes.postSection }>
                             <br></br>
                             <Typography variant="h5" gutterBottom>
                                 Community Posts:
@@ -891,7 +893,7 @@ class Profile extends React.Component {
                             }
                             </List>
                             
-                        </div>
+                        </Container>
                     </main> 
                 </div>
             </ThemeProvider> : <Redirect to="/login" />

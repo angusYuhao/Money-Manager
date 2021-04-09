@@ -33,6 +33,9 @@ const useStyles = theme => ({
     text_points: {
         marginLeft: theme.spacing(9),
     },
+    text_fields: {
+        marginLeft: theme.spacing(9),
+    },
     bio: {
         align: "center",
         marginLeft: theme.spacing(3),
@@ -110,12 +113,12 @@ class Done extends React.Component {
                             </TableRow>
                             <TableRow>
                                 <TableCell className={classes.tableCell}>Points: 
-                                    <span className={classes.text_occupation}>{ FAPoints }</span>
+                                    <span className={classes.text_points}>{ FAPoints }</span>
                                 </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className={classes.tableCell}>Fields: 
-                                    <span className={classes.text_birthday}>{ FAFields }</span>
+                                    <span className={classes.text_fields}>{ FAFields }</span>
                                 </TableCell>
                             </TableRow>
                         </TableBody>

@@ -56,7 +56,14 @@ const theme = createMuiTheme({
 
 // class definition
 class Community extends React.Component {
-
+  
+  // constructor
+  constructor(props) {
+    super(props);
+    console.log("Did it come here????");
+    this.props.history.push("/community");
+    this.userInfoUpdater = this.userInfoUpdater.bind(this)
+  }
   // ===state===
   // tempFAInfo: stores information about registered Financial Advisor, this will be fetched from a database
   // userInfo: stores information about the current user, this is constructed when the class is mounted
@@ -94,13 +101,6 @@ class Community extends React.Component {
     },
     openSidebar: false,
     sidebarToggle: "Home",
-  }
-
-  // constructor
-  constructor(props) {
-    super(props)
-
-    this.userInfoUpdater = this.userInfoUpdater.bind(this)
   }
 
   // construct the userInfo state variable (info is passed as a prop)
@@ -170,7 +170,7 @@ class Community extends React.Component {
       <ThemeProvider theme={ theme } className={ classes.root }>
 
         {/* {side bar component} */}
-        <Sidebar classNmae={ classes.sidebar }
+        <Sidebar className={ classes.sidebar }
                   openSidebar={ this.openSidebar }
                   closeSidebar={ this.closeSidebar }
                   handleSidebarToggle={ this.handleSidebarToggle }
