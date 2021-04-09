@@ -1,4 +1,3 @@
-# team06
 # Money Manager
 
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
@@ -31,7 +30,7 @@ The Spendings page now has a toggle button for “Details” and “Overview” 
 > **Note:** Please see the "Pie Chart" section for a more general explanation. 
 
 ### Bar Chart (Phase 2 Functionality)
-The “Overview” mode will now provide a spendings overview of the regular user’s actual and projected spendings throughout the year. As the regular user adds new transactions or months, the bar chart will be automatically updated.
+The Spendings page now has a toggle button for “Details” and “Overview” mode. The “Details” mode will contain the regular information (table and pie chart) as before. The “Overview” mode will now provide a spendings overview of the regular user’s actual and projected spendings throughout the year. As the regular user adds new transactions or months, the bar chart will be automatically updated.
 
 ### Transaction History 
 The table provides an overview of each individual transaction for the user's spendings. Each entry will contain a "Date", "Amount", "Description" and "Category". 
@@ -47,11 +46,13 @@ The table provides an overview of each individual transaction for the user's spe
 
 > **Note 2:** Please see the "Table" section for a more general explanation. 
 
-### Spendings By Month
+### Spendings By Month (Deletion -> Phase 2 Functionality)
 Each month/year is a seperate spendings page. The user can use the sidebar on the left to navigate to their spending history in a specific month/year. To add a new spending page, click the add icon on the top of the side bar and enter all the following information:
 -- Month: the month that you want to enter your transactions for 
 -- Year: the year you want to enter your transactions for 
 -- Projected Spendings: the goal amount you want for your spendings that month
+
+To delete a sheet from the month, the user can simply right click on the month and click on the delete button. 
 
 # Investments 
 
@@ -130,13 +131,12 @@ To manage posts, go to forum's home page and click the "manage post" button in t
 > **Note:** While regular users can only manage their own posts, a financial advisors can manage/delete all posts. 
 
 ### Inbox: Recommendations From Financial Advisors (Phase 2 Functionality)
-Once a user follows a financial advisor, the financial advisor is able to send recommendations to the user directly, and this is where is user is able to view them. Click on a list item on the page to see the full content of the recommendation.
+Once a user follows a financial advisor, the financial advisor is able to send recommendations to the user directly, and this is where the user is able to view them. Click on a list item on the page to see the full content of the recommendation.
 
 ### Advisors List: Financial Advisor List (Phase 2 Functionality)
 This page is for the regular users to see a list of all available financial advisors and their profiles. The list will contain the name of the financial advisor as well as their number of followers right beside it. By clicking the “Eye” button, they will be able to see details about the specific financial advisor, such as their profile description and what their specialties are. The “Follow” button will allow the regular users to follow this particular financial advisor. The button will turn gray after, indicating the regular user has successfully followed the financial advisor. They can press the same button again to unfollow the financial advisor. 
 
 # Resources (Phase 2 Functionality)
-
 Click on the Resources tab at the top of the page. This page is used to provide regular users with some external resources help. You can get to this page by clicking the “Resources” tab on the top of the app bar. It has three buttons for different views of the external resources (“Finance”, “Investments”, “Calculator”). Each small tab displays three cards that can link to external resources. By clicking on the “learn more” button in each card, it will direct you to the link in a new tab. The “Calculator” tab displays the investment calculator that was originally in the investment page.
 
 ### Calculator
@@ -194,11 +194,8 @@ This page contains general information about the developers and the website.
  --If the angle is within the start and end angles of a wedge and the absolute distance between the mouse and the center of the pie is less than the radius, than it will detect this as a hover
 
  # Views
--- If regular users log in to the website, they will be able to see 3 tabs on the navigation bar: "Spendings", "Investments", and "Community". 
--- If financial advisors log in to the website, they will only be able to see the "Community" tab on the navigation bar, as that is the purpose for them (to provide advice to regular users and to manage posts on the forum) 
-
-
-
+-- If regular users log in to the website, they will be able to see 3 tabs on the navigation bar: "Spendings", "Investments", "Community", and "Resources". 
+-- If financial advisors log in to the website, they will only be able to see the "Community" and "Manage" tabs on the navigation bar, as that is the purpose for them (to provide advice to regular users and to manage posts on the forum) 
 
 # 2. Financial Advisor Functionalities (Admin)
 
@@ -225,7 +222,7 @@ The functionality community features largely stay unchanged for financial adviso
 Click the Manage tab on the top bar to view a list of users that are following you. From this page, you will be able to look at the profile information about the people that are following you and send them recommendations. By pressing the “Eye” button, you will be able to see more details about the regular user they have selected. To send a recommendation, the financial advisors can click the “Recommend” button. You can then choose what kind of “action” that they want to recommend (mutual funds, bonds, etf) and also include any additional message in the text section below. The user will then be able receive the message in their “community” page, inside the sidebar with the “Inbox” tab. By clicking on that tab, the user will then be able to see the message sent from the financial advisor.
 
 ### User Profile (Phase 2 Functionality)
-The right information bar is slightly different for a financial advisor. From here you will be able to edit information such as your Financial Advisor Intro and your fields of expertise. These information will be displayed to all others who view your info.
+The left information bar is slightly different for a financial advisor. From here you will be able to edit information such as your Financial Advisor Intro and your fields of expertise. These information will be displayed to all others who view your info.
 
 
 # ROUTES
