@@ -18,6 +18,13 @@ import { Redirect } from 'react-router';
 
 // getting the config settings variable 
 import CONFIG from '../../config'
+// const { User } = require("../models/user");
+// const username = "ianc999"
+// const pw = "11111111"
+
+//let user = User.findByUserNamePassword(username, pw);
+
+
 const API_HOST = CONFIG.api_host
 
 const useStyles = theme => ({
@@ -54,7 +61,7 @@ class Investments extends React.Component {
 
     //general stock data
     stockList_headings: ["Last Traded Date", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
-    stockList_options: ["Date", "Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
+    stockList_options: ["Date", "Any", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
     stocklist_data: [],
 
