@@ -1,5 +1,12 @@
 const routes = require('express').Router()
-const ENV = "development" // used for setting session info manually when testing
+
+const config = require('../config')
+const ENV = config.ENV
+const TEST_USER_ID = config.TEST_USER_ID
+
+const actions = require('./actions')
+const mongoChecker = actions.mongoChecker
+const authenticate = actions.authenticate
 
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
@@ -52,9 +59,9 @@ function getIndexFromMonth(month, arr) {
 }
 
 // gets the entire spendings data as well as user defined categories 
-routes.get('/transactions', async (req, res) => {
+routes.get('/transactions', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     try {
@@ -69,9 +76,9 @@ routes.get('/transactions', async (req, res) => {
 })
 
 // adds a new user defined category to the database 
-routes.post('/categories', async (req, res) => {
+routes.post('/categories', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
     const newCategory = req.body.newCategory
 
@@ -95,9 +102,9 @@ routes.post('/categories', async (req, res) => {
 })
 
 // deletes a new user defined category from the database 
-routes.delete('/categories', async (req, res) => {
+routes.delete('/categories', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
     const deleteCategory = req.body.deleteCategory
 
@@ -115,9 +122,9 @@ routes.delete('/categories', async (req, res) => {
 })
 
 // adds a new transaction to a specific year and month sheet 
-routes.post('/transaction/:yearIndex/:monthIndex', async (req, res) => {
+routes.post('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -147,9 +154,9 @@ routes.post('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 })
 
 // modifies a transaction from a specific year and month sheet 
-routes.patch('/transaction/:yearIndex/:monthIndex', async (req, res) => {
+routes.patch('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -176,9 +183,9 @@ routes.patch('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 })
 
 // deletes a transaction from a specific year and month sheet 
-routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
+routes.delete('/transaction/:yearIndex/:monthIndex', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -209,9 +216,9 @@ routes.delete('/transaction/:yearIndex/:monthIndex', async (req, res) => {
 })
 
 // deletes a sheet for the spendings
-routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
+routes.delete('/sheet/:yearIndex/:monthIndex', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     const yearIndex = req.params.yearIndex
@@ -243,9 +250,9 @@ routes.delete('/sheet/:yearIndex/:monthIndex', async (req, res) => {
 })
 
 // adds a new sheet for the spendings, year and month specified in body 
-routes.post('/sheet', async (req, res) => {
+routes.post('/sheet', mongoChecker, authenticate, async (req, res) => {
 
-    if (ENV == "development") req.session.user = '606e085d223ac21d0049cc16'
+    // if (ENV == "development") req.session.user = TEST_USER_ID
     const userID = req.session.user
 
     const month = req.body.month
