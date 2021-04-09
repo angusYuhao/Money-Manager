@@ -71,6 +71,9 @@ const styles =  theme => ({
     color: deepPurple[800],
     fontSize: 20,
   },
+  avatar: {
+    backgroundColor: deepPurple[800],
+  }
 });
 
 // define theme
@@ -327,7 +330,7 @@ class ForumListItem extends React.Component {
 
           {/* {the avatar of the post author (currently null)} */}
           <ListItemAvatar>
-            <Avatar></Avatar>
+            <Avatar className={ classes.avatar }>{ postAuthor[0].toUpperCase() }</Avatar>
           </ListItemAvatar>
 
           <ListItemText

@@ -105,7 +105,6 @@ class Community extends React.Component {
 
   // construct the userInfo state variable (info is passed as a prop)
   componentDidMount() {
-    console.log("whaidiosjfiajsjofijdsoiafjoiaji===================")
 
     let usertype = ""
     if (this.props.usertype === "Financial Advisor") usertype = "FA"

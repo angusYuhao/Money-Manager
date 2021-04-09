@@ -17,6 +17,9 @@ import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import ForumListItem from "./forumListItem.js"
+import sidebar from './sidebar.js';
+import InboxListItem from './InboxListItem.js';
+import FAListItem from './FAListItem.js';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { deepPurple } from '@material-ui/core/colors';
@@ -25,8 +28,6 @@ import { withStyles } from "@material-ui/core/styles";
 import AddIcon from '@material-ui/icons/Add';
 
 import { addPostdb, addUserPostdb, getPostsdb, getRecommendationsdb } from './actions.js';
-import sidebar from './sidebar.js';
-import InboxListItem from './InboxListItem.js';
 
 import ENV from '../../config.js'
 const API_HOST = ENV.api_host
@@ -155,9 +156,7 @@ class ForumList extends React.Component {
     .catch((error) => {
         console.log(error)
     });
-    // this.setState({ sortOrder: "Newest" }, () => this.sortPosts("Newest"))
-    // getRecommendationsdb({ forumList: this, username: this.props.app.state.currentUser.username })
-    // console.log("what is going on sir?", this.state.recommendations)
+
   }
 
   // called when opening write new post
@@ -244,7 +243,7 @@ class ForumList extends React.Component {
 
     let d = new Date()
     let postTime = d.getTime()
-    console.log("time====================================================:", postTime)
+    // console.log("time====================================================:", postTime)
 
     const newPost = {
       author: username,
@@ -693,12 +692,41 @@ class ForumList extends React.Component {
       </List>
     }
 
+    let sideList = <div></div>
+
+    if (sidebarToggle === "Recommendations Inbox") {
+      sideList = <List className={ classes.forumList }>
+      { app.state.currentUser.userRecommendations.map((rec) => {
+        return (
+          <div>
+            <InboxListItem recommendations={rec} />
+            <Divider component="li" />
+          </div>
+        )
+      }) }
+      </List>
+    }
+    else if (sidebarToggle === "Financial Advisors"){
+      sideList = <List className={ classes.forumList }>
+      { FAInfo.map((FA) => {
+        return (
+          <div>
+            <FAListItem FA={FA}
+                        app={app} />
+            <Divider component="li" />
+          </div>
+        )
+      }) }
+      </List>
+    }
+
+
     return (
         <div className={ classes.root }>
           <Container maxWidth="xl">
 
             {/* {top bar of forum list} */}
-            { sidebarToggle === "Recommendations Inbox" ?
+            { sidebarToggle === "Recommendations Inbox" || sidebarToggle === "Financial Advisors" ?
             <Card className={ classes.forumTopChunk }>
 
               <CardActions className={ classes.forumTopBar }>
@@ -843,17 +871,8 @@ class ForumList extends React.Component {
               
             </Card> }
             
-            { sidebarToggle === "Recommendations Inbox" ? 
-            <List className={ classes.forumList }>
-              { app.state.currentUser.userRecommendations.map((rec) => {
-                return (
-                  <div>
-                    <InboxListItem recommendations={rec} />
-                    <Divider component="li" />
-                  </div>
-                )
-              }) }
-            </List>
+            { sidebarToggle === "Recommendations Inbox" || sidebarToggle === "Financial Advisors" ? 
+            sideList
             :
             mainList }
               
