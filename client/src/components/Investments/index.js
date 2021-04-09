@@ -302,7 +302,6 @@ class Investments extends React.Component {
     loggedIn ? 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
-
       <div className = "PieChartGeneral">
         <div className = "TitleAndPieChart">
           <div className = "StockPieChartTitle">

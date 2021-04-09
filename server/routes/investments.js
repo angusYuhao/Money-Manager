@@ -52,10 +52,10 @@ routes.get('/', async (req, res) => {
             res.send(user.investments)
         }
     })
-        .catch((error) => {
-            log(error)
-            res.status(500).send("Internal Server Error")
-        })
+    .catch((error) => {
+        log(error)
+        res.status(500).send("Internal Server Error")
+    })
 })
 
 
@@ -245,10 +245,6 @@ routes.delete('/:name/:numToDelete', async (req, res) => {
                             return;
                         }
 
-                        //let dateObj = new Date();
-                        // const month = monthNames[dateObj.getMonth()];
-                        // const day = String(dateObj.getDate()).padStart(2, '0');
-                        // const year = dateObj.getFullYear();
                         let today = new Date(Date.now()).toLocaleString().split(',')[0];
                         today = today.split('/');
 
@@ -261,29 +257,33 @@ routes.delete('/:name/:numToDelete', async (req, res) => {
                         if(day.length == 1)day = '0' + day;
                         today = month + '/' + day + '/' + year
 
-                        //console.log(today);
-                        newStockEntry["Last Traded Date"] = today;
-                        newStockEntry["Quantity"] = newStockEntry["Quantity"] - numToDelete;
-
-                        newStockEntry["Price"] = closingPrice; 
-                        newStockEntry["Price"] = Math.round(newStockEntry["Price"] * 100)/100;
-
-                        newStockEntry["Average Cost"] = newStockEntry["Average Cost"];
-                        newStockEntry["Average Cost"] = Math.round(newStockEntry["Average Cost"] * 100)/100;
-
-                        newStockEntry["Market Value"] = newStockEntry["Quantity"] * closingPrice;
-                        newStockEntry["Market Value"] = Math.round(newStockEntry["Market Value"] * 100)/100;
-
-                        newStockEntry["Book Cost"] = newStockEntry["Quantity"] * newStockEntry["Average Cost"];
-                        newStockEntry["Book Cost"] = Math.round(newStockEntry["Book Cost"] * 100)/100;
-
-                        newStockEntry["Gain/Loss"] = newStockEntry["Market Value"] - newStockEntry["Book Cost"];
-                        newStockEntry["Gain/Loss"] = Math.round(newStockEntry["Gain/Loss"] * 100)/100;
-
-
                         let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
-                        newStocksList.splice(i, 0, newStockEntry);
+                        if(numToDelete < newStockEntry["Quantity"]){
+                            //console.log(today);
+                            newStockEntry["Last Traded Date"] = today;
+                            newStockEntry["Quantity"] = newStockEntry["Quantity"] - numToDelete;
+
+                            newStockEntry["Price"] = closingPrice; 
+                            newStockEntry["Price"] = Math.round(newStockEntry["Price"] * 100)/100;
+
+                            newStockEntry["Average Cost"] = newStockEntry["Average Cost"];
+                            newStockEntry["Average Cost"] = Math.round(newStockEntry["Average Cost"] * 100)/100;
+
+                            newStockEntry["Market Value"] = newStockEntry["Quantity"] * closingPrice;
+                            newStockEntry["Market Value"] = Math.round(newStockEntry["Market Value"] * 100)/100;
+
+                            newStockEntry["Book Cost"] = newStockEntry["Quantity"] * newStockEntry["Average Cost"];
+                            newStockEntry["Book Cost"] = Math.round(newStockEntry["Book Cost"] * 100)/100;
+
+                            newStockEntry["Gain/Loss"] = newStockEntry["Market Value"] - newStockEntry["Book Cost"];
+                            newStockEntry["Gain/Loss"] = Math.round(newStockEntry["Gain/Loss"] * 100)/100;
+
+                            newStocksList.splice(i, 0, newStockEntry);    
+                        }
+
                         user.investments = newStocksList;
+                       
+
                         user.save().then((result) => {
                             res.send(user.investments)
                         }).catch((error) => {
