@@ -12,7 +12,6 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
-import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
 
@@ -21,8 +20,7 @@ import CONFIG from '../../config'
 // const { User } = require("../models/user");
 // const username = "ianc999"
 // const pw = "11111111"
-
-//let user = User.findByUserNamePassword(username, pw);
+// let user = User.findByUserNamePassword(username, pw);
 
 
 const API_HOST = CONFIG.api_host
@@ -304,7 +302,7 @@ class Investments extends React.Component {
   }
 
   render() {
-    const { loggedIn } = this.props
+    const { loggedIn, user } = this.props
     return ( 
     loggedIn ? 
     <ThemeProvider theme={ theme }>
