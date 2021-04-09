@@ -127,12 +127,13 @@ class ForumList extends React.Component {
     commenter: "",
     commentContent: "",
     recommendations: [],
-    posts: []
+    posts: [],
+    allUsers: []
   }
 
   componentDidMount() {
 
-    const url = `${API_HOST}/community/posts`;
+    let url = `${API_HOST}/community/posts`;
 
     fetch(url)
     .then((res) => {
@@ -152,6 +153,30 @@ class ForumList extends React.Component {
             posts: json,
             sortOrder: "Newest"
         }, () => this.sortPosts("Newest"))
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+
+    url = `${API_HOST}/users/info`
+
+    fetch(url)
+    .then((res) => {
+      if (res.status === 200) {
+          // get user successful
+          console.log("got users")
+          return res.json()
+      }
+      else {
+          // get user failed
+          console.log("failed to get users")
+      }
+    })
+    .then((json) => {
+        console.log(json)
+        this.setState({
+            allUsers: json
+        })
     })
     .catch((error) => {
         console.log(error)
@@ -235,7 +260,7 @@ class ForumList extends React.Component {
   // called when a new post is created
   addPost = (username, callback1, callback2) => {
 
-    console.log("haiufiadcoaidsjfdoijaiojfdoisafjoiajojfdsoifjadiofjao")
+    // console.log("haiufiadcoaidsjfdoijaiojfdoisafjoiajojfdsoifjadiofjao")
 
     const postList = this.state.posts
     const maxValue = Math.max.apply(Math, postList.map(function(p) { return p.postID; }))
@@ -712,7 +737,8 @@ class ForumList extends React.Component {
         return (
           <div>
             <FAListItem FA={FA}
-                        app={app} />
+                        app={app}
+                        allUsers={this.state.allUsers} />
             <Divider component="li" />
           </div>
         )

@@ -560,7 +560,7 @@ class ForumListItem extends React.Component {
 
             {/* {display community points} */}
             <DialogContentText align="center">
-              <span className={ classes.blackText }>Community Points: </span>
+              <span className={ classes.blackText }>Number of Followers: </span>
               <span className={ classes.purpleText }>{ this.state.authorFAInfo.FAPoints }</span>
             </DialogContentText>
             

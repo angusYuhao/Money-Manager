@@ -30,6 +30,7 @@ import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import GradeIcon from '@material-ui/icons/Grade';
 
 import { deleteUserFollowdb, addUserFollowdb } from './actions.js'
 
@@ -141,7 +142,7 @@ class FAListItem extends React.Component {
 
   render() {
 
-    const { classes, FA, app } = this.props
+    const { classes, FA, app, allUsers } = this.props
 
     return(
 
@@ -165,6 +166,12 @@ class FAListItem extends React.Component {
               </React.Fragment>
             }
           />
+
+          <Tooltip title="Rate">
+            <IconButton color="primary" size="medium" onClick={ this.openPost }>
+              <GradeIcon fontSize="default" />
+            </IconButton>
+          </Tooltip> 
 
         </ListItem>
 
@@ -199,8 +206,16 @@ class FAListItem extends React.Component {
 
             {/* {display community points} */}
             <DialogContentText align="center">
-              <span className={ classes.blackText }>Community Points: </span>
-              <span className={ classes.purpleText }>{ FA.FAPoints }</span>
+              <span className={ classes.blackText }>Number of Followers: </span>
+              <span className={ classes.purpleText }>
+                { allUsers.map((user) => {
+                  if (user.username === FA.FAName) {
+                    return (
+                      user.userFollowers.length
+                    )
+                  }
+                }) }
+              </span>
             </DialogContentText>
             
           </DialogContent>
