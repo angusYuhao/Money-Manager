@@ -76,8 +76,8 @@ app.get('/investments', async (req, res) => {
         return;
     }
 
-    const username = "user"
-    const pw = "user"
+    const username = "ianc999"
+    const pw = "11111111"
 
     // normal promise version
     User.findByUserNamePassword(username, pw).then((user) => {
@@ -125,8 +125,8 @@ app.post('/investments', async (req, res) => {
         return;
     }
 
-    const username = "user";
-    const pw = "user";
+    const username = "ianc999";
+    const pw = "11111111";
 
     //create new stock entry
     //all of the below needs to be calculated again
@@ -254,104 +254,163 @@ app.post('/investments', async (req, res) => {
     });
 })
 
+// // DELETE investments/<stock name>/
+// app.delete('/investments/:name/:numToDelete', async (req, res) => {
+//     if (mongoose.connection.readyState != 1) {
+//         log('Issue with mongoose connection')
+//         res.status(500).send('Internal server error')
+//         return;
+//     }
+//     const stockNameToDelete = req.params.name;
+//     const numToDelete = req.params.numToDelete;
+
+
+//     const username = "ianc999";
+//     const pw = "11111111";
+//     User.findByUserNamePassword(username, pw).then((user) => {
+//         if (!user) {
+//             res.status(404).send('User not found')  // could not find this restaurant
+//         } else {
+//             //save the one to delete such that you can return it later...or else it'll be gone!
+
+//             for (let i = 0; i < user.investments.length; i++) {
+//                 if (user.investments[i]["Name"] == stockNameToDelete) {
+//                     let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
+//                     user.investments = newStocksList;
+//                     user.save().then((result) => {
+//                         res.send(user.investments)
+//                     }).catch((error) => {
+//                         log(error) // log server error to the console, not to the client.
+//                         if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+//                             res.status(500).send('Internal server error')
+//                         } else {
+//                             res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+//                         }
+//                     })
+
+//                 }
+//             }
+
+//         }
+//     })
+//         .catch((error) => {
+//             log(error)
+//             res.status(500).send('Internal Server Error')  // server error
+//         })
+// })
+
 // DELETE investments/<stock name>/
-app.delete('/investments/:name', async (req, res) => {
+app.delete('/investments/:name/:numToDelete', async (req, res) => {
     if (mongoose.connection.readyState != 1) {
         log('Issue with mongoose connection')
         res.status(500).send('Internal server error')
         return;
     }
-    const stockNameToDelete = req.params.name;
-
-    const username = "user";
-    const pw = "user";
-
-    User.findByUserNamePassword(username, pw).then((user) => {
-        if (!user) {
-            res.status(404).send('User not found')  // could not find this restaurant
-        } else {
-            //save the one to delete such that you can return it later...or else it'll be gone!
-
-            for (let i = 0; i < user.investments.length; i++) {
-                if (user.investments[i]["Name"] == stockNameToDelete) {
-                    let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
-                    user.investments = newStocksList;
-                    user.save().then((result) => {
-                        res.send(user.investments)
-                    }).catch((error) => {
-                        log(error) // log server error to the console, not to the client.
-                        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-                            res.status(500).send('Internal server error')
-                        } else {
-                            res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
-                        }
-                    })
-
-                }
-            }
-
-        }
-    })
-        .catch((error) => {
-            log(error)
-            res.status(500).send('Internal Server Error')  // server error
-        })
-})
-
-//PATCH investments/<old stock name>/
-app.patch('/investments/:name', async (req, res) => {
-    if (mongoose.connection.readyState != 1) {
-        log('Issue with mongoose connection')
-        res.status(500).send('Internal server error')
-        return;
-    }
+    const username = "ianc999";
+    const pw = "11111111";
     const stockNameToEdit = req.params.name;
-    const username = "user";
-    const pw = "user";
-    const oldStockEntry = req.body[0];
-    const newStockEntry = req.body[1];
-    console.log(newStockEntry);
-    newStockEntry._id = mongoose.Types.ObjectId(newStockEntry._id)
-    console.log(newStockEntry._id)
-    User.findByUserNamePassword(username, pw).then((user) => {
-        if (!user) {
-            res.status(404).send('User not found')  // could not find this restaurant
-        } else {
-            let listExclusingCurrent = user.investments.filter(res => res["Name"] != oldStockEntry["Name"]);
-            if (listExclusingCurrent.some(item => (item["Name"] === newStockEntry["Name"]))) {
+    const numToDelete = req.params.numToDelete;
+    let stock_entry = req.body;
+    let closingPrice;
+    
 
-                console.log("Duplicate")
-                res.send("duplicate");
-                return;
-            }
-            for (let i = 0; i < user.investments.length; i++) {
-                console.log(user.investments[i]._id)
-                if (user.investments[i]["Name"] == stockNameToEdit) {
-                    console.log(user.investments[i])
-                    let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
-                    newStocksList.splice(i, 0, newStockEntry);
-                    user.investments = newStocksList;
-                    user.save().then((result) => {
-                        res.send(user.investments)
-                    }).catch((error) => {
-                        log(error) // log server error to the console, not to the client.
-                        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-                            res.status(500).send('Internal server error')
-                        } else {
-                            res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+    let endDate = new Date().toISOString();
+    console.log(endDate);
+    let startDate = getLastWeek(endDate);
+    yhFinance.historical({
+        symbol: stock_entry["Name"],
+        from: startDate,
+        to: endDate,
+    }, function (err, quotes) {
+        //check if it's valid
+        console.log('quotes')
+        console.log(quotes)
+        if (Object.keys(quotes).length === 0){
+            console.log("Incorrect buy entry!");
+            return;
+        }else closingPrice = quotes[0]['close'];
+        console.log("CLOSING PRICE")
+        console.log(closingPrice);
+
+
+        User.findByUserNamePassword(username, pw).then((user) => {
+            if (!user) {
+                res.status(404).send('User not found')  // could not find this restaurant
+            } else {
+                for (let i = 0; i < user.investments.length; i++) {
+                    console.log(user.investments[i]._id)
+                    if (user.investments[i]["Name"] == stockNameToEdit) {
+                        console.log(user.investments[i])
+                        //newStockList excludes the one that is being sold
+                        let newStockEntry = req.body;//this is the stock to edit(delete)
+                        //remove the number of stocks needed
+                        if(numToDelete > newStockEntry["Quantity"] || numToDelete < 0){
+                            res.status(500).send("Invalid number of stocks to sell!");
+                            return;
                         }
-                    })
 
+                        //let dateObj = new Date();
+                        // const month = monthNames[dateObj.getMonth()];
+                        // const day = String(dateObj.getDate()).padStart(2, '0');
+                        // const year = dateObj.getFullYear();
+                        let today = new Date(Date.now()).toLocaleString().split(',')[0];
+                        today = today.split('/');
+
+                        let month = today[0];
+                        let day = today[1];
+                        let year = today[2];
+
+                        //fill in 0's at the front to keep consistent with the date format
+                        if(month.length == 1)month = '0' + month;
+                        if(day.length == 1)day = '0' + day;
+                        today = month + '/' + day + '/' + year
+
+                        //console.log(today);
+                        newStockEntry["Last Traded Date"] = today;
+                        newStockEntry["Quantity"] = newStockEntry["Quantity"] - numToDelete;
+
+                        newStockEntry["Price"] = closingPrice; 
+                        newStockEntry["Price"] = Math.round(newStockEntry["Price"] * 100)/100;
+
+                        newStockEntry["Average Cost"] = newStockEntry["Average Cost"];
+                        newStockEntry["Average Cost"] = Math.round(newStockEntry["Average Cost"] * 100)/100;
+
+                        newStockEntry["Market Value"] = newStockEntry["Quantity"] * closingPrice;
+                        newStockEntry["Market Value"] = Math.round(newStockEntry["Market Value"] * 100)/100;
+
+                        newStockEntry["Book Cost"] = newStockEntry["Quantity"] * newStockEntry["Average Cost"];
+                        newStockEntry["Book Cost"] = Math.round(newStockEntry["Book Cost"] * 100)/100;
+
+                        newStockEntry["Gain/Loss"] = newStockEntry["Market Value"] - newStockEntry["Book Cost"];
+                        newStockEntry["Gain/Loss"] = Math.round(newStockEntry["Gain/Loss"] * 100)/100;
+
+
+                        let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
+                        newStocksList.splice(i, 0, newStockEntry);
+                        user.investments = newStocksList;
+                        user.save().then((result) => {
+                            res.send(user.investments)
+                        }).catch((error) => {
+                            log(error) // log server error to the console, not to the client.
+                            if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+                                res.status(500).send('Internal server error')
+                            } else {
+                                res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+                            }
+                        })
+
+                    }
                 }
-            }
 
-        }
-    })
+            }
+        })
         .catch((error) => {
             log(error)
             res.status(500).send('Internal Server Error')  // server error
         })
+    });
 })
+
 
 /**************************
  ROUTES FOR SPENDINGS

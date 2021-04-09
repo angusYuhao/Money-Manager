@@ -229,49 +229,16 @@ class Investments extends React.Component {
     // this.totalMoneyInvested();
   }
 
-  // finds the index of the stock data and replace it with the new stock data
-  editStock = (oldStock, newStock) => {
-    // const index = this.state.stocklist_data.findIndex(t => t === oldStock)
-    // this.state.stocklist_data[index] = newStock
-    // this.setState({ stocklist_data: this.state.stocklist_data })
-    // this.totalMoneyInvested();
-    newStock._id = oldStock._id
-    const stockname = oldStock["Name"]
-
-    const url = `${API_HOST}/investments/${stockname}/`
-    const request = new Request(url, {
-      method: "PATCH",
-      body: JSON.stringify([oldStock,newStock]),
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json"
-      }
-    })
-
-    fetch(request)
-      .then(res => res.json())
-      .then(data => {
-        if(data == "duplicate"){
-          console.log("You already have a stock with the same name in your stock table!");
-          return;
-        }
-        this.setState({ stocklist_data: data })
-        this.totalMoneyInvested();
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-
   // deletes stocks from the stock list
-  deleteStock = (stockToDelete) => {
+  deleteStock = (stockToDelete,numToDelete) => {
+    console.log("Deleting stock");
+    console.log(stockToDelete)
     // const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
     // this.setState({ stocklist_data: keepTransactions })
     // this.totalMoneyInvested();
-
     const stockname = stockToDelete["Name"];
 
-    const url = `${API_HOST}/investments/${stockname}/`
+    const url = `${API_HOST}/investments/${stockname}/${numToDelete}`
     const request = new Request(url, {
       method: "DELETE",
       body: JSON.stringify(stockToDelete),
@@ -379,10 +346,9 @@ class Investments extends React.Component {
             options={this.state.stockList_options}
             categories={this.state.stockList_categories}
             addRow={this.addStock}
-            editRow={this.editStock}
-            removeRow={this.deleteStock}
+            // removeRow={this.deleteStock}
             tableType='Investments'
-            // sellStock=
+            sellStock={this.deleteStock}
           />
         </div>
 
