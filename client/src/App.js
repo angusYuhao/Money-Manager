@@ -170,7 +170,7 @@ class App extends React.Component {
                           <Login {...props} app={this} /> 
                           : 
                           currentUser.userLevel == "Regular User" ?
-                            <Investments loggedIn={this.state.loggedIn} {...props} app={this} />
+                            <Investments user={currentUser} loggedIn={this.state.loggedIn} {...props} app={this} />
                             :
                             <Manage loggedIn={this.state.loggedIn}
                                             user={currentUser}

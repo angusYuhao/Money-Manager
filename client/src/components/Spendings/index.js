@@ -568,6 +568,8 @@ class Spendings extends React.Component {
           this.setState({ currentlySelectedMonth: this.state.currentlySelectedMonth })
         }
 
+        this.updateArrayForBarGraph()
+
       })
       .catch(error => {
         this.props.history.push('/error');

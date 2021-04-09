@@ -12,12 +12,17 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, grey } from '@material-ui/core/colors';
 import { withStyles } from "@material-ui/core/styles";
-import Calculator from './Calculator'
 import GeneralCard from './GeneralCard';
 import { Redirect } from 'react-router';
 
 // getting the config settings variable 
 import CONFIG from '../../config'
+// const { User } = require("../models/user");
+// const username = "ianc999"
+// const pw = "11111111"
+// let user = User.findByUserNamePassword(username, pw);
+
+
 const API_HOST = CONFIG.api_host
 
 const useStyles = theme => ({
@@ -54,7 +59,7 @@ class Investments extends React.Component {
 
     //general stock data
     stockList_headings: ["Last Traded Date", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
-    stockList_options: ["Date", "Any", "Number", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar", "Dollar"],
+    stockList_options: ["Date", "Any", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
     stocklist_data: [],
 
@@ -229,49 +234,16 @@ class Investments extends React.Component {
     // this.totalMoneyInvested();
   }
 
-  // finds the index of the stock data and replace it with the new stock data
-  editStock = (oldStock, newStock) => {
-    // const index = this.state.stocklist_data.findIndex(t => t === oldStock)
-    // this.state.stocklist_data[index] = newStock
-    // this.setState({ stocklist_data: this.state.stocklist_data })
-    // this.totalMoneyInvested();
-    newStock._id = oldStock._id
-    const stockname = oldStock["Name"]
-
-    const url = `${API_HOST}/investments/${stockname}/`
-    const request = new Request(url, {
-      method: "PATCH",
-      body: JSON.stringify([oldStock,newStock]),
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json"
-      }
-    })
-
-    fetch(request)
-      .then(res => res.json())
-      .then(data => {
-        if(data == "duplicate"){
-          console.log("You already have a stock with the same name in your stock table!");
-          return;
-        }
-        this.setState({ stocklist_data: data })
-        this.totalMoneyInvested();
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-
   // deletes stocks from the stock list
-  deleteStock = (stockToDelete) => {
+  deleteStock = (stockToDelete,numToDelete) => {
+    console.log("Deleting stock");
+    console.log(stockToDelete)
     // const keepTransactions = this.state.stocklist_data.filter(t => t !== transaction)
     // this.setState({ stocklist_data: keepTransactions })
     // this.totalMoneyInvested();
-
     const stockname = stockToDelete["Name"];
 
-    const url = `${API_HOST}/investments/${stockname}/`
+    const url = `${API_HOST}/investments/${stockname}/${numToDelete}`
     const request = new Request(url, {
       method: "DELETE",
       body: JSON.stringify(stockToDelete),
@@ -330,12 +302,11 @@ class Investments extends React.Component {
   }
 
   render() {
-    const { loggedIn } = this.props
+    const { loggedIn, user } = this.props
     return ( 
     loggedIn ? 
     <ThemeProvider theme={ theme }>
     <div className = "InvestmentPage">
-
       <div className = "PieChartGeneral">
         <div className = "TitleAndPieChart">
           <div className = "StockPieChartTitle">
@@ -356,16 +327,12 @@ class Investments extends React.Component {
             Overall Portfolio Performance
         </div>
         <div className = "BarChart">
-          {/* <BarChart listToDisplay = {this.state.stocklist_data} 
+          <BarChart listToDisplay = {this.state.stocklist_data} 
                     numDatasets = {3} indices = {["Book Cost", "Market Value", "Gain/Loss"]} 
                     labelIndex = "Name" 
                     barChartWidth = {this.state.barChartWidth} 
-                    barChartHeight = {this.state.barChartHeight}/> */}
-          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 0, "earnings": 0}]} 
-                    numDatasets = {2} indices = {["spendings", "earnings"]} 
-                    labelIndex = "name" 
-                    barChartWidth = {this.state.barChartWidth} 
                     barChartHeight = {this.state.barChartHeight}/>
+       
         </div>
       </div>
 
@@ -379,10 +346,9 @@ class Investments extends React.Component {
             options={this.state.stockList_options}
             categories={this.state.stockList_categories}
             addRow={this.addStock}
-            editRow={this.editStock}
-            removeRow={this.deleteStock}
+            // removeRow={this.deleteStock}
             tableType='Investments'
-            // sellStock=
+            sellStock={this.deleteStock}
           />
         </div>
 

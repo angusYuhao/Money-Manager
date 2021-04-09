@@ -1,7 +1,7 @@
 const routes = require('express').Router()
 
 const config = require('../config')
-const ENV = config.ENV
+const ENV = process.env.NODE_ENV == 'production' ? 'production' : config.ENV
 const TEST_USER_ID = config.TEST_USER_ID
 const TEST_USER_NAME = config.TEST_USER_NAME
 
@@ -16,10 +16,9 @@ mongoose.set('useFindAndModify', false); // for some deprecation issues
 const { User } = require("../models/user");
 const { FAInfo } = require("../models/FAInfo");
 
+// route to get all the users in the database
 routes.get("/info", mongoChecker, authenticate, async (req, res) => {
-    
-    // if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
-    // const userID = req.session.user
+
     try {
         const userInfos = await User.find()
         if (!userInfos) {
@@ -107,6 +106,7 @@ routes.post("/manage/recommend/:targetUsername", mongoChecker, authenticate, asy
 
 })
 
+// route to login
 routes.post("/login", (req, res) => {
     const username = req.body.userName;
     const password = req.body.password;
@@ -238,20 +238,6 @@ routes.post("/profile/userPosts", mongoChecker, authenticate, async (req, res) =
 
     const targetUsername = req.session.username
 
-    // const newPost = new Post({
-    //     postID: req.body.postID,
-    //     author: req.body.author,
-    //     authorUsertype: req.body.authorUsertype,
-    //     title: req.body.title,
-    //     category: req.body.category,
-    //     content: req.body.content,
-    //     numUpvotes: req.body.numUpvotes,
-    //     numDownvotes: req.body.numDownvotes,
-    //     comments: []
-    // })
-    // console.log(req.body.postID)
-    // console.log("im here!!!", newPost)
-
     try {
         let targetUser = await User.find({ username: targetUsername })
         if (!targetUser) {
@@ -295,14 +281,6 @@ routes.delete('/profile/userPosts/:postID', mongoChecker, authenticate, async (r
             targetUser[0].userPosts = newPosts
             await targetUser[0].save()
             res.status(200).send(targetUser[0])
-            // // let targetPost = await targetUser[0].userPosts.findOneAndDelete({ postID: targetPostID })
-            // await targetUser[0]
-            // if (!targetPost) {
-            //     res.status(404).send("resource not found")
-            // }
-            // else {
-            //     res.status(200).send(targetPost)
-            // }
         }
     }
     catch (error) {
@@ -554,7 +532,6 @@ routes.delete('/profile/userFollows/:FAusername', mongoChecker, authenticate, as
         res.status(500).send('Internal server error')
     }
 })
-
 
 // add FAInfo into FAInfo database
 routes.post('/FAInfo', mongoChecker, authenticate, async (req, res) => {

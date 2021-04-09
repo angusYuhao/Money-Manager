@@ -26,26 +26,6 @@ routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
     }
 })
 
-// get posts by username
-routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
-
-    const targetUsername = req.session.username
-
-    try {
-        const postsByUsername = await Post.find({ username: targetUsername })
-        if (!postsByUsername) {
-            res.status(404), send("resouce not found")
-        }
-        else {
-            res.send(postsByUsername)
-        }
-    }
-    catch (error) {
-        log(error)
-        res.status(500).send("Internal server error")
-    }
-})
-
 // add new post
 routes.post('/posts', mongoChecker, authenticate, async (req, res) => {
 
