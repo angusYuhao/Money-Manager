@@ -245,6 +245,7 @@ class Spendings extends React.Component {
 
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -378,6 +379,7 @@ class Spendings extends React.Component {
         this.sumCategoriesAmount()
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -413,6 +415,7 @@ class Spendings extends React.Component {
         this.sumCategoriesAmount()
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
     /********************************************************************************
@@ -446,6 +449,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_data: data.transaction, entire_data: data.entire_data, accountBalance: data.accountBalance })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -477,6 +481,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_categories: data })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
     /********************************************************************************
@@ -509,6 +514,7 @@ class Spendings extends React.Component {
         this.setState({ transactions_categories: data })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 
@@ -564,6 +570,7 @@ class Spendings extends React.Component {
 
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
   }
@@ -677,6 +684,7 @@ class Spendings extends React.Component {
         this.setState({ newSpendings: this.state.newSpendings, menuPosition: this.state.menuPosition })
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
 

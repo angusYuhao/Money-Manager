@@ -17,6 +17,7 @@ import About from './components/AboutUs/about.js';
 import Profile from './components/Profile/profile.js';
 import Manage from './components/Manage/manage.js';
 import Resources from './components/Resources/resources.js';
+import Error from './components/Error/error.js';
 import { checkSession } from "./actions/user.js";
 
 class App extends React.Component {
@@ -104,6 +105,11 @@ class App extends React.Component {
             <Route exact path='/'
               render={() => (<Home
                 loggedIn={this.state.loggedIn} />)} />
+
+            <Route exact path='/error'
+              render={props => (<Error 
+                loggedIn={this.state.loggedIn}
+                {...props} app={this}/>)} />
             
             <Route
                 exact path={["/login", "/spendings"]}
@@ -154,18 +160,6 @@ class App extends React.Component {
                 </div>
               )}
             />
-            {/* <Route exact path='/community'
-              render={() => (<Community
-                loggedIn={this.state.loggedIn}
-                username={currentUser.username}
-                usertype={currentUser.userLevel}
-                FAName={currentUser.FAName}
-                FAIntro={currentUser.FAIntro}
-                FAFields={currentUser.FAFields}
-                FAPoints={currentUser.FAPoints}
-                userInfo={currentUser}
-                app={this} />)}
-              /> */}
 
               <Route
                 exact path={["/investments", "/manage"]}

@@ -22,7 +22,7 @@ routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
     }
     catch (error) {
         log(error)
-        res.status(500).send("internal server error")
+        res.status(500).send("Internal server error")
     }
 })
 
@@ -42,7 +42,7 @@ routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
     }
     catch (error) {
         log(error)
-        res.status(500).send("internal server error")
+        res.status(500).send("Internal server error")
     }
 })
 
@@ -72,7 +72,7 @@ routes.post('/posts', mongoChecker, authenticate, async (req, res) => {
     catch (error) {
         log(error)
         if (isMongoError(error)) {
-            res.status(500).send("internal server error")
+            res.status(500).send("Internal server error")
         }
         else {
             res.status(400).send("bad request")
@@ -99,7 +99,7 @@ routes.delete('/posts/:postID', mongoChecker, authenticate, async (req, res) => 
     }
     catch (error) {
         log(error)
-        res.status(500).send('internal server error')
+        res.status(500).send('Internal server error')
     }
 })
 
@@ -167,7 +167,7 @@ routes.post('/posts/:postID', mongoChecker, authenticate, async (req, res) => {
     catch (error) {
         log(error)
         if (isMongoError(error)) {
-            res.status(500).send('internal server error')
+            res.status(500).send('Internal server error')
         }
         else {
             res.status(400).send('bad request')
