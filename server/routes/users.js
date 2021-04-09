@@ -10,6 +10,8 @@ const mongoChecker = actions.mongoChecker
 const authenticate = actions.authenticate
 const isMongoError = actions.isMongoError
 
+const log = console.log
+
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
 

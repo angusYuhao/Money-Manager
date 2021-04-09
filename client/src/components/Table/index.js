@@ -293,20 +293,24 @@ class TableComp extends React.Component {
                   : null
                 }
 
-                <Snackbar
-                  open={this.state.displaySnack}
-                  autoHideDuration={2000}
-                  onClose={() => this.snackBarOnClose()}
-                  onExited={() => this.snackBarOnExited()}
-                >
+                {/* {tableType == "Investments" ? null : */}
 
-                  <Alert
-                    severity={this.state.currentSnackMsg ? (this.state.currentSnackMsg.includes("Success") ? "success" : "error") : undefined}
-                    variant="filled">
-                    {this.renderHelperMsg()}
-                  </Alert>
+                  <Snackbar
+                    open={this.state.displaySnack}
+                    autoHideDuration={2000}
+                    onClose={() => this.snackBarOnClose()}
+                    onExited={() => this.snackBarOnExited()}
+                  >
 
-                </Snackbar>
+                    <Alert
+                      severity={this.state.currentSnackMsg ? (this.state.currentSnackMsg.includes("Success") ? "success" : "error") : undefined}
+                      variant="filled">
+                      {this.renderHelperMsg()}
+                    </Alert>
+
+                  </Snackbar>
+
+                {/* } */}
 
               </TableBody>
 
