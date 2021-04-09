@@ -209,7 +209,7 @@ export const getFAInfo = (profile) => {
 
 // update the FAInfo when user changes it in profile page
 export const updateFAInfo = (pathObj) => {
-    const url = `${API_HOST}/users/FAInfo/${pathObj[0].username}`;
+    const url = `${API_HOST}/users/FAInfo`;
 
     const request = new Request(url, {
         method: "PATCH",
@@ -247,7 +247,7 @@ export const updateProfile = (profileComp, field) => {
 // edit the profile (name, birthday, email, bio...)
 export const updateProfileField = (pathObj, app) => {
 
-    const url = `${API_HOST}/users/profile/${pathObj[0].username}`;
+    const url = `${API_HOST}/users/profile`;
 
     const request = new Request(url, {
         method: "PATCH",

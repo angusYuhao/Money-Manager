@@ -264,7 +264,7 @@ class Spendings extends React.Component {
     const yearIndexSelected = this.state.currentlySelectedMonth.yearIndex
     let arrayForBarGraph = []
 
-    if (yearIndexSelected) {
+    if (yearIndexSelected >= 0) {
 
       this.state.entire_data[yearIndexSelected]["Data"].map(obj => {
 
