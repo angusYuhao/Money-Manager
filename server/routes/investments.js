@@ -61,7 +61,6 @@ routes.get('/', async (req, res) => {
 
 
 
-
 // adds a stock entry
 // POST /investments
 routes.post('/', async (req, res) => {
