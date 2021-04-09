@@ -1,7 +1,7 @@
 const log = console.log
 
 const config = require('../config')
-const ENV = config.ENV
+const ENV = process.env.NODE_ENV == 'production' ? 'production' : config.ENV
 const TEST_USER_ID = config.TEST_USER_ID
 const TEST_USER_NAME = config.TEST_USER_NAME
 
