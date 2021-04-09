@@ -71,6 +71,9 @@ const styles =  theme => ({
     color: deepPurple[800],
     fontSize: 20,
   },
+  avatar: {
+    backgroundColor: deepPurple[800],
+  }
 });
 
 // define theme
@@ -282,7 +285,7 @@ class ForumListItem extends React.Component {
   render() {
 
     // save props
-    const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, app,
+    const { classes, postTitle, postAuthor, postTextContent, category, comments, postComment, app, allUsers,
             deletePosts, openManagePost, numUpvotes, numDownvotes, time, postAuthorUsertype, userInfo, FAInfo, userInfoUpdater } = this.props
 
     let d = new Date()
@@ -327,7 +330,7 @@ class ForumListItem extends React.Component {
 
           {/* {the avatar of the post author (currently null)} */}
           <ListItemAvatar>
-            <Avatar></Avatar>
+            <Avatar className={ classes.avatar }>{ postAuthor[0].toUpperCase() }</Avatar>
           </ListItemAvatar>
 
           <ListItemText
@@ -557,8 +560,16 @@ class ForumListItem extends React.Component {
 
             {/* {display community points} */}
             <DialogContentText align="center">
-              <span className={ classes.blackText }>Community Points: </span>
-              <span className={ classes.purpleText }>{ this.state.authorFAInfo.FAPoints }</span>
+              <span className={ classes.blackText }>Number of Followers: </span>
+              <span className={ classes.purpleText }>
+                { allUsers.map((user) => {
+                  if (user.username === this.state.authorFAInfo.FAName) {
+                    return (
+                      user.userFollowers.length
+                    )
+                  }
+                }) }
+              </span>
             </DialogContentText>
             
           </DialogContent>

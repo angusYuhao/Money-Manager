@@ -12,6 +12,7 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import InboxIcon from '@material-ui/icons/Inbox';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { deepPurple } from '@material-ui/core/colors';
@@ -123,7 +124,7 @@ class Sidebar extends React.Component {
 
           <Divider />
 
-          {/* { recommendation inbox toggles } */}
+          {/* {recommendation inbox toggle} */}
           <List>
 
             <ListItem button onClick={ () => handleSidebarToggle("Recommendations Inbox") }>
@@ -131,6 +132,20 @@ class Sidebar extends React.Component {
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary="Inbox" />
+            </ListItem>
+
+          </List>
+
+          <Divider />
+
+          {/* {financial advisors toggle} */}
+          <List>
+
+            <ListItem button onClick={ () => handleSidebarToggle("Financial Advisors") }>
+              <ListItemIcon>
+                <AssignmentIndIcon />
+              </ListItemIcon>
+              <ListItemText primary="Advisors List" />
             </ListItem>
 
           </List>

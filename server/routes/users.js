@@ -9,6 +9,26 @@ mongoose.set('useFindAndModify', false); // for some deprecation issues
 
 const { User } = require("../models/user");
 const { FAInfo } = require("../models/FAInfo");
+const { authenticate } = require('./actions');
+
+routes.get("/info", mongoChecker, authenticate, async (req, res) => {
+    
+    // if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    // const userID = req.session.user
+    try {
+        const userInfos = await User.find()
+        if (!userInfos) {
+            res.status(400).send("resource not found")
+        }
+        else {
+            res.status(200).send(userInfos)
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(400).send("bad request")
+    }
+})
 
 // route to get all the users that currently follow the FA 
 routes.get("/manage", async (req, res) => {
