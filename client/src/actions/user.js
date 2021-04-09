@@ -8,23 +8,28 @@ export const checkSession = (app) => {
     console.log(url)
     if (ENV.env === 'production') {
         fetch(url)
-        .then(res => {
-            if (res.status === 200) {
-                return res.json();
-            }
-        })
-        .then(json => {
-            if (json && json.currentUser) {
-                app.setState({ currentUser: json.currentUser });
-            }
-        })
-        .catch(error => {
-            console.log("check session does not work");
-        });
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            })
+            .then(json => {
+                if (json && json.currentUser) {
+                    app.setState({ currentUser: json.currentUser });
+                    if (json.currentUser.userLevel == "Regular User") {
+                        app.props.history.push('/spendings')
+                    } else if (json.currentUser.userLevel == "Financial Advisor") {
+                        app.props.history.push('/community')
+                    }
+                }
+            })
+            .catch(error => {
+                console.log("check session does not work");
+            });
     } else {
         app.setState({ currentUser: app.state.currentUser });
     }
-    
+
 };
 
 // A functon to update the login form state
@@ -61,17 +66,17 @@ export const login = (loginComp, app) => {
             if (json.currentUser !== undefined) {
                 app.setState({ currentUser: json.currentUser, signedUpUser: false });
                 console.log("inside json");
-                
-                if(json.currentUser.userLevel == "Regular User") {
+
+                if (json.currentUser.userLevel == "Regular User") {
                     loginComp.props.history.push('/spendings')
-                } else if(json.currentUser.userLevel == "Financial Advisor") {
+                } else if (json.currentUser.userLevel == "Financial Advisor") {
                     loginComp.props.history.push('/community')
                 }
-            } 
+            }
         })
         .catch(error => {
             console.log("error");
-            loginComp.setState({ snackMessage: "Wrong credentials, please re-enter!", displaySnack: true});
+            loginComp.setState({ snackMessage: "Wrong credentials, please re-enter!", displaySnack: true });
         });
 };
 
@@ -88,12 +93,12 @@ export const updateSignupForm = (formComp, field) => {
 export const updateConfirmPassword = (formComp, field) => {
     const value = field.value;
     const name = field.name;
-    
+
     formComp.setState({
         [name]: value
     });
 
-    if(value !== formComp.state.createdPassword) {
+    if (value !== formComp.state.createdPassword) {
         formComp.state.passwordConfirmError = true;
         formComp.state.firstTimeConfirm = false;
         console.log("password did not match");
@@ -131,7 +136,7 @@ export const addUser = (formComp, app) => {
             if (res.status === 200) {
                 // If student was added successfully, tell the user.
                 console.log("Successfully signed up")
-                app.setState({signedUpUser: true})
+                app.setState({ signedUpUser: true })
                 formComp.props.history.push("/login");
             } else {
                 // If server couldn't add the student, tell the user.
@@ -140,7 +145,7 @@ export const addUser = (formComp, app) => {
             }
         })
         .catch(error => {
-            if(error === "Internal server error") {
+            if (error === "Internal server error") {
                 formComp.props.history.push('/error')
             }
             console.log(error);
@@ -175,19 +180,19 @@ export const addFAInfo = (formComp) => {
     })
 
     fetch(request)
-    .then(function (res) {
-        if (res.status === 200) {
-            console.log("Successfully added FAInfo")
-        } else {
-            console.log("Failed to add FAInfo");
-        }
-    })
-    .catch(error => {
-        if(error === "Internal server error") {
-            formComp.props.history.push('/error')
-        }
-        console.log(error);
-    });
+        .then(function (res) {
+            if (res.status === 200) {
+                console.log("Successfully added FAInfo")
+            } else {
+                console.log("Failed to add FAInfo");
+            }
+        })
+        .catch(error => {
+            if (error === "Internal server error") {
+                formComp.props.history.push('/error')
+            }
+            console.log(error);
+        });
 }
 
 // get all FAInfos
@@ -196,29 +201,29 @@ export const getFAInfo = (profile) => {
     const url = `${API_HOST}/users/FAInfo`;
 
     fetch(url)
-    .then((res) => {
-        if (res.status === 200) {
-            // get post successful
-            console.log("got FAInfo")
-            return res.json()
-        }
-        else {
-            // get post failed
-            console.log("failed to get FAInfo")
-        }
-    })
-    .then((json) => {
-        console.log(json)
-        profile.setState({
-            FAInfo: json
+        .then((res) => {
+            if (res.status === 200) {
+                // get post successful
+                console.log("got FAInfo")
+                return res.json()
+            }
+            else {
+                // get post failed
+                console.log("failed to get FAInfo")
+            }
         })
-    })
-    .catch((error) => {
-        if(error === "Internal server error") {
-            profile.props.history.push('/error')
-        }
-        console.log(error)
-    });
+        .then((json) => {
+            console.log(json)
+            profile.setState({
+                FAInfo: json
+            })
+        })
+        .catch((error) => {
+            if (error === "Internal server error") {
+                profile.props.history.push('/error')
+            }
+            console.log(error)
+        });
 };
 
 // update the FAInfo when user changes it in profile page
@@ -235,20 +240,20 @@ export const updateFAInfo = (pathObj) => {
     });
 
     fetch(request)
-    .then(res => {
-        if (res.status === 200) {
-            console.log("updated FAInfo")
-        } else {
-            console.log("failed to update FAInfo")
-        }
-    })
-    .catch(error => {
-        console.log("inside updateFAInfo function");
-        if(error === "Internal server error") {
-            pathObj.props.history.push('/error')
-        }
-        console.log(error)
-    });
+        .then(res => {
+            if (res.status === 200) {
+                console.log("updated FAInfo")
+            } else {
+                console.log("failed to update FAInfo")
+            }
+        })
+        .catch(error => {
+            console.log("inside updateFAInfo function");
+            if (error === "Internal server error") {
+                pathObj.props.history.push('/error')
+            }
+            console.log(error)
+        });
 }
 
 // A function to update the signup form state
@@ -291,7 +296,7 @@ export const updateProfileField = (pathObj, app) => {
             }
         })
         .catch(error => {
-            if(error === "Internal server error") {
+            if (error === "Internal server error") {
                 pathObj.props.history.push('/error')
             }
             console.log("inside login function");
@@ -310,7 +315,7 @@ export const logout = (app) => {
             });
         })
         .catch(error => {
-            if(error === "Internal server error") {
+            if (error === "Internal server error") {
                 app.props.history.push('/error')
             }
             console.log(error);
