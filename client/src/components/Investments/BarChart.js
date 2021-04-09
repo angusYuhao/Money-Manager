@@ -70,7 +70,8 @@ class BarChart extends React.Component {
             minAmount=keyComponentsArray[0];
         }
         
-
+        console.log(maxAmount)
+        console.log(minAmount)
         //get the max and mins interms of the amounts
         for(let j = 0; j < numDatasets; j++){
             for(let i = 0; i < keyComponentsArray[0].length; i++){
@@ -79,19 +80,28 @@ class BarChart extends React.Component {
             }
         }
 
+        let emptyBars = 0;
         //get proportionalHeight:
         //kinda like the number of pixels to be in that section vertically
+        console.log(minAmount);
+        console.log(maxAmount);
         let proportionalHeight = 0;
-        if(maxAmount > 0 && minAmount < 0){
+        if(maxAmount > 0 && minAmount <= 0){
             proportionalHeight = maxAmount - minAmount;
         }else if(maxAmount > 0 && minAmount > 0){
             proportionalHeight = maxAmount;
-        }else if(maxAmount < 0 && minAmount < 0){
+        }else if(maxAmount < 0 && minAmount <= 0){
             proportionalHeight = minAmount;
+        }else if(maxAmount == 0 && minAmount == 0){
+            //Special case: draw the axis in the middle along with the labels
+            emptyBars = 1;
         }else{
             //error cuz maxAmount < 0 && minAmount > 0 which is impossible unless I majorily messed up...
             console.log("ERROR in maxAmount and minAmount");
         }
+
+        console.log(maxAmount)
+        console.log(minAmount)
 
         //s.t. that the bar chart isn't growing all the way to the edge of the canvas
         proportionalHeight *= 1.1;
@@ -148,6 +158,7 @@ class BarChart extends React.Component {
                 currentSection+=1;
             });
         }
+
 
         //Add the bar labels
         labelsForAboveBars.reverse();
