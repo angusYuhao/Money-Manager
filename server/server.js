@@ -56,9 +56,7 @@ app.use(
 /**************************
  ROUTES FOR USERS
  *************************/
-
 app.use('/users', usersRoutes)
-
 
 /**************************
  ROUTES FOR INVESTMENTS

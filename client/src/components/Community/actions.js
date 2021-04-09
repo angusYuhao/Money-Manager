@@ -597,3 +597,31 @@ export const getFAInfodb = (index) => {
         console.log(error)
     });
 };
+
+// get the user's recommendations
+export const getRecommendationsdb = (info) => {
+
+    const url = `${API_HOST}/community/recommend/${info.username}`;
+
+    fetch(url)
+    .then((res) => {
+        if (res.status === 200) {
+            // get recommendations successful
+            console.log("got recommendations")
+            return res.json()
+        }
+        else {
+            // get recommendations failed
+            console.log("failed to get recommendation")
+        }
+    })
+    .then((json) => {
+        console.log(json)
+        info.forumList.setState({
+            recommendations: json
+        })
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+};
