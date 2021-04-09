@@ -16,6 +16,7 @@ import Sent from './components/ContactUs/sent.js';
 import About from './components/AboutUs/about.js';
 import Profile from './components/Profile/profile.js';
 import Manage from './components/Manage/manage.js';
+import Resources from './components/Resources/resources.js';
 import { checkSession } from "./actions/user.js";
 
 class App extends React.Component {
@@ -199,6 +200,10 @@ class App extends React.Component {
 
             <Route exact path='/contact'
               render={() => (<Contact
+                loggedIn={this.state.loggedIn} />)} />
+
+            <Route exact path='/resources'
+              render={() => (<Resources
                 loggedIn={this.state.loggedIn} />)} />
 
             <Route exact path='/sent'
