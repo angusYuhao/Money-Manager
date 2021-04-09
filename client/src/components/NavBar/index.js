@@ -37,6 +37,9 @@ const useStyles = theme => ({
     textDecoration: 'none',
     color: 'black'
   },
+  appbar: {
+    zIndex: theme.zIndex.drawer + 1,
+  }
 })
 
 const theme = createMuiTheme({
