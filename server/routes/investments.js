@@ -245,22 +245,17 @@ routes.delete('/:name/:numToDelete', async (req, res) => {
                             return;
                         }
 
-                        let today = new Date(Date.now()).toLocaleString().split(',')[0];
-                        today = today.split('/');
+                        let today = new Date();
+                        let dd = today.getDate();
 
-                        let month = today[0];
-                        let day = today[1];
-                        let year = today[2];
-
-                        //fill in 0's at the front to keep consistent with the date format
-                        if(month.length == 1)month = '0' + month;
-                        if(day.length == 1)day = '0' + day;
-                        today = month + '/' + day + '/' + year
+                        let mm = today.getMonth()+1; 
+                        let yyyy = today.getFullYear();
+                        let dateString = mm + '/' + dd + '/' + yyyy;
 
                         let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                         if(numToDelete < newStockEntry["Quantity"]){
                             //console.log(today);
-                            newStockEntry["Last Traded Date"] = today;
+                            newStockEntry["Last Traded Date"] = dateString;
                             newStockEntry["Quantity"] = newStockEntry["Quantity"] - numToDelete;
 
                             newStockEntry["Price"] = closingPrice; 
