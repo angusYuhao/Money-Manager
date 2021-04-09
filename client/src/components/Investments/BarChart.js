@@ -29,6 +29,15 @@ class BarChart extends React.Component {
         const {indices, labelIndex, listToDisplay, numDatasets} = this.props
         let colourForThisList = [];
         let keyComponentsArray = [];
+        let labelsForAboveBars = [];
+        let xPosForAboveBars = [];
+        let yPosForABoveBars = [];
+        // expand labelsForAboveBars, xPosForAboveBars, yPosForABoveBars to have the correct amount or rows
+        for(let i=0; i<numDatasets; i++ ) {
+            labelsForAboveBars[i] = new Array();
+            xPosForAboveBars[i] = new Array();
+            yPosForABoveBars[i] = new Array();
+        }
         if(numDatasets == 0) return;//error
         else if(numDatasets == 2){
             //for 2 categories: comparing spendings nad earnings so use green and red
@@ -75,7 +84,8 @@ class BarChart extends React.Component {
             console.log("ERROR in maxAmount and minAmount");
         }
 
-       
+        //s.t. that the bar chart isn't growing all the way to the edge of the canvas
+        proportionalHeight *= 1.1;
 
         //For some of the properties needed for drawing the bars such as the bar widths and unit height per dollar amount...
         //Note: take out the rightmost 170 for the legend
@@ -94,33 +104,53 @@ class BarChart extends React.Component {
                 let barHeight = unitHeight * Math.abs(element[indices[i]]);
                 if(element[indices[i]] > 0)y = centerHoritzonalAxis - barHeight;
                 else y = centerHoritzonalAxis;
+                this.context = this.barChartRef.current.getContext('2d');
                 this.context.fillStyle = colourForThisList[i];
                 this.context.fillRect(x, y, barWidth, barHeight);
     
                 //Add the amount text s.t. it's right above the bars
+                //Save this to the corresponding arrays and don't draw yet just in case if any of the adjacent
+                //bars are taller and covers it
                 let amountString = element[indices[i]];
                 if(element[indices[i]] >= 0)amountString = '$' + amountString;
                 else amountString = '-$' + Math.abs(amountString);
-                this.context.fillStyle = '#616A6A';
-                this.context.font = '20px Poppins, sans-serif';
-                this.context.textAlign = 'center';
+                
                 let amount_x=x+(barWidth/2.1); 
                 let amount_y=y*0.97;
-                this.context.fillText(amountString,amount_x, amount_y);
+                labelsForAboveBars[i].push(amountString);
+                xPosForAboveBars[i].push(amount_x);
+                yPosForABoveBars[i].push(amount_y);
+
     
                 //Add the labelString just below the horizontal axis
                 //ONLY add it for the time in this section
+                
                 if(i == numDatasets -1){
                     let labelString = element[labelIndex];
                     this.context.fillStyle = '#616A6A';
                     this.context.font = '20px Poppins, sans-serif';
                     this.context.textAlign = 'center';
-                    let label_x=(sectionWidth/2.5) + (currentSection*sectionWidth);
+                    let label_x = (currentSection*sectionWidth) + (sectionWidth / 2.5 );
                     let label_y=centerHoritzonalAxis *1.05;
-                    this.context.fillText(labelString,label_x, label_y);
+                    this.context.fillText(labelString,label_x, label_y);                    
                 }
                 currentSection+=1;
             });
+        }
+
+        //Add the bar labels
+        labelsForAboveBars.reverse();
+        xPosForAboveBars.reverse();
+        yPosForABoveBars.reverse();
+        for(let i = 0; i < numDatasets; i++){
+            for(let j = 0; j < keyComponentsArray[0].length; j++){
+                this.context = this.barChartRef.current.getContext('2d');
+                this.context.fillStyle = '#616A6A';
+                this.context.font = '20px Poppins, sans-serif';
+                this.context.textAlign = 'center';
+                this.context.fillText(labelsForAboveBars[i][j],xPosForAboveBars[i][j], yPosForABoveBars[i][j]);
+            }
+            
         }
         
 
