@@ -140,6 +140,9 @@ export const addUser = (formComp, app) => {
             }
         })
         .catch(error => {
+            if(error === "Internal server error") {
+                formComp.props.history.push('/error')
+            }
             console.log(error);
         });
 };
@@ -180,6 +183,9 @@ export const addFAInfo = (formComp) => {
         }
     })
     .catch(error => {
+        if(error === "Internal server error") {
+            formComp.props.history.push('/error')
+        }
         console.log(error);
     });
 }
@@ -208,6 +214,9 @@ export const getFAInfo = (profile) => {
         })
     })
     .catch((error) => {
+        if(error === "Internal server error") {
+            profile.props.history.push('/error')
+        }
         console.log(error)
     });
 };
@@ -235,6 +244,9 @@ export const updateFAInfo = (pathObj) => {
     })
     .catch(error => {
         console.log("inside updateFAInfo function");
+        if(error === "Internal server error") {
+            pathObj.props.history.push('/error')
+        }
         console.log(error)
     });
 }
@@ -279,6 +291,9 @@ export const updateProfileField = (pathObj, app) => {
             }
         })
         .catch(error => {
+            if(error === "Internal server error") {
+                pathObj.props.history.push('/error')
+            }
             console.log("inside login function");
             console.log(error)
         });
@@ -295,6 +310,9 @@ export const logout = (app) => {
             });
         })
         .catch(error => {
+            if(error === "Internal server error") {
+                app.props.history.push('/error')
+            }
             console.log(error);
         });
 };
