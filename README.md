@@ -441,3 +441,6 @@ Return: { allFAInfo }
 Route: PATCH /profile/FAInfo/
 Usage: change FAInfo 
 
+# Resources We Used
+
+We used Material-UI and yahoo finance live stock API
