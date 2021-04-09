@@ -477,6 +477,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -506,6 +507,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -544,6 +546,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -573,6 +576,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -611,6 +615,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -640,6 +645,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -678,6 +684,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -707,6 +714,7 @@ class ForumList extends React.Component {
                                 minusDownvote={ this.minusDownvote }
                                 deletePosts={ this.deletePosts }
                                 postComment={ this.postComment }
+                                allUsers={this.state.allUsers}
                                 app={app}/>
                   { this.state.posts[this.state.posts.length - 1] === thread ? null : <Divider variant="inset" component="li" />}
                 </div>
@@ -737,8 +745,8 @@ class ForumList extends React.Component {
         return (
           <div>
             <FAListItem FA={FA}
-                        app={app}
-                        allUsers={this.state.allUsers} />
+                        allUsers={this.state.allUsers}
+                        app={app} />
             <Divider component="li" />
           </div>
         )

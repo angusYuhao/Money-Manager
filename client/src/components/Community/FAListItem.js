@@ -31,6 +31,7 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import GradeIcon from '@material-ui/icons/Grade';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import { deleteUserFollowdb, addUserFollowdb } from './actions.js'
 
@@ -148,7 +149,7 @@ class FAListItem extends React.Component {
 
       <div>
         {/* {post list item (not opened)} */}
-        <ListItem alignItems="flex-start" button="true" onClick={ this.openFA }>
+        <ListItem alignItems="flex-start">
 
           <ListItemAvatar>
             <Avatar className={ classes.avatar }>{ FA.FAName[0].toUpperCase() }</Avatar>
@@ -161,17 +162,35 @@ class FAListItem extends React.Component {
                 {/* {post title and the author's username} */}
                 <span className={ classes.postTitle }>{ FA.FAFirstname } { FA.FALastname } </span>
                 <span className={ classes.timeText }> { FA.FAName } </span>
-                <Chip className={ classes.FAPoints } label={ FA.FAPoints } size="small"/>
+                <Chip className={ classes.FAPoints } label={ allUsers.map((user) => {
+                  if (user.username === FA.FAName) {
+                    return (
+                      user.userFollowers.length
+                    )
+                  }
+                }) } size="small"/>
 
               </React.Fragment>
             }
           />
-
-          <Tooltip title="Rate">
-            <IconButton color="primary" size="medium" onClick={ this.openPost }>
-              <GradeIcon fontSize="default" />
+          <Tooltip title="View Info">
+            <IconButton color="primary" size="medium" onClick={ this.openFA }>
+              <VisibilityIcon fontSize="default" />
             </IconButton>
           </Tooltip> 
+
+          { app.state.currentUser.userFollows.includes(FA.FAName) ? 
+            <Tooltip title="Unfollow">
+              <IconButton color="secondary" size="medium" onClick={ () => this.handleUserUnfollowFA(deleteUserFollowdb) }>
+                <PersonAddIcon fontSize="default" />
+              </IconButton>
+            </Tooltip> 
+            : 
+            <Tooltip title="Follow">
+              <IconButton color="primary" size="medium" onClick={ () => this.handleUserFollowFA(addUserFollowdb) }>
+                <PersonAddIcon fontSize="default" />
+              </IconButton>
+            </Tooltip> }
 
         </ListItem>
 
