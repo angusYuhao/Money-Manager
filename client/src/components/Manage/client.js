@@ -85,6 +85,7 @@ const useStyles = theme => ({
         marginTop: theme.spacing(2),
         marginLeft: theme.spacing(0),
         float: 'left',
+        maxWidth: "50%"
     },
     clientTop: {
         marginTop: theme.spacing(3),
@@ -133,6 +134,7 @@ const useStyles = theme => ({
     },
     barChart: {
         float: 'right',
+        marginRight: "5%"
     }
 
 })
@@ -385,7 +387,7 @@ class ClientItem extends React.Component {
                                 }
                             </Typography>
 
-                            <Container className={classes.container} maxWidth="md">
+                            <Container className={classes.container}>
                                 <Card className={classes.clientTop}>
                                     <CardActions className={classes.clientTopBar}>
                                         <CardContent>

@@ -217,7 +217,6 @@ class Spendings extends React.Component {
 
       .then(res => res.json())
       .then(data => {
-
         this.setState({ entire_data: data.spendings, transactions_categories: data.categories })
 
         // initialize transactions_data
@@ -264,8 +263,7 @@ class Spendings extends React.Component {
 
     const yearIndexSelected = this.state.currentlySelectedMonth.yearIndex
     let arrayForBarGraph = []
-
-    if (yearIndexSelected >= 0) {
+    if (yearIndexSelected >= 0 && this.state.entire_data.length != 0) {
 
       this.state.entire_data[yearIndexSelected]["Data"].map(obj => {
 
