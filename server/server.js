@@ -143,6 +143,34 @@ app.post("/users/manage/recommend/:targetUsername", async (req, res) => {
 
 })
 
+// route for user to get their recommendation
+app.get("/community/recommend/:targetUsername", async (req, res) => {
+
+    if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
+    const userID = req.session.user
+
+    const targetUsername = req.params.targetUsername
+
+    try {
+        const targetUser = await User.find({ username: req.params.targetUsername })
+        const recommendations = targetUser[0].userRecommendations
+        if (!recommendations) {
+            res.status(404).send("resource not found")
+        }
+        else {
+            res.status(200).send(recommendations)
+        }
+    }
+    catch (error) {
+        log(error)
+        if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
+            res.status(500).send('Internal server error')
+        } else {
+            res.status(400).send('Bad Request') // bad request for changing the student.
+        }
+    }
+})
+
 app.post("/users/login", (req, res) => {
     const username = req.body.userName;
     const password = req.body.password;

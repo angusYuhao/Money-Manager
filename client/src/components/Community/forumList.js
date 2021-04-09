@@ -24,7 +24,12 @@ import { withStyles } from "@material-ui/core/styles";
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { addPostdb, addUserPostdb, getPostsdb } from './actions.js';
+import { addPostdb, addUserPostdb, getPostsdb, getRecommendationsdb } from './actions.js';
+import sidebar from './sidebar.js';
+import InboxListItem from './InboxListItem.js';
+
+import ENV from '../../config.js'
+const API_HOST = ENV.api_host
 
 // define styles
 const styles =  theme => ({
@@ -120,6 +125,7 @@ class ForumList extends React.Component {
     sortOrder: "",
     commenter: "",
     commentContent: "",
+    recommendations: [],
     posts: [
       {author: 'Angus Wang', 
         authorUsertype: "FA",
@@ -203,7 +209,34 @@ class ForumList extends React.Component {
   }
 
   componentDidMount() {
-    getPostsdb(this)
+
+    const url = `${API_HOST}/community/posts`;
+
+    fetch(url)
+    .then((res) => {
+        if (res.status === 200) {
+            // get post successful
+            console.log("got posts")
+            return res.json()
+        }
+        else {
+            // get post failed
+            console.log("failed to get posts")
+        }
+    })
+    .then((json) => {
+        console.log(json)
+        this.setState({
+            posts: json,
+            sortOrder: "Newest"
+        }, () => this.sortPosts("Newest"))
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+    // this.setState({ sortOrder: "Newest" }, () => this.sortPosts("Newest"))
+    // getRecommendationsdb({ forumList: this, username: this.props.app.state.currentUser.username })
+    // console.log("what is going on sir?", this.state.recommendations)
   }
 
   // called when opening write new post
@@ -744,6 +777,20 @@ class ForumList extends React.Component {
           <Container maxWidth="xl">
 
             {/* {top bar of forum list} */}
+            { sidebarToggle === "Recommendations Inbox" ?
+            <Card className={ classes.forumTopChunk }>
+
+              <CardActions className={ classes.forumTopBar }>
+
+                {/* {page title} */}
+                <CardContent>
+                  <span className={ classes.purpleText } > { sidebarToggle } </span>
+                </CardContent>
+                
+              </CardActions>
+              
+            </Card> 
+            :
             <Card className={ classes.forumTopChunk }>
 
               <CardActions className={ classes.forumTopBar }>
@@ -873,10 +920,21 @@ class ForumList extends React.Component {
               </React.Fragment>
               : null }
               
-            </Card>
-
-            {/* {list of posts as defined above} */}
-            {mainList}
+            </Card> }
+            
+            { sidebarToggle === "Recommendations Inbox" ? 
+            <List className={ classes.forumList }>
+              { app.state.currentUser.userRecommendations.map((rec) => {
+                return (
+                  <div>
+                    <InboxListItem recommendations={rec} />
+                    <Divider component="li" />
+                  </div>
+                )
+              }) }
+            </List>
+            :
+            mainList }
               
           </Container>
         </div>

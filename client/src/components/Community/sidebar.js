@@ -11,6 +11,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import InboxIcon from '@material-ui/icons/Inbox';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { deepPurple } from '@material-ui/core/colors';
@@ -116,6 +117,20 @@ class Sidebar extends React.Component {
                 <SaveAltIcon />
               </ListItemIcon>
               <ListItemText primary="Saved Posts" />
+            </ListItem>
+
+          </List>
+
+          <Divider />
+
+          {/* { recommendation inbox toggles } */}
+          <List>
+
+            <ListItem button onClick={ () => handleSidebarToggle("Recommendations Inbox") }>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inbox" />
             </ListItem>
 
           </List>
