@@ -59,8 +59,16 @@ class BarChart extends React.Component {
         //Get the max and min values out of all of the key components arrays.
         //This is used for knowing the proportions of the canvas like the minimum pixel and maximum pixel and 
         //how it's supposed to fit inside
-        let maxAmount=keyComponentsArray[0][0];
-        let minAmount=keyComponentsArray[0][0];
+        let maxAmount;
+        let minAmount;
+        if(keyComponentsArray[0][0].constructor === Array){
+            maxAmount=keyComponentsArray[0][0];
+            minAmount=keyComponentsArray[0][0];
+        }else{
+            maxAmount=keyComponentsArray[0];
+            minAmount=keyComponentsArray[0];
+        }
+        
 
         //get the max and mins interms of the amounts
         for(let j = 0; j < numDatasets; j++){
