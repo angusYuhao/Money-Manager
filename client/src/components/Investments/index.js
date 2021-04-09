@@ -357,7 +357,7 @@ class Investments extends React.Component {
         </div>
         <div className = "BarChart">
           {/* <BarChart listToDisplay = {this.state.stocklist_data} 
-                    numDatasets = {3} indices = {["Book Cost", "Gain/Loss", "Average Cost"]} 
+                    numDatasets = {3} indices = {["Book Cost", "Market Value", "Gain/Loss"]} 
                     labelIndex = "Name" 
                     barChartWidth = {this.state.barChartWidth} 
                     barChartHeight = {this.state.barChartHeight}/> */}

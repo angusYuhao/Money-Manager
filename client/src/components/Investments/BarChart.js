@@ -61,7 +61,8 @@ class BarChart extends React.Component {
         //how it's supposed to fit inside
         let maxAmount;
         let minAmount;
-        if(keyComponentsArray[0][0].constructor === Array){
+        if(keyComponentsArray[0][0] != null){
+        //if(keyComponentsArray[0][0].constructor === Array){
             maxAmount=keyComponentsArray[0][0];
             minAmount=keyComponentsArray[0][0];
         }else{
