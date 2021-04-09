@@ -858,9 +858,14 @@ app.post('/investments', async (req, res) => {
                 res.status(400).send('Invalid stock entry')
             } else {
 
-                let obj = user.investments.filter(obj => {
-                    return obj["Name"] === req.body["Name"];
-                })
+                // let obj = user.investments.filter(obj => {
+                //     return obj["Name"] === req.body["Name"];
+                // })
+
+                let obj = user.investments.find(x => x["Name"] === req.body["Name"]);
+                console.log(obj)
+
+                console.log(obj);
                 if (typeof obj != "undefined") {
                     //The stock with the same ticker is already in the table!!! so update that row
 
@@ -868,37 +873,46 @@ app.post('/investments', async (req, res) => {
                     let index = user.investments.findIndex(function (item, i) {
                         return item["Name"] === req.body["Name"]
                     });
-
-
-                    stock_entry["Price"] = closingPrice;
-                    let quantity = parseFloat(req.body["Quantity"]);
-                    let bookCost = parseFloat(req.body["Book Cost"]);
-                    console.log(bookCost);
-                    let ogQuantity = parseFloat(obj["Quantity"]);
-                    let ogBookCost = parseFloat(obj["Book Cost"]);
-                    console.log(ogBookCost);
-
-                    let totalSpent = (bookCost * closingPrice) + ogBookCost;
-                    console.log(totalSpent);
-                    let totalNumStocks = ogQuantity + quantity;
-                    console.log(totalNumStocks);
-                    stock_entry["Average Cost"] = (parseFloat(req.body["Quantity"] * closingPrice) + parseFloat(obj["Book Cost"])) / (parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]));
+                    //assign the values, making sure to round to 2 decimal palces if necessary
                     stock_entry["Quantity"] = parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]);
+                    stock_entry["Price"] = Math.round(closingPrice * 100) / 100;
+                    stock_entry["Price"] = Math.round(stock_entry["Price"] * 100)/100;
+
+                    stock_entry["Average Cost"] = (parseFloat(req.body["Quantity"] * closingPrice) + parseFloat(obj["Book Cost"])) / (parseFloat(obj["Quantity"]) + parseFloat(req.body["Quantity"]));
+                    stock_entry["Average Cost"] = Math.round(stock_entry["Average Cost"] * 100)/100;
+                    
                     stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
+                    stock_entry["Market Value"] = Math.round(stock_entry["Market Value"] * 100)/100;
+                    
                     stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
+                    stock_entry["Book Cost"] = Math.round(stock_entry["Book Cost"] * 100)/100;
+
                     stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
+                    stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
+
                     console.log(stock_entry);
                     newStocksList.splice(index, 0, stock_entry);
                     user.investments = newStocksList;
                 } else {
                     //Not in the table, so add it to the table
                     console.log(stock_entry);
+                    stock_entry["Quantity"] =  parseFloat(req.body["Quantity"]);
                     stock_entry["Price"] = closingPrice;
+                    stock_entry["Price"] = Math.round(stock_entry["Price"] * 100)/100;
+
+
                     stock_entry["Average Cost"] = closingPrice;
-                    stock_entry["Quantity"] = parseFloat(req.body["Quantity"]);
+                    stock_entry["Average Cost"] = Math.round(stock_entry["Average Cost"] * 100)/100;
+
                     stock_entry["Market Value"] = stock_entry["Price"] * stock_entry["Quantity"];
+                    stock_entry["Market Value"] = Math.round(stock_entry["Market Value"] * 100)/100;
+
                     stock_entry["Book Cost"] = stock_entry["Average Cost"] * stock_entry["Quantity"];
+                    stock_entry["Book Cost"] = Math.round(stock_entry["Book Cost"] * 100)/100;
+
                     stock_entry["Gain/Loss"] = stock_entry["Market Value"] - stock_entry["Book Cost"];
+                    stock_entry["Gain/Loss"] = Math.round(stock_entry["Gain/Loss"] * 100)/100;
+
                     console.log(stock_entry);
                     user.investments.unshift(stock_entry);
                 }

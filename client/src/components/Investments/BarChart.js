@@ -70,8 +70,7 @@ class BarChart extends React.Component {
             minAmount=keyComponentsArray[0];
         }
         
-        console.log(maxAmount)
-        console.log(minAmount)
+    
         //get the max and mins interms of the amounts
         for(let j = 0; j < numDatasets; j++){
             for(let i = 0; i < keyComponentsArray[0].length; i++){
@@ -83,8 +82,7 @@ class BarChart extends React.Component {
         let emptyBars = 0;
         //get proportionalHeight:
         //kinda like the number of pixels to be in that section vertically
-        console.log(minAmount);
-        console.log(maxAmount);
+  
         let proportionalHeight = 0;
         if(maxAmount > 0 && minAmount <= 0){
             proportionalHeight = maxAmount - minAmount;
@@ -100,8 +98,6 @@ class BarChart extends React.Component {
             console.log("ERROR in maxAmount and minAmount");
         }
 
-        console.log(maxAmount)
-        console.log(minAmount)
 
         //s.t. that the bar chart isn't growing all the way to the edge of the canvas
         proportionalHeight *= 1.1;
@@ -139,11 +135,7 @@ class BarChart extends React.Component {
                 else amountString = '-$' + Math.abs(amountString);
                 
                 let amount_x=x+(barWidth/2.1) +(0.5*left_border); 
-                console.log(amount_x);
-
-                let amount_y;
-                amount_y=y*0.97;
-                console.log(amount_y);
+                let amount_y=y*0.97;
                 
                 labelsForAboveBars[i].push(amountString);
                 xPosForAboveBars[i].push(amount_x);
@@ -159,9 +151,7 @@ class BarChart extends React.Component {
                     this.context.font = '15px Poppins, sans-serif';
                     this.context.textAlign = 'center';
                     let label_x = (currentSection*sectionWidth) + (sectionWidth / 2.5 )+left_border;
-                    console.log(label_x);
                     let label_y=centerHorizontalAxis *1.05;
-                    console.log(label_y);
                     this.context.fillText(labelString,label_x, label_y);                    
                 }
                 currentSection+=1;
@@ -189,7 +179,6 @@ class BarChart extends React.Component {
         this.context = this.barChartRef.current.getContext('2d');
         this.context.beginPath();
         this.context.moveTo(0, centerHorizontalAxis);
-        console.log(centerHorizontalAxis);
         this.context.lineTo(this.state.canvasWidth-right_border, centerHorizontalAxis);
         this.context.stroke();
 
@@ -207,7 +196,6 @@ class BarChart extends React.Component {
         }
     }
 
-  
 
     componentDidMount() {
         this.drawBars();
