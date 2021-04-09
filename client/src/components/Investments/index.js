@@ -357,11 +357,11 @@ class Investments extends React.Component {
         </div>
         <div className = "BarChart">
           {/* <BarChart listToDisplay = {this.state.stocklist_data} 
-                    numDatasets = {3} indices = {["Book Cost", "Gain/Loss", "Average Cost"]} 
+                    numDatasets = {3} indices = {["Book Cost", "Market Value", "Gain/Loss"]} 
                     labelIndex = "Name" 
                     barChartWidth = {this.state.barChartWidth} 
                     barChartHeight = {this.state.barChartHeight}/> */}
-          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "Janurary", "spendings": 1023, "earnings": 2000},{"name": "February", "spendings": 2222, "earnings": 2000}]} 
+          <BarChart listToDisplay = {[{"name": "Janurary", "spendings": 1023, "earnings": 2000}]} 
                     numDatasets = {2} indices = {["spendings", "earnings"]} 
                     labelIndex = "name" 
                     barChartWidth = {this.state.barChartWidth} 
