@@ -120,7 +120,107 @@ class ForumList extends React.Component {
     sortOrder: "",
     commenter: "",
     commentContent: "",
-    posts: []
+    posts: [{
+      author: 'Angus Wang',
+      authorUsertype: "FA",
+      title: 'welcome to communtiy',
+      content: 'this is the first community thread',
+      // authorAvatar: null,
+      category: "Announcement",
+      postID: 1,
+      numUpvotes: 5,
+      numDownvotes: 1,
+      comments: [
+        {
+          commenter: "Angus Wang",
+          commentContent: "a great start to a great forum!"
+        },
+        {
+          commenter: "Ian Chen",
+          commentContent: "Is there a way to upvote this thread twice? This is honestly the best thing ever"
+        }
+      ]
+    },
+    {
+      author: 'Winston Churchil',
+      authorUsertype: "RU",
+      title: 'victory is at hand',
+      content: "We are weeks away from winning the war, thanks to my personal genius and our nation's strength. Brothers and sisters, we will soon be remembered as heros of our time, the greatest generation if I might add!",
+      // authorAvatar: null,
+      category: "Announcement",
+      postID: 2,
+      numUpvotes: 4,
+      numDownvotes: 2,
+      comments: [
+        {
+          commenter: "Joseph Stalin",
+          commentContent: "The Soviet Union is the reason this war is won! How dare you not include us is this post"
+        },
+        {
+          commenter: "Anne Xie",
+          commentContent: "How are you guys still alive? I thought you guys died decades ago"
+        }
+      ]
+    },
+    {
+      author: 'Angela Merkel',
+      authorUsertype: "FA",
+      title: 'Bitcoin is gonna fail',
+      content: "There's no way that bitcoin is going to grow much longer. I predict that bitcoin value will collapse by the end of this year!",
+      // authorAvatar: null,
+      category: "Opinion",
+      postID: 3,
+      numUpvotes: 30,
+      numDownvotes: 5,
+      comments: [
+        {
+          commenter: "Emily Huang",
+          commentContent: "Where did you get to this conclusion? In my opinion bitcoin is far from failing, in fact, I think it'll grow another 10 fold!"
+        },
+        {
+          commenter: "Carl Marx",
+          commentContent: "Stop talking about capitalism in the posts. We all know that all nations will eventually become communist as they develop to their final form. Communism is inevitable and most desirable!"
+        }
+      ]
+    },
+    {
+      author: 'Bill Gates',
+      authorUsertype: "FA",
+      title: 'What do you think about the future of Microsoft?',
+      content: "Microsoft has been a great company all these year, but we are running out of steam in the recent years. Does anyone have some suggestions for Windows 10 and Microsoft's other products?",
+      // authorAvatar: null,
+      category: "Question",
+      postID: 4,
+      numUpvotes: 40,
+      numDownvotes: 20,
+      comments: [
+        {
+          commenter: "Ian Chen",
+          commentContent: "Windows 10 really sucks. Anyone who values productivity should switch to macOS!"
+        },
+        {
+          commenter: "Claude Debussy",
+          commentContent: "I honestly think Microsoft should just focus on Minecraft. The game is awesome and honestly it seems to be the best Microsoft product now"
+        }
+      ]
+    },
+    {
+      author: 'The Queen',
+      authorUsertype: "RU",
+      title: 'How should I get into stocks?',
+      content: 'I know I am really old, but I am still interested in getting into stocks and other ways of investing? Any experts on this platform willing to help your queen? You rewards will be in the millions!',
+      // authorAvatar: null,
+      category: "Question",
+      postID: 5,
+      numUpvotes: 1,
+      numDownvotes: 50,
+      comments: [
+        {
+          commenter: "Prince Charles",
+          commentContent: "How are you still alive and kicking?"
+        }
+      ]
+    }]
   }
 
   componentDidMount() {
