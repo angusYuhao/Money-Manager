@@ -1,5 +1,9 @@
 const routes = require('express').Router()
-const ENV = "development" // used for setting session info manually when testing
+
+const config = require('../config')
+const ENV = config.ENV
+const TEST_USER_ID = config.TEST_USER_ID
+const TEST_USER_NAME = config.TEST_USER_NAME
 
 const actions = require('./actions')
 const mongoChecker = actions.mongoChecker
@@ -211,10 +215,18 @@ routes.patch('/profile', mongoChecker, authenticate, async (req, res) => {
 })
 
 // A route to check if a user is logged in on the session
-routes.get("/check-session", (req, res) => {
+routes.get("/check-session", async (req, res) => {
     console.log("session user: ", req.session)
+
+    if (ENV !== "production") {
+        req.session.user = TEST_USER_ID;
+    }
+
+    const userID = req.session.user
+
     if (req.session.user) {
-        res.send({ currentUser: req.session.username });
+        const user = await User.findById(userID)
+        res.send({ currentUser: user });
     } else {
         res.status(401).send("ERRORRRRR");
     }

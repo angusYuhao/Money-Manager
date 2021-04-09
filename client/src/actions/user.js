@@ -6,7 +6,7 @@ const API_HOST = ENV.api_host
 export const checkSession = (app) => {
     const url = `${API_HOST}/users/check-session`;
     console.log(url)
-    if (!ENV.use_frontend_test_user) {
+    if (ENV.env === 'production') {
         fetch(url)
         .then(res => {
             if (res.status === 200) {
@@ -22,7 +22,7 @@ export const checkSession = (app) => {
             console.log("check session does not work");
         });
     } else {
-        app.setState({ currentUser: ENV.user });
+        app.setState({ currentUser: app.state.currentUser });
     }
     
 };
