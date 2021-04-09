@@ -634,6 +634,10 @@ class Profile extends React.Component {
                                         <Tab label="Community"/>
                                     </Link>
 
+                                    <Link to={'/resources'} className={classes.tabs, classes.removeLine}>
+                                        <Tab label="Resources"/>
+                                    </Link>
+
                                 </Tabs>
                             </Toolbar>
                         </AppBar>

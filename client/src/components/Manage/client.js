@@ -73,6 +73,7 @@ const useStyles = theme => ({
         marginTop: theme.spacing(10),
     },
     dialogusername: {
+        marginTop: theme.spacing(3),
         marginLeft: theme.spacing(3),
         fontWeight: 'bold',
         fontSize: '1.5em',
@@ -81,7 +82,9 @@ const useStyles = theme => ({
         fontSize: '0.7em'
     },
     container: {
+        marginTop: theme.spacing(2),
         marginLeft: theme.spacing(0),
+        float: 'left',
     },
     clientTop: {
         marginTop: theme.spacing(3),
@@ -127,6 +130,9 @@ const useStyles = theme => ({
     textAdvice: {
         margin: theme.spacing(1),
         minWidth: 500,
+    },
+    barChart: {
+        float: 'right',
     }
 
 })
@@ -150,29 +156,27 @@ const theme = createMuiTheme({
 
 class ClientItem extends React.Component {
 
-    state = {
-        openClientDetail: false,
-        closeDetail: true,
-        recommend: false,
-        recommendationText: "",
-        actions: "",
-        arrayForBarGraph: [],
-        textAdvice: "",
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            openClientDetail: false,
+            closeDetail: true,
+            recommend: false,
+            recommendationText: "",
+            actions: "",
+            arrayForBarGraph: [],
+            textAdvice: "",
+        }
     }
 
     componentDidMount() {
         this.setState({
             arrayForBarGraph: [{
                 "Duration": 2021,
-                "Total Spendings": 1000,
-                "Total Gain": 100,
-                "Total Loss": 200
-            },
-            {
-                "Duration": 2021,
-                "Total Spendings": 20000,
-                "Total Gain": 3000,
-                "Total Loss": 5000
+                "Total Spendings": 5000,
+                "Total Gain": 2000,
+                "Total Loss": 1000
             }]
         })
     }
@@ -255,6 +259,15 @@ class ClientItem extends React.Component {
         const { classes, username, firstName, lastName, email, birthday,
             occupation, salary, gender, totalSpendings, totalGain, totalLoss } = this.props;
         const name = firstName + " " + lastName;
+        console.log(totalSpendings)
+
+        const arrayForBarGraph = [{
+            "Duration": 2021,
+            "Total Spendings": 5000,
+            "Total Gain": 2000,
+            "Total Loss": 1000
+        }]
+
         return (
             <ThemeProvider theme={theme}>
                 <div>
@@ -401,14 +414,14 @@ class ClientItem extends React.Component {
                                     </CardActions>
                                 </Card>
                             </Container>
-                            {/* <div className = "BarChart">
-                                <BarChart listToDisplay = {this.state.arrayForBarGraph} 
+                            <div className={classes.barChart}>
+                                <BarChart listToDisplay = {arrayForBarGraph} 
                                         numDatasets = {3} 
                                         indices = {["Total Spendings", "Total Gain", "Total Loss"]} 
                                         labelIndex = "Duration" 
                                         barChartWidth = {500} 
                                         barChartHeight = {500}/>
-                            </div> */}
+                            </div>
 
                         </DialogContent>
                     </Dialog>
