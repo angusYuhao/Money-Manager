@@ -79,7 +79,8 @@ const styles =  theme => ({
     backgroundColor: green[500],
   },
   FAPoints: {
-    backgroundColor: '#ddd600',
+    color: '#ffffff',
+    backgroundColor: deepPurple[800],
   }
 });
 

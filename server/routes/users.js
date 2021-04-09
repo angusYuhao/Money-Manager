@@ -9,8 +9,9 @@ mongoose.set('useFindAndModify', false); // for some deprecation issues
 
 const { User } = require("../models/user");
 const { FAInfo } = require("../models/FAInfo");
+const { authenticate } = require('./actions');
 
-routes.get("/info", async (req, res) => {
+routes.get("/info", mongoChecker, authenticate, async (req, res) => {
     
     // if (ENV == "development") req.session.user = '606eae1f6bca5706c81f462a'
     // const userID = req.session.user
