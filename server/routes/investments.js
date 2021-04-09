@@ -1,5 +1,7 @@
 const routes = require('express').Router()
 
+const log = console.log
+
 const actions = require('./actions')
 const mongoChecker = actions.mongoChecker
 const authenticate = actions.authenticate
