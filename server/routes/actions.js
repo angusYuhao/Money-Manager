@@ -23,24 +23,26 @@ const mongoChecker = (req, res, next) => {
 }
 
 const authenticate = (req, res, next) => {
-    if (ENV !== 'production') {
-        req.session.user = TEST_USER_ID // test user on development. (remember to run `TEST_USER_ON=true node server.js` if you want to use this user.)
-        req.session.username = TEST_USER_NAME // test user on development. (remember to run `TEST_USER_ON=true node server.js` if you want to use this user.)
-    }
 
-    if (req.session.user) {
-        User.findById(req.session.user).then((user) => {
-            if (!user) {
-                return Promise.reject()
-            } else {
-                next()
-            }
-        }).catch((error) => {
-            res.status(401).send("Unauthorized")
-        })
-    } else {
-        res.status(401).send("Unauthorized")
-    }
+    next()
+    // if (ENV !== 'production') {
+    //     req.session.user = TEST_USER_ID // test user on development. (remember to run `TEST_USER_ON=true node server.js` if you want to use this user.)
+    //     req.session.username = TEST_USER_NAME // test user on development. (remember to run `TEST_USER_ON=true node server.js` if you want to use this user.)
+    // }
+
+    // if (req.session.user) {
+    //     User.findById(req.session.user).then((user) => {
+    //         if (!user) {
+    //             return Promise.reject()
+    //         } else {
+    //             next()
+    //         }
+    //     }).catch((error) => {
+    //         res.status(401).send("Unauthorized")
+    //     })
+    // } else {
+    //     res.status(401).send("Unauthorized")
+    // }
 }
 
 const isMongoError = (error) => { // checks for first error returned by promise rejection if Mongo database suddently disconnects
