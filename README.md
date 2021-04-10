@@ -441,7 +441,13 @@ Data: allFAInfo
 Return: { allFAInfo }  
 
 Route: PATCH /profile/FAInfo/  
-Usage: change FAInfo     
+Usage: change FAInfo    
+Data: pathObj: {
+	username: this.state.username,
+      	op: "replace",
+      	path: "/" + "FAFields",
+      	value: this.state.FAFields}   
+Return: { updateFAInfo }
 
 # Resources We Used
 We used Material-UI and yahoo finance live stock API (mentioned in the live stock section in Investments) 
