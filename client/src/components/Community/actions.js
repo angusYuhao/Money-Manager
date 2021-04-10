@@ -24,9 +24,16 @@ export const getPostsdb = (forumList) => {
     })
     .then((json) => {
         console.log(json)
-        forumList.setState({
-            posts: json
-        })
+        if (json) {
+            forumList.setState({
+                posts: json
+            })
+        }
+        else {
+            forumList.setState({
+                posts: []
+            })
+        }
     })
     .catch((error) => {
         if(error == "Internal server error") {

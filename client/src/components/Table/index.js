@@ -293,7 +293,7 @@ class TableComp extends React.Component {
                   : null
                 }
 
-                {/* {tableType == "Investments" ? null : */}
+                {tableType == "Investments" ? null :
 
                   <Snackbar
                     open={this.state.displaySnack}
@@ -310,7 +310,7 @@ class TableComp extends React.Component {
 
                   </Snackbar>
 
-                {/* } */}
+                }
 
               </TableBody>
 
