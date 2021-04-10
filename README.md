@@ -3,6 +3,9 @@
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
 
 [Check out the website!](https://manage-my-money.herokuapp.com)
+Link: https://manage-my-money.herokuapp.com
+
+> **Note:** The users that are available is "user/user", "admin/admin", "ianc/12345678", "anguswang/12345678" (we had to use different usernames to demonstrate more clearly our features for posts and profiles)
 
 > **Note:** All "Money Manager" on the header are clickable and will direct you back to the home page.
 
