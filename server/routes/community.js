@@ -13,7 +13,7 @@ const log = console.log
 const { Post } = require("../models/posts");
 
 // get all posts
-routes.get('/posts', mongoChecker, authenticate, async (req, res) => {
+routes.get('/posts', mongoChecker, async (req, res) => {
 
     try {
         const allPosts = await Post.find()
