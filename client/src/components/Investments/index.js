@@ -56,15 +56,15 @@ class Investments extends React.Component {
 
   state = {
     //general stock data
-    stockList_headings: ["Last Traded Date", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
+    stockList_headings: ["Last Traded", "Name", "Quantity", "Price", "Average Cost", "Market Value", "Book Cost", "Gain/Loss"],
     stockList_options: ["Date", "Any", "Number", "Number", "Number", "Number", "Number", "Number"],
     stockList_categories: [],
     stocklist_data: [],
 
     //table values  
-    sortBy: "Last Traded Date",
+    sortBy: "Last Traded",
     sortDes: {
-      "Last Traded Date": false,
+      "Last Traded": false,
       "Name": false,
       "Quantity": false,
       "Market Value": false,
@@ -99,13 +99,13 @@ class Investments extends React.Component {
   //For sorting the stock entries in the table:
   sortObj = (a, b) => {
     switch (this.state.sortBy) {
-      case "Last Traded Date":
-        if (!this.state.sortDes["Last Traded Date"]) {
-          if (a["Last Traded Date"] < b["Last Traded Date"]) return -1
+      case "Last Traded":
+        if (!this.state.sortDes["Last Traded"]) {
+          if (a["Last Traded"] < b["Last Traded"]) return -1
           else return 1
         }
         else {
-          if (a["Last Traded Date"] > b["Last Traded Date"]) return -1
+          if (a["Last Traded"] > b["Last Traded"]) return -1
           else return 1
         }
 
@@ -184,17 +184,17 @@ class Investments extends React.Component {
   //For re-ensuring the sum is up to date:
   componentDidUpdate(undefined, prevState) {
 
-     // if there is a snack message to be shown but we currently don't have the snack opened 
-     if (this.state.snacks.length && !this.state.currentSnackMsg) {
-      this.setState({ currentSnackMsg: this.state.snacks[0] })
-      this.setState({ snacks: this.state.snacks.slice(1) })
-      this.setState({ displaySnack: true })
-    }
+    //  // if there is a snack message to be shown but we currently don't have the snack opened 
+    //  if (this.state.snacks.length && !this.state.currentSnackMsg) {
+    //   this.setState({ currentSnackMsg: this.state.snacks[0] })
+    //   this.setState({ snacks: this.state.snacks.slice(1) })
+    //   this.setState({ displaySnack: true })
+    // }
 
-    // if there is a snack message to be shown and we are already displaying a snack, close the active one 
-    else if (this.state.snacks.length && this.state.currentSnackMsg && this.state.displaySnack) {
-      this.setState({ displaySnack: false })
-    }
+    // // if there is a snack message to be shown and we are already displaying a snack, close the active one 
+    // else if (this.state.snacks.length && this.state.currentSnackMsg && this.state.displaySnack) {
+    //   this.setState({ displaySnack: false })
+    // }
 
 
     // only update the account balance if any transaction has been modified
@@ -266,7 +266,7 @@ class Investments extends React.Component {
         console.log(data);
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
-
+        this.setState({ displaySnack: false })
       })
       .catch(error => {
         this.setState({ displaySnack: true })
@@ -305,6 +305,7 @@ class Investments extends React.Component {
       .then(data => {
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
+        this.setState({ displaySnack: false })
       })
       .catch(error => {
         this.setState({ displaySnack: true })
