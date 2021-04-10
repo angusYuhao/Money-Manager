@@ -66,11 +66,11 @@ routes.post('/', mongoChecker, authenticate, async (req, res) => {
     //create new stock entry
     //all of the values in the object needs to be calculated again
     let stock_entry = new Object();
-    stock_entry["Last Traded Date"] = req.body["Last Traded Date"];
+    stock_entry["Last Traded"] = req.body["Last Traded"];
     stock_entry["Name"] = req.body["Name"];
 
 
-    let isoDate = stock_entry["Last Traded Date"].replace('/', '-')
+    let isoDate = stock_entry["Last Traded"].replace('/', '-')
     let year = isoDate.substring(6, isoDate.length);
     let monthDay = isoDate.substring(0, 5);
     isoDate = year.concat('-');//cuz there's no - in the original str behind year
@@ -233,15 +233,17 @@ routes.delete('/:name/:numToDelete', mongoChecker, authenticate, async (req, res
 
                         let today = new Date();
                         let dd = today.getDate();
+                        if(dd < 10)dd = '0' + dd;
 
                         let mm = today.getMonth()+1; 
+                        if(mm < 10)mm = '0' + mm;
                         let yyyy = today.getFullYear();
                         let dateString = mm + '/' + dd + '/' + yyyy;
 
                         let newStocksList = user.investments.filter(res => res._id != user.investments[i]._id);
                         if (numToDelete < newStockEntry["Quantity"]) {
                             //console.log(today);
-                            newStockEntry["Last Traded Date"] = dateString;
+                            newStockEntry["Last Traded"] = dateString;
                             newStockEntry["Quantity"] = newStockEntry["Quantity"] - numToDelete;
 
                             newStockEntry["Price"] = closingPrice;
