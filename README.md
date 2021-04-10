@@ -2,6 +2,8 @@
 
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
 
+[Check out the website!](https://manage-my-money.herokuapp.com)
+
 > **Note:** All "Money Manager" on the header are clickable and will direct you back to the home page.
 
 # COMPLETE WALKTHROUGH
@@ -77,6 +79,9 @@ On every buy and sell, the server will get actual stock quotes from Yahoo financ
     - The server will use today’s date as the sell date, and update the quantity, book cost...etc. accordingly
     - If the user sells all of his/her shares of a particular stock, the entry will be deleted
     - If the user sells less than all of their shares of a stock, then the stock entry will be updated in the database, as well as the table
+
+Link to live stock npm module: https://www.npmjs.com/package/yahoo-finance
+> **Note:** We noticed that this API was slightly inconsistent, our API requests would sometimes not work as expected
 
 ### Sort buttons
 Will sort the stock entries in the table based on the category selected.
@@ -439,5 +444,4 @@ Route: PATCH /profile/FAInfo/
 Usage: change FAInfo 
 
 # Resources We Used
-
-We used Material-UI and yahoo finance live stock API
+We used Material-UI and yahoo finance live stock API (mentioned in the live stock section in Investments) 
