@@ -2,6 +2,8 @@
 
 Money Manager is a web application that focuses on financial management, investment recommendation, and user interaction. There are three main functionalites to this web application: "Spendings", "Investments" and "Community". 
 
+[Check out the website!](https://manage-my-money.herokuapp.com)
+
 > **Note:** All "Money Manager" on the header are clickable and will direct you back to the home page.
 
 # COMPLETE WALKTHROUGH
@@ -77,6 +79,9 @@ On every buy and sell, the server will get actual stock quotes from Yahoo financ
     - The server will use today’s date as the sell date, and update the quantity, book cost...etc. accordingly
     - If the user sells all of his/her shares of a particular stock, the entry will be deleted
     - If the user sells less than all of their shares of a stock, then the stock entry will be updated in the database, as well as the table
+
+Link to live stock npm module: https://www.npmjs.com/package/yahoo-finance
+> **Note:** We noticed that this API was slightly inconsistent, our API requests would sometimes not work as expected
 
 ### Sort buttons
 Will sort the stock entries in the table based on the category selected.
@@ -228,70 +233,70 @@ The left information bar is slightly different for a financial advisor. From her
 # ROUTES
 
 ### Spendings
-Route: GET /spendings/transactions
-Usage: gets the data required for displaying all transactions information on the Spendings page
-Data: userID (from req.session)
-Return: { spendings, categories }
+Route: GET /spendings/transactions  
+Usage: gets the data required for displaying all transactions information on the Spendings page  
+Data: userID (from req.session)  
+Return: { spendings, categories }  
 
-Route: POST /spendings/categories
-Usage: adds a new user defined category to the database 
-Data: userID (from req.session), newCategory (from req.body)
-Return: updatedCategories.spendings_categories
+Route: POST /spendings/categories  
+Usage: adds a new user defined category to the database     
+Data: userID (from req.session), newCategory (from req.body)  
+Return: updatedCategories.spendings_categories  
 
-Route: DELETE /spendings/categories
-Usage: deletes a new user defined category from the database 
-Data: userID (from req.session), deleteCategory(from req.body)
-Return: updatedCategories.spendings_categories
+Route: DELETE /spendings/categories  
+Usage: deletes a new user defined category from the database    
+Data: userID (from req.session), deleteCategory(from req.body)  
+Return: updatedCategories.spendings_categories  
 
-Route: POST /spendings/transaction/:yearIndex/:monthIndex
-Usage: adds a new transaction to a specific year and month sheet 
-Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), newTransaction (from req.body)
-Return: { transaction, entire_data, accountBalance }
+Route: POST /spendings/transaction/:yearIndex/:monthIndex  
+Usage: adds a new transaction to a specific year and month sheet   
+Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), newTransaction (from req.body)  
+Return: { transaction, entire_data, accountBalance }  
 
-Route: PATCH /spendings/transaction/:yearIndex/:monthIndex
-Usage: modifies a transaction from a specific year and month sheet 
-Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), editTransaction (from req.body)
-Return: { transaction, entire_data, accountBalance }
+Route: PATCH /spendings/transaction/:yearIndex/:monthIndex   
+Usage: modifies a transaction from a specific year and month sheet    
+Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), editTransaction (from req.body)  
+Return: { transaction, entire_data, accountBalance }  
 
-Route: DELETE /spendings/transaction/:yearIndex/:monthIndex
-Usage: deletes a transaction from a specific year and month sheet 
-Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), deleteTransaction (from req.body)
-Return: { transaction, entire_data, accountBalance }
+Route: DELETE /spendings/transaction/:yearIndex/:monthIndex  
+Usage: deletes a transaction from a specific year and month sheet   
+Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params), deleteTransaction (from req.body)  
+Return: { transaction, entire_data, accountBalance }  
 
-Route: DELETE /spendings/sheet/:yearIndex/:monthIndex
-Usage: deletes a sheet for the spendings
-Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params)
-Return: updatedSpendings.spendings
+Route: DELETE /spendings/sheet/:yearIndex/:monthIndex  
+Usage: deletes a sheet for the spendings  
+Data: userID (from req.session), yearIndex (from req.params), monthIndex (from req.params)  
+Return: updatedSpendings.spendings  
 
-Route: POST /spendings/sheet
-Usage: adds a new sheet for the spendings, year and month 
-Data: userID (from req.session), year (from req.body), month (from req.body), projectedSpendings (from req.body)
-Return: updatedSpendings.spendings
+Route: POST /spendings/sheet  
+Usage: adds a new sheet for the spendings, year and month   
+Data: userID (from req.session), year (from req.body), month (from req.body), projectedSpendings (from req.body)  
+Return: updatedSpendings.spendings  
 
 ### Investments
-Route: GET /investments/
-Usage: gets the portfolio of the user(all their table entries with the stock name, price, book cost...etc. per entry )
-Data: n/a
-Return: { user.investments }
+Route: GET /investments/  
+Usage: gets the portfolio of the user(all their table entries with the stock name, price, book cost...etc. per entry )  
+Data: n/a  
+Return: { user.investments }  
 
-Route: POST /investments/
-Usage: add an entry to represent the user buying a specific quantity of a stock on a specific day
-Data: Input: Last Traded Date, Name, Quantity; these are generated in server using yahoo finance and calculations: Price, Average Cost, Market Value, Book Cost, Gain/Loss
-Return: { user.investments }
+Route: POST /investments/  
+Usage: add an entry to represent the user buying a specific quantity of a stock on a specific day  
+Data: Input: Last Traded Date, Name, Quantity; these are generated in server using yahoo finance and calculations: Price, Average Cost, Market Value, Book Cost, Gain/Loss  
+Return: { user.investments }  
 
-Route: DELETE /investments/
-Usage: represents the user selling a specific quantity of a stock today
-Data: Input: stock to sell, quantity to sell; the server will automatically update the stock entry from the user’s investments, or remove the entire entry completely
-Return: { user.investments }
+Route: DELETE /investments/  
+Usage: represents the user selling a specific quantity of a stock today  
+Data: Input: stock to sell, quantity to sell; the server will automatically update the stock entry from the user’s investments, or remove the entire entry completely  
+Return: { user.investments }  
 
 ### Community
-Route: GET /community/posts
-Usage: gets the data required for displaying all posts on the Community page
-Data: n/a
-Return: allPosts
+Route: GET /community/posts  
+Usage: gets the data required for displaying all posts on the Community page  
+Data: n/a  
+Return: allPosts  
 
-Route: POST /community/posts
-Usage: adds a new post for the user 
+Route: POST /community/posts  
+Usage: adds a new post for the user   
 Data: {
         postID: req.body.postID,
         authorUsertype: req.body.authorUsertype,
@@ -302,23 +307,23 @@ Data: {
         numDownvotes: req.body.numDownvotes,
         time: req.body.time,
         comments: []
-    } (from req.body), author (from req.session)
-Return: allPosts
+    } (from req.body), author (from req.session)  
+Return: allPosts  
 
-Route: DELETE /community/posts/:postID
-Usage: deletes a post 
-Data: targetPostID (from req.params)
-Return: allPosts
+Route: DELETE /community/posts/:postID  
+Usage: deletes a post   
+Data: targetPostID (from req.params)  
+Return: allPosts  
 
 ### Users
-Route: GET /users/info
-Usage: gets the user info data
-Data: userID (from req.session)
-Return: { getting every user’s info }
+Route: GET /users/info  
+Usage: gets the user info data  
+Data: userID (from req.session)  
+Return: { getting every user’s info }  
 
-Route: GET /users/manage
-Usage: route to get all the users that currently follow the FA 
-Data: userID (from req.session)
+Route: GET /users/manage  
+Usage: route to get all the users that currently follow the FA   
+Data: userID (from req.session)   
 Return: { const clientObj = new Object()
             clientObj["username"] = follower.username
             clientObj["firstName"] = follower.firstName
@@ -331,113 +336,118 @@ Return: { const clientObj = new Object()
             clientObj["totalSpendings"] = '$5,000'
             clientObj["totalGain"] = '$10,000'
             clientObj["totalLoss"] = '$100'
-}
+}  
 
-Route: POST /users/manage/recommend/:targetUsername
-Usage: route for FA to make a recommendation to a regular user
-Data: userID (from req.session)
-Return: { recommendation object }
+Route: POST /users/manage/recommend/:targetUsername  
+Usage: route for FA to make a recommendation to a regular user  
+Data: userID (from req.session)  
+Return: { recommendation object }  
 
-Route: POST /users/login
-Usage: route for users to login
-Data: username, password (from frontend input)
-Return: { entire user object }
+Route: POST /users/login  
+Usage: route for users to login  
+Data: username, password (from frontend input)  
+Return: { entire user object }  
 
-Route: GET /users/logout
-Usage: route for users to logout
-Data: destroys sessions
-Return: { nothing }
+Route: GET /users/logout  
+Usage: route for users to logout  
+Data: destroys sessions  
+Return: { nothing }  
 
-Route: POST /users/signup
-Usage: route for users to signup
-Data: entire user object gotten from the frontend input
-Return: { entire user object }
+Route: POST /users/signup  
+Usage: route for users to signup  
+Data: entire user object gotten from the frontend input  
+Return: { entire user object }  
 
-Route: Patch /users/profile
-Usage: route for users to change their profile page details
-Data: username (from req.session)
-Return: { entire user object (updated profile) }
+Route: Patch /users/profile    
+Usage: route for users to change their profile page details  
+Data: username (from req.session)  
+Return: { entire user object (updated profile) }  
 
-Route: GET /users/check-session
-Usage: A route to check if a user is logged in on the session
-Data: userID (from req.session)
-Return: { entire user object }
+Route: GET /users/check-session  
+Usage: A route to check if a user is logged in on the session  
+Data: userID (from req.session)  
+Return: { entire user object }  
 
-Route: POST /profile/userPosts
-Usage: A route to add a post to the user’s profile’s userPosts
-Data: targetUsername (from req.session)
-Return: { saves targetUsers’ post field and send a success code}
+Route: POST /profile/userPosts  
+Usage: A route to add a post to the user’s profile’s userPosts    
+Data: targetUsername (from req.session)  
+Return: { saves targetUsers’ post field and send a success code}  
 
-Route: DELETE /profile/userPosts/:postID
-Usage: A route to delete a post from the user’s profile’s userPosts
-Data: targetUsername (from req.session)
-	targetPostID (from req.params.postID)
-Return: { saves targetUser’s post field }
+Route: DELETE /profile/userPosts/:postID  
+Usage: A route to delete a post from the user’s profile’s userPosts  
+Data: targetUsername (from req.session)  
+	targetPostID (from req.params.postID)  
+Return: { saves targetUser’s post field }  
 
-Route: POST /profile/userSavedPosts
-Usage: A route to add a post to the user’s profile userSavedPosts
-Data: targetUsername (from req.session)
-Return: { saves targetUsers’s userSavedPosts field }
+Route: POST /profile/userSavedPosts  
+Usage: A route to add a post to the user’s profile userSavedPosts  
+Data: targetUsername (from req.session)  
+Return: { saves targetUsers’s userSavedPosts field }  
 
-Route: DELETE /profile/userSavedPosts/:postID
-Usage: A route to delete a post from user’s profile userSavedPosts
+Route: DELETE /profile/userSavedPosts/:postID  
+Usage: A route to delete a post from user’s profile userSavedPosts   
 Data:  targetUsername (from req.session)
 	targetPostID (from req.params.postID)
-Return: { saves targetUsers’s userSavedPosts field }
+Return: { saves targetUsers’s userSavedPosts field }  
  
-Route: POST /profile/userUpvotedPosts
-Usage: A route to add a post to the user’s profile userUpvotedPosts
-Data: targetUsername (from req.session)
-Return: { saves targetUser’s userUpVotedPosts field }
+Route: POST /profile/userUpvotedPosts  
+Usage: A route to add a post to the user’s profile userUpvotedPosts  
+Data: targetUsername (from req.session)  
+Return: { saves targetUser’s userUpVotedPosts field }  
 
-Route: DELETE /profile/userUpvotedPosts/:postID
-Usage: delete a post from user’s profile userUpvotedPosts
+Route: DELETE /profile/userUpvotedPosts/:postID  
+Usage: delete a post from user’s profile userUpvotedPosts  
 Data: targetUsername (from req.session)
-	targetPostID (from req.params.postID)
-Return: { saves targetUser’s userUpVotedPosts field }
+	targetPostID (from req.params.postID)  
+Return: { saves targetUser’s userUpVotedPosts field }  
+ 
+Route: POST /profile/userDownvotedPosts  
+Usage: add a post to the user’s profile userDownvotedPosts  
+Data: targetUsername (from req.session)  
+Return: { saves targetUser’s userDownVotedPosts }  
 
-Route: POST /profile/userDownvotedPosts
-Usage: add a post to the user’s profile userDownvotedPosts
+Route: DELETE /profile/userDownvotedPosts/:postID  
+Usage: delete a post from user’s profile userDownvotedPosts  
 Data: targetUsername (from req.session)
-Return: { saves targetUser’s userDownVotedPosts }
+	targetPostID (from req.params.postID)  
+Return: { saves targetUser’s userDownVotedPosts field }  
 
-Route: DELETE /profile/userDownvotedPosts/:postID
-Usage: delete a post from user’s profile userDownvotedPosts
+Route: POST /profile/userFollows  
+Usage: add a financial advisor to user’s profile userFollows  
 Data: targetUsername (from req.session)
-	targetPostID (from req.params.postID)
-Return: { saves targetUser’s userDownVotedPosts field }
+	targetFAUsername (from req.params.FAusername)  
+Return: { saves targetUser’s userFollows field }  
 
-Route: POST /profile/userFollows
-Usage: add a financial advisor to user’s profile userFollows
+Route: DELETE /profile/userFollows/:FAusername  
+Usage: delete a financial advisor to user’s profile userFollows  
 Data: targetUsername (from req.session)
-	targetFAUsername (from req.params.FAusername)
-Return: { saves targetUser’s userFollows field }
+	targetFAUsername (from req.params.FAusername)  
+Return: { saves targetUser’s userFollows field }  
 
-Route: DELETE /profile/userFollows/:FAusername
-Usage: delete a financial advisor to user’s profile userFollows
-Data: targetUsername (from req.session)
-	targetFAUsername (from req.params.FAusername)
-Return: { saves targetUser’s userFollows field }
-
-Route: POST /profile/FAInfo
-Usage: add FAInfo into the FA database
+Route: POST /profile/FAInfo  
+Usage: add FAInfo into the FA database  
 Data: newFAInfo = {
        FAFirstname: req.body.FAFirstname,
         FALastname: req.body.FALastname,
         FAIntro: req.body.FAIntro,
         FAFields: req.body.FAFields,
         FAPoints: req.body.FAPoints
-}
-Return: { saves newFAInfo to the database }
+}  
+Return: { saves newFAInfo to the database }  
 
-Route: GET /profile/FAInfo
-Usage: get list of all FAInfo
-Data: allFAInfo
-Return: { allFAInfo }
+Route: GET /profile/FAInfo  
+Usage: get list of all FAInfo  
+Data: allFAInfo  
+Return: { allFAInfo }  
 
-Route: PATCH /profile/FAInfo/
-Usage: change FAInfo 
+Route: PATCH /profile/FAInfo/  
+Usage: change FAInfo    
+Data: pathObj: {
+	username: this.state.username,
+      	op: "replace",
+      	path: "/" + "FAFields",
+      	value: this.state.FAFields}   
+Return: { updateFAInfo }
 
 # Resources We Used
-
-We used Material-UI and yahoo finance live stock API
+We used Material-UI and yahoo finance live stock API (mentioned in the live stock section in Investments) 
