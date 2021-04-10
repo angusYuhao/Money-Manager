@@ -186,6 +186,39 @@ class App extends React.Component {
               render={() => (<Contact
                 loggedIn={this.state.loggedIn} />)} />
 
+            <Route exact path='/investments'
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Investments
+                            loggedIn={this.state.loggedIn}
+                            user={currentUser}
+                            {...props} app={this}
+                          />
+                  }
+                </div>
+              )}
+            />
+
+            <Route exact path='/manage'
+              render={props => (
+                <div className = "app">
+                  {!currentUser ? 
+                          <Login {...props} app={this} /> 
+                          : 
+                          <Manage
+                            loggedIn={this.state.loggedIn}
+                            user={currentUser}
+                            {...props} 
+                            app={this}
+                          />
+                  }
+                </div>
+              )}
+            />
+
             <Route exact path='/resources'
               render={props => (
                 <div className = "app">

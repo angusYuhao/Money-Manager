@@ -8,7 +8,7 @@ const ENV = process.env.NODE_ENV == 'production' ? 'production' : config.ENV
 
 const configDB = (ENV !== "production") ? require('./config.js') : null;
 
-// const { localMongoURI } = require('./config')
+//const { localMongoURI } = require('./config')
 
 /* Connnect to our database */
 // Get the URI of the local database, or the one specified on deployment.
