@@ -33,7 +33,6 @@ const authenticate = (req, res, next) => {
             if (!user) {
                 return Promise.reject()
             } else {
-                req.user = user
                 next()
             }
         }).catch((error) => {
