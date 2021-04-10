@@ -241,7 +241,7 @@ class RegularUserForm extends React.Component {
                     <FormControl variant="outlined" className={classes.formControl}>
                     <TextField fullWidth
                                 error
-                                helperText="The minimum number of characters is 8!"
+                                helperText="The minimum number of characters is 4!"
                                 value={ createdPassword } 
                                 onChange={ checkLength }
                                 id="outlined-error" 

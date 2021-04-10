@@ -10,6 +10,8 @@ const mongoChecker = actions.mongoChecker
 const authenticate = actions.authenticate
 const isMongoError = actions.isMongoError
 
+const log = console.log
+
 const { mongoose } = require("../db/mongoose");
 mongoose.set('useFindAndModify', false); // for some deprecation issues
 
@@ -532,6 +534,7 @@ routes.delete('/profile/userFollows/:FAusername', mongoChecker, authenticate, as
         res.status(500).send('Internal server error')
     }
 })
+
 
 // add FAInfo into FAInfo database
 routes.post('/FAInfo', mongoChecker, authenticate, async (req, res) => {

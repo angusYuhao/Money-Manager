@@ -17,10 +17,10 @@ export const getPostsdb = (forumList) => {
             console.log("got posts")
             return res.json()
         }
-        else {
-            // get post failed
-            console.log("failed to get posts")
-        }
+        // else {
+        //     // get post failed
+        //     console.log("failed to get posts")
+        // }
     })
     .then((json) => {
         console.log(json)
