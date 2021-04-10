@@ -103,9 +103,9 @@ routes.post('/', mongoChecker, authenticate, async (req, res) => {
         console.log(closingPrice);
         User.findById(userID).then((user) => {
             if (!user) {
-                res.status(400).send('User not found')
+                res.send('buyError');
             } else if (closingPrice == -1.0) {
-                res.status(400).send('Invalid stock entry')
+                res.send('buyError');
             } else {
 
                 // let obj = user.investments.filter(obj => {

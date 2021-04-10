@@ -263,18 +263,17 @@ class Investments extends React.Component {
     fetch(request)
       .then(res => res.json())
       .then(data => {
-        if(data == "duplicate"){
-          console.log("You already have a stock with the same name in your stock table!");
-          return;
-        }
         console.log(data);
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
 
       })
       .catch(error => {
-        console.log(error)
         this.setState({ displaySnack: true })
+        this.setState({ currentSnackMsg: "invalidBuy" })
+        // let newSnacks = this.state.snacks;
+        // newSnacks.push("Buy stock error");
+        // this.setState({snacks: newSnacks});
       })
       console.log(this.state.stocklist_data)
     // this.state.stocklist_data.unshift(newStock)
@@ -308,8 +307,8 @@ class Investments extends React.Component {
         this.totalMoneyInvested();
       })
       .catch(error => {
-        console.log(error)
         this.setState({ displaySnack: true })
+        this.setState({ currentSnackMsg: "invalidSell" });
       })
   }
 
@@ -329,9 +328,6 @@ class Investments extends React.Component {
   
     fetch(request)
       .then(res => res.json())
-      .then(data =>{
-        console.log(data);
-      })
       .then(data => {
         this.setState({ stocklist_data: data })
         this.totalMoneyInvested();
