@@ -177,6 +177,7 @@ class Investments extends React.Component {
 
       })
       .catch(error => {
+        this.props.history.push('/error');
         console.log(error)
       })
   }
