@@ -131,6 +131,7 @@ class BarChart extends React.Component {
                 //Save this to the corresponding arrays and don't draw yet just in case if any of the adjacent
                 //bars are taller and covers it
                 let amountString = element[indices[i]];
+                amountString = Math.round(amountString);
                 if(element[indices[i]] >= 0)amountString = '$' + amountString;
                 else amountString = '-$' + Math.abs(amountString);
                 
@@ -167,7 +168,7 @@ class BarChart extends React.Component {
             for(let j = 0; j < keyComponentsArray[0].length; j++){
                 this.context = this.barChartRef.current.getContext('2d');
                 this.context.fillStyle = '#616A6A';
-                this.context.font = '15px Poppins, sans-serif';
+                this.context.font = '14px Poppins, sans-serif';
                 this.context.textAlign = 'center';
                 this.context.fillText(labelsForAboveBars[i][j],xPosForAboveBars[i][j], yPosForABoveBars[i][j]);
             }
